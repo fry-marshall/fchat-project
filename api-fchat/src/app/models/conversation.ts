@@ -3,6 +3,8 @@ import sequelize from "../../config/sequelize";
 
 interface ConversationAttributes{
     id?: string;
+    user_id_1?: string;
+    user_id_2?: string;
 }
 
 interface ConversationInstance extends Model<ConversationAttributes>, ConversationAttributes{}

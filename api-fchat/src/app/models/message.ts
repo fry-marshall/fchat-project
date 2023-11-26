@@ -5,6 +5,7 @@ interface MessageAttributes{
     id?: string;
     content?: string;
     date?: string;
+    conversation_id?: string
 }
 
 interface MessageInstance extends Model<MessageAttributes>, MessageAttributes{}
