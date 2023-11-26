@@ -6,11 +6,11 @@ import * as userMiddlewares from "../user/middlewares"
 const router = Express.Router()
 
 router.post(
-    '/create', 
+    '/send', 
     Express.json(),
     GlobalMiddlewares.verifyToken,
     userMiddlewares.getUser,
-    MessageController.insert
+    MessageController.sendMessage
 )
 
 router.get(
