@@ -65,7 +65,7 @@ class MessageController extends Controller {
     }
 
     // to create an message
-    async insert(req: Request, res: Response) {
+    async sendMessage(req: Request, res: Response) {
         try {
 
             const user = res.locals.user;
@@ -118,7 +118,13 @@ class MessageController extends Controller {
                 return res.status(400).send(response);
             }
 
-            return res.status(201).json(Helpers.queryResponse({ id: (response as any).data.id, msg: 'msg sent successfully' }))
+            res.locals.io.emit(receiverUserId, {
+                conversation_id: conversation.id,
+                content: (response as any).data.content,
+                date: (response as any).data.date
+            })
+
+            return res.status(201).json(Helpers.queryResponse({conversation_id: conversation.id, message_id: (response as any).data.id, msg: 'msg sent successfully' }))
 
         } catch (e) {
             return res.status(500).json(Helpers.serverError)
