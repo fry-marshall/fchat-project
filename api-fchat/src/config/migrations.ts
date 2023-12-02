@@ -6,11 +6,11 @@ import { TokenBlackList } from "../app/models/tokenblacklist"
 (async () => {
 	await User.sync({ alter: true });
 	await TokenBlackList.sync({ alter: true });
-	Conversation.belongsTo(User, {foreignKey: 'user_id_1'})
-	Conversation.belongsTo(User, {foreignKey: 'user_id_2'})
+	Conversation.belongsTo(User, {foreignKey: 'user_id_1', as: 'User1'})
+	Conversation.belongsTo(User, {foreignKey: 'user_id_2', as: 'User2'})
 	await Conversation.sync({ alter: true });
-	Message.belongsTo(User, {foreignKey: 'sender_id'})
-	Message.belongsTo(User, {foreignKey: 'receiver_id'})
-	Message.belongsTo(Conversation, {foreignKey: 'conversation_id'})
+	Message.belongsTo(User, {foreignKey: 'sender_id', as: 'Sender'})
+	Message.belongsTo(User, {foreignKey: 'receiver_id', as: 'Receiver'})
+	Message.belongsTo(Conversation, {foreignKey: 'conversation_id', as: 'Conversation'})
 	await Message.sync({ alter: true });
 })();

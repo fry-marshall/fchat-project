@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../../config/sequelize";
+import { UserInstance } from "./user";
 
 interface ConversationAttributes{
     id?: string;
@@ -7,7 +8,10 @@ interface ConversationAttributes{
     user_id_2?: string;
 }
 
-interface ConversationInstance extends Model<ConversationAttributes>, ConversationAttributes{}
+export interface ConversationInstance extends Model<ConversationAttributes>, ConversationAttributes{
+    setUser1: (user: UserInstance) => Promise<void>;
+    setUser2: (user: UserInstance) => Promise<void>;
+}
 
 const Conversation = sequelize.define<ConversationInstance>('conversation', {
     id: {

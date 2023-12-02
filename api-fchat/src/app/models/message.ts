@@ -1,14 +1,22 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../../config/sequelize";
+import { UserInstance } from "./user";
+import { ConversationInstance } from "./conversation";
 
 interface MessageAttributes{
     id?: string;
     content?: string;
     date?: string;
+    sender_id?: string;
+    receiver_id?: string;
     conversation_id?: string
 }
 
-interface MessageInstance extends Model<MessageAttributes>, MessageAttributes{}
+interface MessageInstance extends Model<MessageAttributes>, MessageAttributes{
+    setSender: (user: UserInstance) => Promise<void>;
+    setReceiver: (user: UserInstance) => Promise<void>;
+    setConversation: (user: ConversationInstance) => Promise<void>;
+}
 
 const Message = sequelize.define<MessageInstance>('message', {
     id: {
