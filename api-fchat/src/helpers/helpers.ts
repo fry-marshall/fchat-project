@@ -19,7 +19,7 @@ class Helpers{
         },
     });
 
-    public static smsTransporter = new Twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+    //public static smsTransporter = new Twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
     public static serverError = { is_error: true, status: 'server_error', msg: 'Unknown error occured' }
     public static notFoundError = { is_error: true, status: 'not_found', msg: 'Item not found' }

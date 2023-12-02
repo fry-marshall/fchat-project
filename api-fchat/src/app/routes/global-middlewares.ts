@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express"
 import jwt from "jsonwebtoken"
 import Helpers from "../../helpers/helpers"
+import { TokenBlackList } from "../models/tokenblacklist"
 //import { TokenBlackList } from "../models/tokenblacklist"
 
 export default class GlobalMiddlewares{
@@ -12,13 +13,13 @@ export default class GlobalMiddlewares{
         jwt.verify(token ?? '', process.env.ACCESS_TOKEN_SECRET!, async (err, user: any) => {
 
 
-            /* let tokenExisting = await TokenBlackList.findOne({
+            let tokenExisting = await TokenBlackList.findOne({
                 where: {
                     token: token
                 }
-            }) */
+            })
     
-            if (err/*  || tokenExisting */) {
+            if (err || tokenExisting) {
                 return res.status(401).send(Helpers.invalidAccessTokenError)
             } else {
                 res.locals.id = user.id
