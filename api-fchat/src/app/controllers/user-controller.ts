@@ -89,13 +89,13 @@ class UserController extends Controller {
             }
 
             // send the verification email
-            const url = `${process.env.HOST_NAME}/verifyemail?token=${(response as any).data.email_verified_token}`
+            /* const url = `${process.env.HOST_NAME}/verifyemail?token=${(response as any).data.email_verified_token}`
             await Helpers.mailTransporter.sendMail({
                 from: process.env.MAIL_USERNAME,
                 to: body.email,
                 subject: 'Vérification de l\'adresse mail',
                 html: Helpers.verifyEmail(body.email!, url),
-            })
+            }) */
 
             return res.status(201).json(Helpers.queryResponse({id: (response as any).data.id, msg: 'User account created successfully'}))
 
@@ -133,8 +133,7 @@ class UserController extends Controller {
 
             let currentUser = await User.findOne({
                 where: {
-                    email: req.body.login,
-                    email_verified: true
+                    email: req.body.login
                 }
             })
 
@@ -219,12 +218,12 @@ class UserController extends Controller {
             await user.save()
             
             const url = `${process.env.HOST_NAME}/verifyemail?token=${user.email_verified_token}`
-            await Helpers.mailTransporter.sendMail({
+            /* await Helpers.mailTransporter.sendMail({
                 from: process.env.MAIL_USERNAME,
                 to: user.email,
                 subject: 'Vérification de l\'adresse mail',
                 html: Helpers.verifyEmail(user.email, url),
-            });
+            }); */
 
             return res.status(202).json(Helpers.queryResponse('Email verification code generated successfully'))
         }catch(error){
@@ -274,16 +273,17 @@ class UserController extends Controller {
             let user = res.locals.user as UserInstance
             const file = req?.file as any
 
-            const response = await this.service.update(user.id, {profile_img: file.filename})
-
-            if (response.is_error){
-                fs.unlinkSync('dist/assets/' + file.filename)
-                return res.status(400).send(response);
+            if(file){
+                user.set({profile_img: file.filename})
+                console.log("yoooooooo", user)
+                await user.save()
+                console.log("user savvvvvvvvvvvved")
             }
 
             return res.status(202).json(Helpers.queryResponse({id: user.id, msg: 'user account profile img updated successfully'}))
 
         } catch (error) {
+            console.log(error)
             return res.status(500).json(Helpers.serverError)
         } 
     }
@@ -310,12 +310,12 @@ class UserController extends Controller {
                 
                 const url = `${process.env.HOST_NAME}/resetpassword?token=${user.forgotpasswordtoken}`
 
-                await Helpers.mailTransporter.sendMail({
+                /* await Helpers.mailTransporter.sendMail({
                     from: process.env.MAIL_USERNAME,
                     to: user.email,
                     subject: "Mot de passe oublié",
                     html: Helpers.resetPassword(user.email!, url),
-                })
+                }) */
             }
             return res.status(202).json(Helpers.queryResponse('A reset password email sent successfully'))
 

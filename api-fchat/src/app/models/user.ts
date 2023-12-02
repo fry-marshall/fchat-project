@@ -13,6 +13,7 @@ interface UserAttributes{
     forgotpasswordtoken: string,
     forgotpasswordused: boolean
     password: string;
+    profile_img: string
 }
 
 interface UserInstance extends Model<UserAttributes>, UserAttributes{}
@@ -37,6 +38,7 @@ const User = sequelize.define<UserInstance>('user', {
     },
     email: {
         type: DataTypes.STRING,
+        allowNull: false,
         unique: true,
         validate: {
             isEmail: true,
@@ -44,7 +46,7 @@ const User = sequelize.define<UserInstance>('user', {
     },
     email_verified_token: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
         defaultValue: '',
         validate: {
             notEmpty: true,
@@ -78,6 +80,10 @@ const User = sequelize.define<UserInstance>('user', {
                 this.setDataValue('password', bcrypt.hashSync(value, 10));
             }
         }
+    },
+    profile_img: {
+        type: DataTypes.STRING,
+        defaultValue: 'default.png'
     },
 })
 
