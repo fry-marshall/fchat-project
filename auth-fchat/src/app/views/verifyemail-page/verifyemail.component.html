@@ -1,0 +1,18 @@
+<div class="container is-flex is-column">
+    <ng-container *ngIf="isLoading | async; else notLoading">
+        <div class="spinner"></div>
+    </ng-container>
+    <ng-template #notLoading>
+        <app-notification *ngIf="error.hasError" type="error"
+        [title]="error.msg.title"
+        [subtitle]="error.msg.subtitle"
+        >
+        </app-notification>
+        <app-notification *ngIf="success.isSuccess" type="info"
+            [title]="success.msg.title"
+            [subtitle]="success.msg.subtitle"
+            class="l-margin-bottom"
+        >
+        </app-notification>
+    </ng-template>
+</div>
