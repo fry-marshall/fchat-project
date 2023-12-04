@@ -31,7 +31,7 @@ const Message = sequelize.define<MessageInstance>('message', {
         }
     },
     date: {
-        type: DataTypes.TIME,
+        type: DataTypes.DATE,
         allowNull: false,
         defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
         validate: {
