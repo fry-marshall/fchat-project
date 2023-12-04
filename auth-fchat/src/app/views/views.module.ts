@@ -9,6 +9,8 @@ import { WelcomePageComponent } from "./welcome-page/welcome-page.component";
 import { SignUpComponent } from "./signup-page/sign-up.component";
 import { LoginComponent } from "./login-page/login.component";
 import { ForgotpasswordComponent } from "./forgotpassword-page/forgotpassword.component";
+import { ResetpasswordComponent } from "./resetpassword-page/resetpassword.component";
+import { VerifyEmailComponent } from "./verifyemail-page/verifyemail.component";
 
 const routes: Routes = [
     {
@@ -39,6 +41,14 @@ const routes: Routes = [
                 path: 'forgotpassword',
                 component: ForgotpasswordComponent
             },
+            {
+                path: 'resetpassword',
+                component: ResetpasswordComponent
+            },
+            {
+                path: 'verifyemail',
+                component: VerifyEmailComponent
+            },
         ],
     }
 ]
@@ -49,7 +59,9 @@ const routes: Routes = [
         WelcomePageComponent,
         SignUpComponent,
         LoginComponent,
-        ForgotpasswordComponent
+        ForgotpasswordComponent,
+        ResetpasswordComponent,
+        VerifyEmailComponent
     ],
     imports: [
         UiModule,
