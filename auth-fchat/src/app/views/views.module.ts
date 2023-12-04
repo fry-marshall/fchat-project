@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { UiModule } from "@library_v2/ui-module";
 import { WelcomePageComponent } from "./welcome-page/welcome-page.component";
 import { SignUpComponent } from "./signup-page/sign-up.component";
+import { LoginComponent } from "./login-page/login.component";
 
 const routes: Routes = [
     {
@@ -29,6 +30,10 @@ const routes: Routes = [
                 path: 'signup',
                 component: SignUpComponent
             },
+            {
+                path: 'login',
+                component: LoginComponent
+            },
         ],
     }
 ]
@@ -37,7 +42,8 @@ const routes: Routes = [
     declarations: [
         ViewsComponent,
         WelcomePageComponent,
-        SignUpComponent
+        SignUpComponent,
+        LoginComponent
     ],
     imports: [
         UiModule,
