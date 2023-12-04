@@ -8,6 +8,7 @@ import { UiModule } from "@library_v2/ui-module";
 import { WelcomePageComponent } from "./welcome-page/welcome-page.component";
 import { SignUpComponent } from "./signup-page/sign-up.component";
 import { LoginComponent } from "./login-page/login.component";
+import { ForgotpasswordComponent } from "./forgotpassword-page/forgotpassword.component";
 
 const routes: Routes = [
     {
@@ -34,6 +35,10 @@ const routes: Routes = [
                 path: 'login',
                 component: LoginComponent
             },
+            {
+                path: 'forgotpassword',
+                component: ForgotpasswordComponent
+            },
         ],
     }
 ]
@@ -43,7 +48,8 @@ const routes: Routes = [
         ViewsComponent,
         WelcomePageComponent,
         SignUpComponent,
-        LoginComponent
+        LoginComponent,
+        ForgotpasswordComponent
     ],
     imports: [
         UiModule,
