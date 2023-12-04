@@ -3,3 +3,23 @@
 app-input{
     margin-bottom: 20px;
 }
+
+*{
+    font-family: "Kaisei Opti" !important;
+}
+
+:root {
+    --primary: #3285D2;
+}
+
+.is-primary{
+    background: var(--primary);
+}
+
+
+app-button  {
+    button{
+        border-radius: 10px;
+        padding: 14px 88px;
+    }
+}
