@@ -10,6 +10,14 @@ import { environment } from 'src/environments/environment';
 import { reducers } from './stores/app.state';
 import { UserEffects } from './stores/user/user.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { RouterModule, Routes } from '@angular/router';
+
+const routes: Routes = [
+  {
+    path: '',
+    loadChildren: () => import('./views/views.module').then(m => m.ViewsModule)
+  }
+]
 
 @NgModule({
   declarations: [
@@ -17,6 +25,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
   ],
   imports: [
     BrowserModule,
+    RouterModule.forRoot(routes),
     StoreModule.forRoot(reducers),
     EffectsModule.forRoot([UserEffects]),
     HttpClientModule,
