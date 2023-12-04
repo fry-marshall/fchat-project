@@ -4,7 +4,7 @@ app-input{
     margin-bottom: 20px;
 }
 
-*{
+html, body, p, h1, h2, h3, h4, h5, button{
     font-family: "Kaisei Opti" !important;
 }
 
@@ -22,4 +22,19 @@ app-button  {
         border-radius: 10px;
         padding: 14px 88px;
     }
+}
+
+.bold{
+    font-weight: 700;
+}
+
+.header{
+    app-text{
+        color: #868686;
+    }
+    margin-bottom: 108px;
+}
+
+.page-title{
+    margin-bottom: 64px;
 }

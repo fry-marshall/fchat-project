@@ -6,6 +6,7 @@ import { CommonModule } from "@angular/common";
 import { HttpClientModule } from '@angular/common/http';
 import { UiModule } from "@library_v2/ui-module";
 import { WelcomePageComponent } from "./welcome-page/welcome-page.component";
+import { SignUpComponent } from "./signup-page/sign-up.component";
 
 const routes: Routes = [
     {
@@ -24,6 +25,10 @@ const routes: Routes = [
                 path: 'welcome-page',
                 component: WelcomePageComponent
             },
+            {
+                path: 'signup',
+                component: SignUpComponent
+            },
         ],
     }
 ]
@@ -31,7 +36,8 @@ const routes: Routes = [
 @NgModule({
     declarations: [
         ViewsComponent,
-        WelcomePageComponent
+        WelcomePageComponent,
+        SignUpComponent
     ],
     imports: [
         UiModule,
