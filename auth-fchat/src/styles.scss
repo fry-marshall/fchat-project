@@ -32,9 +32,51 @@ app-button  {
     app-text{
         color: #868686;
     }
-    margin-bottom: 108px;
+    position: absolute;
+    top: 25px;
+    left: 0;
+    right: 0;
+    width: 50%;
+    margin: auto;
 }
 
 .page-title{
     margin-bottom: 64px;
+}
+
+app-forgotpassword, app-login, app-resetpassword, app-sign-up, app-verifyemail, app-welcome-page{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    .container{
+        width: 50%;
+    }
+}
+
+@media screen and (max-width: 860px) {
+    app-forgotpassword, app-login, app-resetpassword, app-sign-up, app-verifyemail, app-welcome-page{
+    
+        .container{
+            width: 80%;
+        }
+    }
+
+    .header{
+        top: 20px;
+        width: 80%;
+
+        app-text{
+            font-size: 12px;
+        }
+    }
+
+    app-button  {
+        button{
+            padding: 14px 68px;
+        }
+    }
 }
