@@ -1,3 +1,6 @@
 [submodule "auth-fchat/library_v2"]
 	path = auth-fchat/library_v2
 	url = git@github.com:projet-qualite/library_v2.git
+[submodule "webapp-fchat/library_v2"]
+	path = webapp-fchat/library_v2
+	url = git@github.com:projet-qualite/library_v2.git
