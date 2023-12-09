@@ -42,7 +42,7 @@ class MessageController extends Controller {
             })
 
             if(!conversations || conversations.length === 0){
-                return res.status(404).json(Helpers.queryResponse({msg: 'There are no conversations with this user'}))
+                return res.status(200).json(Helpers.queryResponse({message: []}))
             }
 
             let response: any[] = []

@@ -8,7 +8,6 @@ import UserService from "../services/user-service";
 import { User, UserAttributes, UserInstance } from "../models/user";
 import Helpers from "../../helpers/helpers";
 import { TokenBlackList } from "../models/tokenblacklist";
-import * as fs from "fs"
 
 class UserController extends Controller {
   
@@ -20,6 +19,7 @@ class UserController extends Controller {
     async getAll(req: Request, res: Response) {
         try {
 
+            const user = res.locals.user
             let users = await User.findAll({
                 where: {
                     email_verified: true
@@ -31,7 +31,7 @@ class UserController extends Controller {
                 ]
             })
 
-            return res.status(200).json(Helpers.queryResponse({users}))
+            return res.status(200).json(Helpers.queryResponse({users, currentUserId: user.id}))
 
         }catch(error){
             return res.status(500).json(Helpers.serverError)
@@ -89,13 +89,13 @@ class UserController extends Controller {
             }
 
             // send the verification email
-            /* const url = `${process.env.HOST_NAME}/verifyemail?token=${(response as any).data.email_verified_token}`
+            const url = `${process.env.HOST_NAME}/verifyemail?token=${(response as any).data.email_verified_token}`
             await Helpers.mailTransporter.sendMail({
                 from: process.env.MAIL_USERNAME,
                 to: body.email,
                 subject: 'Vérification de l\'adresse mail',
                 html: Helpers.verifyEmail(body.email!, url),
-            }) */
+            })
 
             return res.status(201).json(Helpers.queryResponse({id: (response as any).data.id, msg: 'User account created successfully'}))
 
@@ -218,12 +218,12 @@ class UserController extends Controller {
             await user.save()
             
             const url = `${process.env.HOST_NAME}/verifyemail?token=${user.email_verified_token}`
-            /* await Helpers.mailTransporter.sendMail({
+            await Helpers.mailTransporter.sendMail({
                 from: process.env.MAIL_USERNAME,
                 to: user.email,
                 subject: 'Vérification de l\'adresse mail',
                 html: Helpers.verifyEmail(user.email, url),
-            }); */
+            });
 
             return res.status(202).json(Helpers.queryResponse('Email verification code generated successfully'))
         }catch(error){
@@ -275,9 +275,7 @@ class UserController extends Controller {
 
             if(file){
                 user.set({profile_img: file.filename})
-                console.log("yoooooooo", user)
                 await user.save()
-                console.log("user savvvvvvvvvvvved")
             }
 
             return res.status(202).json(Helpers.queryResponse({id: user.id, msg: 'user account profile img updated successfully'}))
@@ -310,12 +308,12 @@ class UserController extends Controller {
                 
                 const url = `${process.env.HOST_NAME}/resetpassword?token=${user.forgotpasswordtoken}`
 
-                /* await Helpers.mailTransporter.sendMail({
+                await Helpers.mailTransporter.sendMail({
                     from: process.env.MAIL_USERNAME,
                     to: user.email,
                     subject: "Mot de passe oublié",
                     html: Helpers.resetPassword(user.email!, url),
-                }) */
+                })
             }
             return res.status(202).json(Helpers.queryResponse('A reset password email sent successfully'))
 
