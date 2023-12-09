@@ -16,7 +16,14 @@ export class MessageEffects {
         ofType(messagesActions.GetAllUserMessages),
         switchMap(() => {
             return this.messageService.getAllMessages().pipe(
-                map((messages) => messagesActions.GetAllUserMessagesSuccess(messages)),
+                map(({data}) => {
+                    if(data.message && data.message.length === 0){
+                        return messagesActions.GetAllUserMessagesSuccess({allMessages: []})
+                    }
+                    else{
+                        return messagesActions.GetAllUserMessagesSuccess({allMessages: data})
+                    }
+                }),
                 catchError((error) =>of(messagesActions.GetAllUserMessagesFailure(error)))
             )
         })
