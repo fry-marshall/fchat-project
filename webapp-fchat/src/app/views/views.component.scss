@@ -9,9 +9,12 @@
         display: grid;
         grid-template-columns: 1fr 3fr;
 
-        .sidebar{
+        .sidebar {
             display: grid;
             grid-template-rows: 1fr 6fr;
+            min-width: 360px;
+            border-right: 1px solid #DBDBDB;
+            background: #FFF;
         }
     }
 }
