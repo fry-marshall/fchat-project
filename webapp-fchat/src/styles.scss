@@ -1,1 +1,13 @@
 @import 'library.scss';
+
+html, body, p, h1, h2, h3, h4, h5, button{
+    font-family: "Kanit" !important;
+}
+
+:root {
+    --primary: #3285D2;
+}
+
+.is-primary{
+    background: var(--primary);
+}
