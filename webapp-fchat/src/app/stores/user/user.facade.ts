@@ -20,6 +20,15 @@ export class UserFacade{
 
     users$ = this.store.select(getUsers)
     currentUser$ = this.store.select(getCurrentUser)
+
+    getAllUsers(){
+        this.store.dispatch(userActions.GetAllUsersAccount())
+
+        return this.actions$.pipe(
+            ofType(userActions.GetAllUsersAccountSuccess),
+            take(1)
+        )
+    }
     
     createUserAccount(user: Partial<User>){
         this.store.dispatch(userActions.CreateUserAccount({user}))

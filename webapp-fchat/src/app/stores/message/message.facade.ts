@@ -9,7 +9,7 @@ import { getCurrenConversation, getMessages } from "./message.selector";
 @Injectable({
     providedIn: 'root'
 })
-export class UserFacade{
+export class MessageFacade{
 
     constructor(
         protected store: Store<AppState>,
