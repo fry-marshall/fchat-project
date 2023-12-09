@@ -6,6 +6,17 @@ import { reducers } from './stores/app.state';
 import { HttpClientModule } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { UserEffects } from './stores/user/user.effects';
+import { ViewsModule } from './views/views.module';
+import { HttpService } from '@library_v2/services/http.service';
+import { CookieService } from 'ngx-cookie-service';
+import { RouterModule, Routes } from '@angular/router';
+
+const routes: Routes = [
+  {
+    path: 'test',
+    loadChildren: () => import('./views/views.module').then(m => m.ViewsModule)
+  }
+]
 
 @NgModule({
   declarations: [
@@ -16,8 +27,12 @@ import { UserEffects } from './stores/user/user.effects';
     StoreModule.forRoot(reducers),
     EffectsModule.forRoot([UserEffects]),
     HttpClientModule,
+    RouterModule.forRoot(routes),
   ],
-  providers: [],
+  providers: [
+    CookieService,
+    HttpService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
