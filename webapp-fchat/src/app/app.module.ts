@@ -6,10 +6,12 @@ import { reducers } from './stores/app.state';
 import { HttpClientModule } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { UserEffects } from './stores/user/user.effects';
-import { ViewsModule } from './views/views.module';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { HttpService } from '@library_v2/services/http.service';
 import { CookieService } from 'ngx-cookie-service';
 import { RouterModule, Routes } from '@angular/router';
+import { environment } from '@environments/environment';
+import { MessageEffects } from './stores/message/message.effects';
 
 const routes: Routes = [
   {
@@ -25,9 +27,12 @@ const routes: Routes = [
   imports: [
     BrowserModule,
     StoreModule.forRoot(reducers),
-    EffectsModule.forRoot([UserEffects]),
+    EffectsModule.forRoot([UserEffects, MessageEffects]),
     HttpClientModule,
     RouterModule.forRoot(routes),
+    StoreDevtoolsModule.instrument({
+      //logOnly: !environment.production
+    })
   ],
   providers: [
     CookieService,
