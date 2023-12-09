@@ -22,6 +22,7 @@ router.get(
     '/',
     Express.json(),
     GlobalMiddlewares.verifyToken,
+    userMiddlewares.getUser,
     UserController.getAll
 )
 
