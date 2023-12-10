@@ -1,0 +1,14 @@
+<div class="container">
+    <div class="topbar is-flex l-padding-left l-padding-right">
+        <app-icon (click)="showConvList()" class="l-margin-right is-cursor-pointer" name="arrow_back"></app-icon>
+        <app-text>Nouveau message</app-text>
+    </div>
+    <div class="searchbar l-padding">
+        <app-input prefixIcon="search" class="rounded"></app-input>
+    </div>
+    <div class="users">
+        <ng-container *ngFor="let user of users">
+            <app-user-card class="m-padding" [user]="user"></app-user-card>
+        </ng-container>
+    </div>
+</div>

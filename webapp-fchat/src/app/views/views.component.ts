@@ -3,6 +3,7 @@ import { UserFacade } from '../stores/user/user.facade';
 import { Observable, combineLatest, filter } from 'rxjs';
 import { User } from '@library_v2/interfaces/user';
 import { MessageFacade } from '../stores/message/message.facade';
+import { ViewsService } from './views.service';
 
 @Component({
   selector: 'app-views',
@@ -13,8 +14,11 @@ export class ViewsComponent implements OnInit{
 
   constructor(
     private userFacade: UserFacade,
-    private messageFacade: MessageFacade
+    private messageFacade: MessageFacade,
+    private viewsService: ViewsService
   ){}
+
+  isShowConvList$ = this.viewsService.showConvList$
 
   users$: Observable<User> | undefined;
   viewsModel$ = combineLatest({
