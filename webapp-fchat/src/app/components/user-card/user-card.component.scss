@@ -1,0 +1,38 @@
+:host{
+    display: block;
+    cursor: pointer;
+
+    .container{        
+        .profile_img{
+            width: 45px;
+            height: 45px;
+            border-radius: 100%;
+            overflow: hidden;
+            border: 1px solid #767676;
+            img{
+                width: 50px;
+                height: 50px;
+                opacity: .7;
+            }
+        }
+    }
+
+    .infos{
+        margin-left: 25px;
+        
+        .name{
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .description{
+            color: #656565;
+            font-weight: 300;
+            font-size: 9px;
+        }
+    }
+}
+
+:host:hover{
+    background-color: #f9f9f9;
+}

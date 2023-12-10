@@ -1,0 +1,12 @@
+<div class="top l-padding is-flex is-space-between is-align-center">
+    <div class="profile_img is-flex is-justify-center is-cursor-pointer">
+        <img src="assets/default.png" alt="">
+    </div>
+    <div class="icons">
+        <app-icon (click)="showNewMessage()" class="l-margin-right is-cursor-pointer" name="add_circle"></app-icon>
+        <app-icon class="is-cursor-pointer" name="more_vert"></app-icon>
+    </div>
+</div>
+<ng-container *ngFor="let conversation of conversations">
+    <app-conversation-card [conversation]="conversation" class="is-100w"></app-conversation-card>
+</ng-container>

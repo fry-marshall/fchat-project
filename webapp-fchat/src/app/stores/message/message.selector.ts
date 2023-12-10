@@ -8,7 +8,7 @@ const messageState = (state: AppState) => state.messageState
 export const getMessages = createSelector(
     messageState,
     (messages) => {
-        return messages.allMessages
+        return messages.allMessages ?? []
     }
 )
 
