@@ -1,0 +1,12 @@
+<div class="header is-flex is-align-center is-absolute l-padding">
+    <div class="profile_img">
+        <img src="/assets/default.png" alt="">
+    </div>
+    <app-text class="l-margin-left">Marshall FRY</app-text>
+</div>
+<div class="messages is-flex is-column">
+    <ng-container *ngFor="let message of conversation?.messages">
+        <app-bubble-message class="receiver" [isSender]="false" date="13:42" [message]="message"></app-bubble-message>                
+    </ng-container>
+</div>
+<app-sender-message-input></app-sender-message-input>

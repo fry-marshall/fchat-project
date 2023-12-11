@@ -1,0 +1,39 @@
+:host{
+
+    .header {
+        border-bottom: 1px solid #DDD;
+        background: #FAFAFA;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: 2;
+
+        .profile_img {
+            width: 45px;
+            height: 45px;
+            border-radius: 100%;
+            overflow: hidden;
+            border: 1px solid #767676;
+
+            img {
+                width: 50px;
+                height: 50px;
+                opacity: .7;
+            }
+        }
+
+        app-text {
+            font-weight: 500;
+        }
+    }
+    
+    .messages {
+        position: absolute;
+        top: 78px;
+        bottom: 76px;
+        left: 0;
+        right: 0;
+        overflow-y: scroll;
+    }
+
+}

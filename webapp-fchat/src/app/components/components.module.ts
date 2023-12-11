@@ -5,6 +5,9 @@ import { ConversationsSidebarComponent } from './conversations-sidebar/conversat
 import { NewMessageSidebarComponent } from './new-message-sidebar/new-message-sidebar.component';
 import { UserCardComponent } from './user-card/user-card.component';
 import { CommonModule } from '@angular/common';
+import { BubbleMessageComponent } from './bubble-message/bubble-message.component';
+import { SenderMessageInputComponent } from './sender-message-input/sender-message-input.component';
+import { ConversationDetailComponent } from './conversation-detail/conversation-detail.component';
 
 
 @NgModule({
@@ -12,7 +15,10 @@ import { CommonModule } from '@angular/common';
     ConversationCardComponent,
     ConversationsSidebarComponent,
     NewMessageSidebarComponent,
-    UserCardComponent
+    UserCardComponent,
+    BubbleMessageComponent,
+    SenderMessageInputComponent,
+    ConversationDetailComponent
   ],
   imports: [
     UiModule,
@@ -22,7 +28,10 @@ import { CommonModule } from '@angular/common';
     ConversationCardComponent,
     ConversationsSidebarComponent,
     NewMessageSidebarComponent,
-    UserCardComponent
+    UserCardComponent,
+    BubbleMessageComponent,
+    SenderMessageInputComponent,
+    ConversationDetailComponent
   ]
 })
 export class ComponentsModule { }
