@@ -1,0 +1,38 @@
+:host {
+    padding: 11px;
+
+    .container {
+        border-radius: 5px;
+        padding: 8px;
+        max-width: 200px;
+
+        app-text.message {
+            font-size: 13px;
+            font-weight: 400;
+            color: #ffffff;
+        }
+    }
+
+    .sender {
+        background: #3285D2;
+    }
+
+    .receiver {
+        background: #A5A5A5;
+    }
+
+    &.sender {
+        align-self: self-end;
+    }
+
+    &.receiver {
+        align-self: self-start;
+    }
+
+    .date{
+        align-self: flex-end;
+        font-size: 11px;
+        color: #ffffff;
+        font-weight: 300;
+    }
+}
