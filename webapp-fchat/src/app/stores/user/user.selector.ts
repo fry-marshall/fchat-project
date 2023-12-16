@@ -18,3 +18,11 @@ export const getCurrentUser = createSelector(
         return users.user
     }
 )
+
+export const getUsersToSendMessages = createSelector(
+    getUsers,
+    getCurrentUser,
+    (users, currentUser) => {
+        return users.filter(user => user.id !== currentUser?.id)
+    }
+)

@@ -1,6 +1,6 @@
 import { User } from "@library_v2/interfaces/user"
 import { createAction, props } from "@ngrx/store"
-import { Message } from "./message.interface"
+import { Conversation, Message } from "./message.interface"
 
 
 export const GetAllUserMessages = createAction(
@@ -34,7 +34,7 @@ export const SendNewMessageFailure = createAction(
 )
 
 
-export const SetCurrentConversationId = createAction(
-    "[Message] set current conversation id",
-    props<{conversation_id: string}>()
+export const SetCurrentConversation = createAction(
+    "[Message] set current conversation",
+    props<{conversation: Conversation}>()
 )

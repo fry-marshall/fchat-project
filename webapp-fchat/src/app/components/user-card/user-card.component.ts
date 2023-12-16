@@ -11,7 +11,7 @@ export class UserCardComponent{
   @Input() user: User;
 
   getFullName(fullname: string){
-    return fullname ?? 'Unknow fullname'
+    return fullname ?? 'Unknown fullname'
   }
 
   getDescription(description: string){

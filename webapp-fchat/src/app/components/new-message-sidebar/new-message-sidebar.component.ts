@@ -1,6 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { User } from '@library_v2/interfaces/user';
+import { filter, firstValueFrom } from 'rxjs';
+import { MessageFacade } from 'src/app/stores/message/message.facade';
 import { Conversation } from 'src/app/stores/message/message.interface';
+import { UserFacade } from 'src/app/stores/user/user.facade';
 import { ViewsService } from 'src/app/views/views.service';
 
 @Component({
@@ -13,10 +16,26 @@ export class NewMessageSidebarComponent{
   @Input() users: User[] = [];
 
   constructor(
-    private viewsService: ViewsService
+    private viewsService: ViewsService,
+    private messageFacade: MessageFacade,
+    private userFacade: UserFacade
   ){}
 
   showConvList(){
     this.viewsService.updateShowConvList(true)
+  }
+
+  async addNewConversation(user: User){
+    const currentUser = await firstValueFrom(this.userFacade.currentUser$.pipe(filter(user => !!user)))
+    const newConversation: Conversation = {
+      conversation_id: '',
+      messages: [{
+        id: '',
+        content: '',
+        sender_id: currentUser?.id,
+        receiver_id: user.id
+      }]
+    }
+    this.messageFacade.setCurrentConversation(newConversation)
   }
 }

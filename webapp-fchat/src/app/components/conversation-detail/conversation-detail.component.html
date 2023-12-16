@@ -2,7 +2,7 @@
     <div class="profile_img">
         <img src="/assets/default.png" alt="">
     </div>
-    <app-text class="l-margin-left">Marshall FRY</app-text>
+    <app-text class="l-margin-left">{{ getFullName(userInfos?.fullname) }}</app-text>
 </div>
 <div class="messages is-flex is-column">
     <ng-container *ngFor="let message of conversation?.messages">

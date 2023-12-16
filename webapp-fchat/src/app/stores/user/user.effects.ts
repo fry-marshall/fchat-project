@@ -18,7 +18,7 @@ export class UserEffects {
         ofType(userActions.GetAllUsersAccount),
         switchMap(() => {
             return this.userService.getAllUsers().pipe(
-                map(({data}) => userActions.GetAllUsersAccountSuccess({allUsers: {users: data.users, currentUserId: ''}})),
+                map(({data}) => userActions.GetAllUsersAccountSuccess({allUsers: {users: data.users, currentUserId: data.currentUserId}})),
                 catchError((error) =>of(userActions.GetAllUsersAccountFailure(error)))
             )
         })
