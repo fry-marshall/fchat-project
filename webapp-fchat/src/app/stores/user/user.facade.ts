@@ -5,7 +5,7 @@ import { take } from "rxjs";
 import { AppState } from "../app.state";
 import * as userActions from "./user.actions";
 import { User } from "@library_v2/interfaces/user";
-import { getCurrentUser, getUsers } from "./user.selector";
+import { getCurrentUser, getUsers, getUsersToSendMessages } from "./user.selector";
 
 @Injectable({
     providedIn: 'root'
@@ -19,6 +19,7 @@ export class UserFacade{
     }
 
     users$ = this.store.select(getUsers)
+    usersToSendMessages$ = this.store.select(getUsersToSendMessages)
     currentUser$ = this.store.select(getCurrentUser)
 
     getAllUsers(){

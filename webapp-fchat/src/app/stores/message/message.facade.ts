@@ -4,7 +4,8 @@ import { Injectable } from "@angular/core";
 import { take } from "rxjs";
 import { AppState } from "../app.state";
 import * as messageActions from "./message.actions";
-import { getCurrenConversation, getMessages } from "./message.selector";
+import { getCurrentConversation, getMessages, hasConversationSelected } from "./message.selector";
+import { Conversation } from "./message.interface";
 
 @Injectable({
     providedIn: 'root'
@@ -18,7 +19,8 @@ export class MessageFacade{
     }
 
     messages$ = this.store.select(getMessages)
-    currentConversation$ = this.store.select(getCurrenConversation)
+    currentConversation$ = this.store.select(getCurrentConversation)
+    hasConversationSelected$ = this.store.select(hasConversationSelected)
     
     getAllMessages(){
         this.store.dispatch(messageActions.GetAllUserMessages())
@@ -38,7 +40,7 @@ export class MessageFacade{
         )
     }
 
-    setCurrentProject(conversation_id: string){
-        this.store.dispatch(messageActions.SetCurrentConversationId({conversation_id}))
+    setCurrentConversation(conversation: Conversation){
+        this.store.dispatch(messageActions.SetCurrentConversation({conversation}))
     }
 }

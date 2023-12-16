@@ -12,10 +12,17 @@ export const getMessages = createSelector(
     }
 )
 
-export const getCurrenConversation = createSelector(
+export const getCurrentConversation = createSelector(
     messageState,
     (messages) => {
-        const conversation = messages.allMessages?.find(m => m.conversation_id === messages.currentConversationId)
+        const conversation = messages.allMessages?.find(m => m.conversation_id === messages.currentConversation?.conversation_id)
         return conversation
+    }
+)
+
+export const hasConversationSelected = createSelector(
+    messageState,
+    (messages) => {
+        return !!(messages.currentConversation)
     }
 )

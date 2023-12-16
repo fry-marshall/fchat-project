@@ -12,7 +12,15 @@
             </div>
         </div>
         <div class="message is-relative">
-            <app-conversation-detail></app-conversation-detail>
+            <ng-container *ngIf="vm.hasConversationSelected; else notSelected">
+                <app-conversation-detail></app-conversation-detail>
+            </ng-container>
+            <ng-template #notSelected>
+                <div class="thumbail is-flex is-column is-justify-center is-align-center is-100h">
+                    <img class="logo" src="assets/logo.png" alt="">
+                    <app-text class="description l-margin-left">Envoyez et recevez des messages grâce à FChat</app-text>
+                </div>
+            </ng-template>
         </div>
     </div>
 </ng-container>
