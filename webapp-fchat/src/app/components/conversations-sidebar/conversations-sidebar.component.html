@@ -8,5 +8,5 @@
     </div>
 </div>
 <ng-container *ngFor="let conversation of conversations">
-    <app-conversation-card [conversation]="conversation" class="is-100w"></app-conversation-card>
+    <app-conversation-card (click)="setCurrentConversation(conversation)" [conversation]="conversation" class="is-100w"></app-conversation-card>
 </ng-container>

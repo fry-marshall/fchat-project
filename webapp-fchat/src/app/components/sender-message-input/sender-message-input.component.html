@@ -1,4 +1,4 @@
-<div class="is-flex is-align-center m-padding">
-    <app-input class="rounded is-100w m-padding-right"></app-input>
-    <app-icon color="#B7B7B7" name="send"></app-icon>
+<div class="is-flex is-align-center m-padding" [formGroup]="formGroup">
+    <app-input formControlName="send_input" class="rounded is-100w m-padding-right"></app-input>
+    <app-icon (click)="sendNewMessage()" class="is-cursor-pointer" color="#B7B7B7" name="send"></app-icon>
 </div>

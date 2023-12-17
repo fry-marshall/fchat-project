@@ -4,8 +4,9 @@ import { Injectable } from "@angular/core";
 import { take } from "rxjs";
 import { AppState } from "../app.state";
 import * as messageActions from "./message.actions";
-import { getCurrentConversation, getMessages, hasConversationSelected } from "./message.selector";
+import { getCurrentConversation, getMessages, getReceiverUserInfos, hasConversationSelected } from "./message.selector";
 import { Conversation } from "./message.interface";
+import { User } from "@library_v2/interfaces/user";
 
 @Injectable({
     providedIn: 'root'
@@ -21,6 +22,7 @@ export class MessageFacade{
     messages$ = this.store.select(getMessages)
     currentConversation$ = this.store.select(getCurrentConversation)
     hasConversationSelected$ = this.store.select(hasConversationSelected)
+    receiverUserInfos$ = this.store.select(getReceiverUserInfos)
     
     getAllMessages(){
         this.store.dispatch(messageActions.GetAllUserMessages())
@@ -31,8 +33,8 @@ export class MessageFacade{
         )
     }
 
-    sendNewMessage(content: string, receiver_id: string){
-        this.store.dispatch(messageActions.SendNewMessage({content, receiver_id}))
+    sendNewMessage(content: string, receiver_id: string, sender_id: string){
+        this.store.dispatch(messageActions.SendNewMessage({content, receiver_id, sender_id}))
 
         return this.actions$.pipe(
             ofType(messageActions.SendNewMessageSuccess),
@@ -42,5 +44,20 @@ export class MessageFacade{
 
     setCurrentConversation(conversation: Conversation){
         this.store.dispatch(messageActions.SetCurrentConversation({conversation}))
+    }
+
+    getUserInfos(currentConversation?: Conversation, currentUser?: User, users?: User[]){
+
+        let userId: string | undefined = ''
+    
+        const message = currentConversation?.messages[0]
+        if(message?.receiver_id === currentUser?.id){
+            userId = message!.sender_id
+        }
+        else{
+            userId = message!.receiver_id
+        }
+
+        return users?.find(user => user.id === userId)
     }
 }

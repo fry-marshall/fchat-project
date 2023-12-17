@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { BubbleMessageComponent } from './bubble-message/bubble-message.component';
 import { SenderMessageInputComponent } from './sender-message-input/sender-message-input.component';
 import { ConversationDetailComponent } from './conversation-detail/conversation-detail.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { ConversationDetailComponent } from './conversation-detail/conversation-
   ],
   imports: [
     UiModule,
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule,
   ],
   exports: [
     ConversationCardComponent,
