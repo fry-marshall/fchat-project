@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { User } from '@library_v2/interfaces/user';
+import { MessageFacade } from 'src/app/stores/message/message.facade';
 import { Conversation } from 'src/app/stores/message/message.interface';
 import { ViewsService } from 'src/app/views/views.service';
 
@@ -13,10 +14,15 @@ export class ConversationsSidebarComponent{
   @Input() conversations: Conversation[];
 
   constructor(
-    private viewsService: ViewsService
+    private viewsService: ViewsService,
+    private messageFacade: MessageFacade
   ){}
 
   showNewMessage(){
     this.viewsService.updateShowConvList(false)
+  }
+
+  setCurrentConversation(conversation :Conversation){
+    this.messageFacade.setCurrentConversation(conversation)
   }
 }

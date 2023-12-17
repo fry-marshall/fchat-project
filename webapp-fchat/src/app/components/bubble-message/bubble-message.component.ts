@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, HostBinding, Input } from "@angular/core";
 import { Message } from "src/app/stores/message/message.interface";
 
 
@@ -13,4 +13,16 @@ export class BubbleMessageComponent{
 
     @Input() message: Message;
     @Input() isSender: boolean;
+
+    @HostBinding('class.sender')
+    get senderClass(){
+        return this.isSender
+    }
+
+    @HostBinding('class.receiver')
+    get receiverClass(){
+        return !this.isSender
+    }
+
+
 }

@@ -19,7 +19,7 @@ export class MessageService {
   }
 
   sendNewMessage(body: Partial<Message>) {
-    return this.http.post('message/create', body) as Observable<any>
+    return this.http.post('message/send', body) as Observable<any>
   }
 
 }

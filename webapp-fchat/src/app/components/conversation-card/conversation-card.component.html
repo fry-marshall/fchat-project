@@ -3,8 +3,8 @@
         <img src="assets/default.png" alt="">
     </div>
     <div class="infos">
-        <app-text class="name fs-16">Marshall FRY</app-text>
-        <app-text class="last-message fs-10 m-margin-top">Hi, Good morning , how are you doing ?</app-text>
+        <app-text class="name fs-16">{{ getFullName(userInfos?.fullname) }}</app-text>
+        <app-text class="last-message fs-10 m-margin-top">{{ lastMessage?.content }}</app-text>
     </div>
     <div class="time">14:25</div>
 </div>
