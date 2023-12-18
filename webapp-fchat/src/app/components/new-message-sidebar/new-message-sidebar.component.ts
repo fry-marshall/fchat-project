@@ -15,11 +15,15 @@ export class NewMessageSidebarComponent{
 
   @Input() users: User[] = [];
 
+  usersFiltered: User[] = this.users
+
   constructor(
     private viewsService: ViewsService,
     private messageFacade: MessageFacade,
     private userFacade: UserFacade
   ){}
+
+  filterUserName: string;
 
   showConvList(){
     this.viewsService.updateShowConvList(true)
@@ -37,5 +41,9 @@ export class NewMessageSidebarComponent{
       }]
     }
     this.messageFacade.setCurrentConversation(newConversation)
+  }
+
+  filterUser(){
+    this.usersFiltered = this.users.filter(user => user.fullname?.includes(this.filterUserName) || user.fullname === null)
   }
 }

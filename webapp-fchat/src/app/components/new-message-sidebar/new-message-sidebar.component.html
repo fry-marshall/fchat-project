@@ -4,10 +4,11 @@
         <app-text>Nouveau message</app-text>
     </div>
     <div class="searchbar l-padding">
-        <app-input prefixIcon="search" class="rounded"></app-input>
+        {{ filterUserName }}
+        <app-input [(ngModel)]="filterUserName" (ngModelChange)="filterUser()" prefixIcon="search" class="rounded"></app-input>
     </div>
     <div class="users">
-        <ng-container *ngFor="let user of users">
+        <ng-container *ngFor="let user of usersFiltered">
             <app-user-card class="m-padding" [user]="user" (click)="addNewConversation(user)"></app-user-card>
         </ng-container>
     </div>
