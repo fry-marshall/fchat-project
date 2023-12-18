@@ -7,6 +7,9 @@
         <app-icon class="is-cursor-pointer" name="more_vert"></app-icon>
     </div>
 </div>
+<div class="searchbar l-padding">
+    <app-input [(ngModel)]="filterUserName" (ngModelChange)="filterConversation()" prefixIcon="search" class="rounded"></app-input>
+</div>
 <ng-container *ngFor="let conversation of conversations">
-    <app-conversation-card (click)="setCurrentConversation(conversation)" [conversation]="conversation" class="is-100w"></app-conversation-card>
+    <app-conversation-card (click)="setCurrentConversation(conversation)" [userInfos]="getUserInfos(conversation)" [conversation]="conversation" class="is-100w"></app-conversation-card>
 </ng-container>

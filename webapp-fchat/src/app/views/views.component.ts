@@ -23,6 +23,7 @@ export class ViewsComponent implements OnInit{
   users$: Observable<User> | undefined;
   viewsModel$ = combineLatest({
     users: this.userFacade.usersToSendMessages$.pipe(filter(users => !!users)),
+    currentUser: this.userFacade.currentUser$.pipe(filter(user => !!user)),
     conversations: this.messageFacade.messages$.pipe(filter(messages => !!messages)),
     hasConversationSelected: this.messageFacade.hasConversationSelected$
   })

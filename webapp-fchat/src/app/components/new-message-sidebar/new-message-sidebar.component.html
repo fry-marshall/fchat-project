@@ -4,7 +4,6 @@
         <app-text>Nouveau message</app-text>
     </div>
     <div class="searchbar l-padding">
-        {{ filterUserName }}
         <app-input [(ngModel)]="filterUserName" (ngModelChange)="filterUser()" prefixIcon="search" class="rounded"></app-input>
     </div>
     <div class="users">
