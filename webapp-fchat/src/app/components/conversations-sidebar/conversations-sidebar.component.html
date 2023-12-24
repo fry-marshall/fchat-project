@@ -56,6 +56,12 @@
 <!-- Modal logout account -->
 <app-dialog class="small space-between" *ngIf="displayLogOutModal" [open]="displayLogOutModal">
     <div class="header">
+        <app-notification *ngIf="error.hasError" type="error"
+            [title]="error.msg.title"
+            [subtitle]="error.msg.subtitle"
+            class="l-margin-bottom"
+        >
+        </app-notification>
         <app-text class="text-center">Voulez vous déconnecter votre compte ?</app-text>
     </div>
     <div class="body is-justify-center">
