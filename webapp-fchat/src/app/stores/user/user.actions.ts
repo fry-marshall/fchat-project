@@ -121,12 +121,12 @@ export const DeleteUserFailure = createAction(
 
 export const UpdateUserAccount = createAction(
     "[User] update user account",
-    props<{user: User}>()
+    props<{user: any}>()
 ) 
 
 export const UpdateUserAccountSuccess = createAction(
     "[User] update user account success",
-    props<{user: User}>()
+    props<{user: any}>()
 ) 
 
 export const UpdateUserAccountFailure = createAction(

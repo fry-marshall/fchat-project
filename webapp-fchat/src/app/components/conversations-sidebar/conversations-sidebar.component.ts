@@ -9,7 +9,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject, firstValueFrom, take, tap } from 'rxjs';
 import { MessageFacade } from 'src/app/stores/message/message.facade';
 import { Conversation } from 'src/app/stores/message/message.interface';
-import { DeleteUserFailure, DeleteUserSuccess, LogOutUserFailure, LogOutUserSuccess } from 'src/app/stores/user/user.actions';
+import { DeleteUserFailure, DeleteUserSuccess, LogOutUserFailure, LogOutUserSuccess, UpdateUserAccountFailure, UpdateUserAccountSuccess } from 'src/app/stores/user/user.actions';
 import { UserFacade } from 'src/app/stores/user/user.facade';
 import { ViewsService } from 'src/app/views/views.service';
 
@@ -38,6 +38,10 @@ export class ConversationsSidebarComponent {
   error = {
     hasError: false,
     msg: { title: 'Une erreur s\'est produite', subtitle: '' },
+  }
+  success = {
+    isSuccess: false,
+    msg: { title: '', subtitle: '' },
   }
 
   formChangePassword: FormGroup = new FormGroup({
@@ -99,8 +103,89 @@ export class ConversationsSidebarComponent {
     }
   }
 
-  changePassword() {
+  async changePassword() {
+    if (this.formChangePassword.status === "INVALID") {
 
+      if (!this.oldPassword?.value || this.oldPassword.value === '') {
+        this.formChangePassword.controls['old_password'].setErrors({
+          novalid: 'Champ obligatoire'
+        })
+      } else {
+        if (this.formChangePassword.controls['old_password'].errors) {
+          this.formChangePassword.controls['old_password'].setErrors({
+            novalid: 'Le mot de passe doit contenir au moins 8 caractères'
+          })
+        }
+      }
+
+      if (!this.newPassword?.value || this.newPassword.value === '') {
+        this.formChangePassword.controls['new_password'].setErrors({
+          novalid: 'Champ obligatoire'
+        })
+      } else {
+        if (this.formChangePassword.controls['new_password'].errors) {
+          this.formChangePassword.controls['new_password'].setErrors({
+            novalid: 'Le mot de passe doit contenir au moins 8 caractères'
+          })
+        }
+      }
+
+      if (!this.confirmNewPassword?.value || this.confirmNewPassword.value === '') {
+        this.formChangePassword.controls['confirm_new_password'].setErrors({
+          novalid: 'Champ obligatoire'
+        })
+      } else {
+        if (this.formChangePassword.controls['confirm_new_password'].errors) {
+          this.formChangePassword.controls['confirm_new_password'].setErrors({
+            novalid: 'Le mot de passe doit contenir au moins 8 caractères'
+          })
+        }
+      }
+    }
+    else {
+      if (this.newPassword?.value !== this.confirmNewPassword?.value) {
+        this.formChangePassword.controls['confirm_new_password'].setErrors({
+          novalid: 'Les mots de passe ne sont pas égaux'
+        })
+      } else {
+        // make request
+        this.isLoading.next(true)
+        const body = {
+          current_password: this.oldPassword?.value,
+          password: this.newPassword?.value,
+          confirm_password: this.confirmNewPassword?.value
+        };
+
+        this.userFacade.updateUserAccount(body)
+
+        await firstValueFrom(this.actions$.pipe(
+          ofType(UpdateUserAccountFailure, UpdateUserAccountSuccess),
+          take(1),
+          tap(action => {
+            if (action.type === UpdateUserAccountFailure.type) {
+              this.error.hasError = true
+              console.log(action.error)
+              this.error.msg = globalErrorMsg(action.error)
+              if (this.notificationComponent) {
+                this.notificationComponent.setVisibility(true)
+              }
+            } else {
+              this.success.isSuccess = true;
+              this.success.msg = {
+                title: 'Succès',
+                subtitle: 'Votre mot de passe a été modifié avec succès.'
+              }
+              this.formChangePassword.reset()
+              if (this.notificationComponent) {
+                this.notificationComponent.setVisibility(false)
+              }
+            }
+            this.isLoading.next(false)
+          })
+        ))
+      }
+
+    }
   }
 
   async deleteAccount() {
