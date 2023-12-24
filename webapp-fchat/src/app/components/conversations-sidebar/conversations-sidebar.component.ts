@@ -9,7 +9,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject, firstValueFrom, take, tap } from 'rxjs';
 import { MessageFacade } from 'src/app/stores/message/message.facade';
 import { Conversation } from 'src/app/stores/message/message.interface';
-import { LogOutUserFailure, LogOutUserSuccess } from 'src/app/stores/user/user.actions';
+import { DeleteUserFailure, DeleteUserSuccess, LogOutUserFailure, LogOutUserSuccess } from 'src/app/stores/user/user.actions';
 import { UserFacade } from 'src/app/stores/user/user.facade';
 import { ViewsService } from 'src/app/views/views.service';
 
@@ -103,8 +103,31 @@ export class ConversationsSidebarComponent {
 
   }
 
-  deleteAccount() {
+  async deleteAccount() {
+    this.isLoading.next(true)
+    this.userFacade.deleteUser()
 
+    await firstValueFrom(this.actions$.pipe(
+      ofType(DeleteUserFailure, DeleteUserSuccess),
+      take(1),
+      tap(action => {
+        if (action.type === DeleteUserFailure.type) {
+          this.error.msg = globalErrorMsg(action.error)
+
+          if (this.notificationComponent) {
+            this.notificationComponent.setVisibility(true)
+          }
+        } else {
+          if (this.notificationComponent) {
+            this.notificationComponent.setVisibility(false)
+          }
+          this.cookieService.delete('access_token')
+          this.cookieService.delete('refresh_token')
+          window.location.href = environment.authUrl
+        }
+        this.isLoading.next(false)
+      })
+    ))
   }
 
   async logOutUser() {

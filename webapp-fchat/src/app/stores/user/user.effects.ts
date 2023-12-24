@@ -97,12 +97,7 @@ export class UserEffects {
         ofType(userActions.DeleteUser),
         switchMap(() => {
             return this.userService.deleteUser().pipe(
-                map(() => {
-                    this.cookieService.delete('access_token')
-                    this.cookieService.delete('refresh_token')
-                    window.location.href = 'https://auth-fchat.mfry.io'
-                    return userActions.DeleteUserSuccess()
-                }),
+                map(() => userActions.DeleteUserSuccess()),
                 catchError((error) => of(userActions.DeleteUserFailure(error)))
             )
         })
