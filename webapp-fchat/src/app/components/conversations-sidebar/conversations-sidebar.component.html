@@ -17,18 +17,32 @@
 <!-- Modal change password -->
 <app-modal *ngIf="displayChangePasswordModal" [open]="displayChangePasswordModal">
     <ng-container header>
-        <app-text>Changer le mot de passe</app-text>
+        <div class="is-flex is-column">
+            <app-notification *ngIf="success.isSuccess" type="info"
+                [title]="success.msg.title"
+                [subtitle]="success.msg.subtitle"
+                class="l-margin-bottom"
+            >
+            </app-notification>
+            <app-notification *ngIf="error.hasError" type="error"
+                [title]="error.msg.title"
+                [subtitle]="error.msg.subtitle"
+                class="l-margin-bottom"
+            >
+            </app-notification>
+            <app-text>Changer le mot de passe</app-text>
+        </div>
     </ng-container>
     <ng-container body>
         <form [formGroup]="formChangePassword" class="is-flex is-column l-margin-top">
-            <app-input formControlName="old_password" [ngClass]="{'invalid': oldPassword?.errors?.['novalid']}"
-                [errorMsg]="oldPassword?.errors?.['novalid']" class="no-padding limit form" label="Mot de passe actuel*">
+            <app-input type="password" formControlName="old_password" [ngClass]="{'invalid': oldPassword?.errors?.['novalid']}"
+                [isPassword]="true" [errorMsg]="oldPassword?.errors?.['novalid']" label="Mot de passe actuel*">
             </app-input>
-            <app-input formControlName="new_password" [ngClass]="{'invalid': newPassword?.errors?.['novalid']}"
-                [errorMsg]="newPassword?.errors?.['novalid']" class="no-padding limit form" label="Nouveau mot de passe*">
+            <app-input type="password" formControlName="new_password" [ngClass]="{'invalid': newPassword?.errors?.['novalid']}"
+                [isPassword]="true" [errorMsg]="newPassword?.errors?.['novalid']" label="Nouveau mot de passe*">
             </app-input>
-            <app-input formControlName="confirm_new_password" [ngClass]="{'invalid': confirmNewPassword?.errors?.['novalid']}"
-                [errorMsg]="confirmNewPassword?.errors?.['novalid']" class="no-padding limit form" label="Confirmer le mot de passe*">
+            <app-input type="password" formControlName="confirm_new_password" [ngClass]="{'invalid': confirmNewPassword?.errors?.['novalid']}"
+                [isPassword]="true" [errorMsg]="confirmNewPassword?.errors?.['novalid']" label="Confirmer le mot de passe*">
             </app-input>
         </form>
     </ng-container>

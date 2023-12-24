@@ -94,7 +94,7 @@ export class UserFacade{
         )
     }
 
-    updateUserAccount(user: User){
+    updateUserAccount(user: any){
         this.store.dispatch(userActions.UpdateUserAccount({user}))
 
         return this.actions$.pipe(
