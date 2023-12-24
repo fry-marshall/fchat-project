@@ -2,9 +2,9 @@
     <div class="profile_img is-flex is-justify-center is-cursor-pointer">
         <img src="assets/default.png" alt="">
     </div>
-    <div class="icons">
+    <div class="icons is-flex">
         <app-icon (click)="showNewMessage()" class="l-margin-right is-cursor-pointer" name="add_circle"></app-icon>
-        <app-icon class="is-cursor-pointer" name="more_vert"></app-icon>
+        <app-option (action)="optionSelected($event)" [options]="options" [color]="'#D9D9D9'"></app-option>
     </div>
 </div>
 <div class="searchbar l-padding">
@@ -13,3 +13,56 @@
 <ng-container *ngFor="let conversation of conversations">
     <app-conversation-card (click)="setCurrentConversation(conversation)" [userInfos]="getUserInfos(conversation)" [conversation]="conversation" class="is-100w"></app-conversation-card>
 </ng-container>
+
+<!-- Modal change password -->
+<app-modal *ngIf="displayChangePasswordModal" [open]="displayChangePasswordModal">
+    <ng-container header>
+        <app-text>Changer le mot de passe</app-text>
+    </ng-container>
+    <ng-container body>
+        <form [formGroup]="formChangePassword" class="is-flex is-column l-margin-top">
+            <app-input formControlName="old_password" [ngClass]="{'invalid': oldPassword?.errors?.['novalid']}"
+                [errorMsg]="oldPassword?.errors?.['novalid']" class="no-padding limit form" label="Mot de passe actuel*">
+            </app-input>
+            <app-input formControlName="new_password" [ngClass]="{'invalid': newPassword?.errors?.['novalid']}"
+                [errorMsg]="newPassword?.errors?.['novalid']" class="no-padding limit form" label="Nouveau mot de passe*">
+            </app-input>
+            <app-input formControlName="confirm_new_password" [ngClass]="{'invalid': confirmNewPassword?.errors?.['novalid']}"
+                [errorMsg]="confirmNewPassword?.errors?.['novalid']" class="no-padding limit form" label="Confirmer le mot de passe*">
+            </app-input>
+        </form>
+    </ng-container>
+    <ng-container footer class="is-align-center">
+        <app-text (click)="displayChangePasswordModal = false" class="close fs-14" color="#00A3FF">Fermer</app-text>
+        <app-button class="m-margin-left" [loading]="(isLoading | async) || false" (click)="changePassword()">Modifier</app-button>
+    </ng-container>
+</app-modal>
+
+<!-- Modal delete account -->
+<app-dialog class="small space-between" *ngIf="displayDeleteAccountModal" [open]="displayDeleteAccountModal">
+    <div class="header">
+        <app-text class="text-center">Voulez vous supprimer votre compte ?</app-text>
+    </div>
+    <div class="body is-justify-center">
+        <app-icon class="red is-40" name="person_off"></app-icon>
+    </div>
+    <div class="footer is-space-around">
+        <app-button [loading]="(isLoading | async) || false" (click)="deleteAccount()">Oui</app-button>
+        <app-button (click)="displayDeleteAccountModal = false" class="text">Non</app-button>
+    </div>
+</app-dialog>
+
+
+<!-- Modal logout account -->
+<app-dialog class="small space-between" *ngIf="displayLogOutModal" [open]="displayLogOutModal">
+    <div class="header">
+        <app-text class="text-center">Voulez vous déconnecter votre compte ?</app-text>
+    </div>
+    <div class="body is-justify-center">
+        <app-icon class="red is-40" name="logout"></app-icon>
+    </div>
+    <div class="footer is-space-around">
+        <app-button [loading]="(isLoading | async) || false" (click)="logOutUser()">Oui</app-button>
+        <app-button (click)="displayLogOutModal = false" class="text">Non</app-button>
+    </div>
+</app-dialog>
