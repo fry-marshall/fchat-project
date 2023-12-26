@@ -4,7 +4,7 @@ import { filter, firstValueFrom } from 'rxjs';
 import { MessageFacade } from 'src/app/stores/message/message.facade';
 import { Conversation } from 'src/app/stores/message/message.interface';
 import { UserFacade } from 'src/app/stores/user/user.facade';
-import { ViewsService } from 'src/app/views/views.service';
+import { RightAction, ViewsService } from 'src/app/views/views.service';
 
 @Component({
   selector: 'app-new-message-sidebar',
@@ -26,7 +26,7 @@ export class NewMessageSidebarComponent{
   filterUserName: string;
 
   showConvList(){
-    this.viewsService.updateShowConvList(true)
+    this.viewsService.updateShowRightComponent(RightAction.show_conversations)
   }
 
   async addNewConversation(user: User){

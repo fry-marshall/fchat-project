@@ -11,7 +11,7 @@ import { MessageFacade } from 'src/app/stores/message/message.facade';
 import { Conversation } from 'src/app/stores/message/message.interface';
 import { DeleteUserFailure, DeleteUserSuccess, LogOutUserFailure, LogOutUserSuccess, UpdateUserAccountFailure, UpdateUserAccountSuccess } from 'src/app/stores/user/user.actions';
 import { UserFacade } from 'src/app/stores/user/user.facade';
-import { ViewsService } from 'src/app/views/views.service';
+import { RightAction, ViewsService } from 'src/app/views/views.service';
 
 @Component({
   selector: 'app-conversations-sidebar',
@@ -66,7 +66,11 @@ export class ConversationsSidebarComponent {
   get confirmNewPassword() { return this.formChangePassword.get('confirm_new_password'); }
 
   showNewMessage() {
-    this.viewsService.updateShowConvList(false)
+    this.viewsService.updateShowRightComponent(RightAction.new_message)
+  }
+
+  showUpdateProfile(){
+    this.viewsService.updateShowRightComponent(RightAction.update_profile)
   }
 
   setCurrentConversation(conversation: Conversation) {
