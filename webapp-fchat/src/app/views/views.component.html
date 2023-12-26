@@ -5,9 +5,9 @@
             <div class="conversations">
                 <ng-container *ngIf="(showRightComponent$ | async) as showRightComponent">
                     <ng-container [ngSwitch]="showRightComponent">
-    <!-- update_profile -->
                         <app-conversations-sidebar *ngSwitchCase="rightAction.show_conversations" [conversations]="vm.conversations"></app-conversations-sidebar>
                         <app-new-message-sidebar *ngSwitchCase="rightAction.new_message" [users]="vm.users"></app-new-message-sidebar>
+                        <app-update-profile-sidebar *ngSwitchCase="rightAction.update_profile" [user]="vm.currentUser!"></app-update-profile-sidebar>
                     </ng-container>
                 </ng-container>
             </div>

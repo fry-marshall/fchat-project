@@ -69,6 +69,10 @@ export class ConversationsSidebarComponent {
     this.viewsService.updateShowRightComponent(RightAction.new_message)
   }
 
+  showUpdateProfile(){
+    this.viewsService.updateShowRightComponent(RightAction.update_profile)
+  }
+
   setCurrentConversation(conversation: Conversation) {
     this.messageFacade.setCurrentConversation(conversation)
   }
