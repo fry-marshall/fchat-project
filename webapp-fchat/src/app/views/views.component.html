@@ -3,12 +3,13 @@
         <div class="sidebar">
             <div class="logo"></div>
             <div class="conversations">
-                <ng-container *ngIf="isShowConvList$ | async; else showNewMessage">
-                    <app-conversations-sidebar [conversations]="vm.conversations"></app-conversations-sidebar>
+                <ng-container *ngIf="(showRightComponent$ | async) as showRightComponent">
+                    <ng-container [ngSwitch]="showRightComponent">
+    <!-- update_profile -->
+                        <app-conversations-sidebar *ngSwitchCase="rightAction.show_conversations" [conversations]="vm.conversations"></app-conversations-sidebar>
+                        <app-new-message-sidebar *ngSwitchCase="rightAction.new_message" [users]="vm.users"></app-new-message-sidebar>
+                    </ng-container>
                 </ng-container>
-                <ng-template #showNewMessage>
-                    <app-new-message-sidebar [users]="vm.users"></app-new-message-sidebar>
-                </ng-template>
             </div>
         </div>
         <div class="message is-relative">
