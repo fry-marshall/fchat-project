@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
 import { User } from "@library_v2/interfaces/user";
 import { combineLatest, filter, firstValueFrom, map } from "rxjs";
 import { MessageFacade } from "src/app/stores/message/message.facade";
@@ -12,12 +12,12 @@ import { UserFacade } from "src/app/stores/user/user.facade";
         './conversation-detail.component.scss'
     ]
 })
-export class ConversationDetailComponent implements OnInit{
+export class ConversationDetailComponent implements OnInit, AfterViewInit  {
 
     constructor(
         private messageFacade: MessageFacade,
         private userFacade: UserFacade
-    ){}
+    ) { }
 
     viewModel$ = combineLatest({
         userInfos: this.messageFacade.receiverUserInfos$.pipe(filter(user => !!user)),
@@ -26,13 +26,21 @@ export class ConversationDetailComponent implements OnInit{
     })
 
     async ngOnInit() {
+        
     }
 
-    getFullName(fullname: string | undefined){
+    ngAfterViewInit() {
+        document.getElementsByClassName('messages')[0].scrollTo({
+            top: document.body.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+
+    getFullName(fullname: string | undefined) {
         return fullname ?? 'Unknown fullname'
     }
 
-    isSender(user: User, message: Message){
+    isSender(user: User, message: Message) {
         return user.id === message.sender_id
     }
 }

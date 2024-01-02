@@ -1,6 +1,6 @@
 <div class="container" [ngClass]="{'sender': isSender, 'receiver': !isSender}">
     <div class="is-flex is-column">
         <app-text class="message">{{ message?.content }}</app-text>
-        <app-text class="date">{{ message?.date }}</app-text>
+        <app-text class="date">{{ date }}</app-text>
     </div>
 </div>

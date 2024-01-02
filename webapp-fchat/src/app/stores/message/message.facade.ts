@@ -5,7 +5,7 @@ import { take } from "rxjs";
 import { AppState } from "../app.state";
 import * as messageActions from "./message.actions";
 import { getCurrentConversation, getMessages, getReceiverUserInfos, hasConversationSelected } from "./message.selector";
-import { Conversation } from "./message.interface";
+import { Conversation, Message } from "./message.interface";
 import { User } from "@library_v2/interfaces/user";
 
 @Injectable({
@@ -44,6 +44,10 @@ export class MessageFacade{
 
     setCurrentConversation(conversation: Conversation){
         this.store.dispatch(messageActions.SetCurrentConversation({conversation}))
+    }
+
+    notifyNewMessage(message: Message){
+        this.store.dispatch(messageActions.NotifyNewMessage({message}))
     }
 
     getUserInfos(currentConversation?: Conversation, currentUser?: User, users?: User[]){
