@@ -38,3 +38,8 @@ export const SetCurrentConversation = createAction(
     "[Message] set current conversation",
     props<{conversation: Conversation}>()
 )
+
+export const NotifyNewMessage = createAction(
+    "[Message] notify new message",
+    props<{message: Message}>()
+) 

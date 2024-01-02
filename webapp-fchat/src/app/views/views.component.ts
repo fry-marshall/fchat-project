@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { UserFacade } from '../stores/user/user.facade';
-import { Observable, combineLatest, filter } from 'rxjs';
+import { Observable, combineLatest, filter, firstValueFrom } from 'rxjs';
 import { User } from '@library_v2/interfaces/user';
 import { MessageFacade } from '../stores/message/message.facade';
 import { RightAction, ViewsService } from './views.service';
+import { MessageService } from '../stores/message/message.services';
 
 @Component({
   selector: 'app-views',
@@ -15,6 +16,7 @@ export class ViewsComponent implements OnInit{
   constructor(
     private userFacade: UserFacade,
     private messageFacade: MessageFacade,
+    private messageService: MessageService,
     private viewsService: ViewsService
   ){}
 
@@ -30,7 +32,20 @@ export class ViewsComponent implements OnInit{
   })
 
   async ngOnInit() {
-    
+    const {currentUser} = await firstValueFrom(this.viewsModel$.pipe(filter(vm => !!vm)))
+    this.messageService.getMessageNotification(currentUser?.id!).subscribe(msg => {
+      if(msg){
+        this.messageFacade.notifyNewMessage(msg)
+        this.playAudio()
+      }
+    })
+  }
+
+  playAudio(){
+    let audio = new Audio();
+    audio.src = "/assets/sound.mp3";
+    audio.load();
+    audio.play();
   }
 
 }

@@ -1,7 +1,9 @@
 <ng-container *ngIf="(viewsModel$ | async) as vm">
     <div class="view">
         <div class="sidebar">
-            <div class="logo"></div>
+            <div class="logo-top is-flex is-justify-center is-align-center">
+                <img src="assets/logo.png" alt="">
+            </div>
             <div class="conversations">
                 <ng-container *ngIf="(showRightComponent$ | async) as showRightComponent">
                     <ng-container [ngSwitch]="showRightComponent">

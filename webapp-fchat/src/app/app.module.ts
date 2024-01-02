@@ -12,6 +12,9 @@ import { CookieService } from 'ngx-cookie-service';
 import { RouterModule, Routes } from '@angular/router';
 import { environment } from '@environments/environment';
 import { MessageEffects } from './stores/message/message.effects';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+
+const config: SocketIoConfig = { url: environment.apiUrl, options: {} };
 
 const routes: Routes = [
   {
@@ -32,7 +35,8 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     StoreDevtoolsModule.instrument({
       //logOnly: !environment.production
-    })
+    }),
+    SocketIoModule.forRoot(config),
   ],
   providers: [
     CookieService,

@@ -31,7 +31,7 @@ export const messageReducer = createReducer(
                 conversation = {
                     conversation_id,
                     messages: [
-                        {id: message_id, receiver_id, content, sender_id}
+                        {id: message_id, receiver_id, content, sender_id, date: new Date().toDateString()}
                     ]
                 }
                 return conversation
@@ -41,7 +41,7 @@ export const messageReducer = createReducer(
                     conversation_id: messages.conversation_id,
                     messages: [
                         ...messages.messages,
-                        {id: message_id, receiver_id, content, sender_id}
+                        {id: message_id, receiver_id, content, sender_id, date: new Date().toLocaleString()}
                     ]
                 }
                 return conversation
@@ -64,6 +64,25 @@ export const messageReducer = createReducer(
             allMessages?.push(conversation)
         }
         return {...state, allMessages, currentConversation: conversation}
+    }),
+
+
+     //notify new message
+     on(messageActions.NotifyNewMessage, (state, {message}) => {
+        const convExisted = state.allMessages?.some(conv => conv.conversation_id === message.conversation_id)
+        let updateMessages = state.allMessages
+        if(convExisted){
+            updateMessages = state.allMessages?.map(conv => {
+                if(conv.conversation_id === message.conversation_id){
+                    conv.messages.push(message)
+                }
+                return conv
+            })
+        }else{
+            updateMessages = [{conversation_id: message.conversation_id, messages: [message]}]
+        }
+        
+        return {...state, allMessages: updateMessages}
     }),
 
 )
