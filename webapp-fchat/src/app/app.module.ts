@@ -15,7 +15,7 @@ import { MessageEffects } from './stores/message/message.effects';
 
 const routes: Routes = [
   {
-    path: 'test',
+    path: '',
     loadChildren: () => import('./views/views.module').then(m => m.ViewsModule)
   }
 ]

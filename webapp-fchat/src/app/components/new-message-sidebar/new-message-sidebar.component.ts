@@ -23,7 +23,7 @@ export class NewMessageSidebarComponent{
     private userFacade: UserFacade
   ){}
 
-  filterUserName: string;
+  filterUserName: string = '';
 
   showConvList(){
     this.viewsService.updateShowRightComponent(RightAction.show_conversations)

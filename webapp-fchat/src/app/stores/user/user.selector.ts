@@ -8,6 +8,7 @@ const userState = (state: AppState) => state.userState
 export const getUsers = createSelector(
     userState,
     (users) => {
+        console.log(users.allUsers)
         return users.allUsers ?? []
     }
 )
