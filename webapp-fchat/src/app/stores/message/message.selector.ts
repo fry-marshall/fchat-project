@@ -10,7 +10,7 @@ const userState = (state: AppState) => state.userState
 export const getMessages = createSelector(
     messageState,
     (messages) => {
-        return messages.allMessages ?? []
+        return messages.allMessages?.filter(msg => !!msg.messages[0].sender_id && !!msg.messages[0].receiver_id) ?? []
     }
 )
 
