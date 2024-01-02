@@ -31,16 +31,23 @@ export class NewMessageSidebarComponent{
 
   async addNewConversation(user: User){
     const currentUser = await firstValueFrom(this.userFacade.currentUser$.pipe(filter(user => !!user)))
-    const newConversation: Conversation = {
-      conversation_id: '',
-      messages: [{
-        id: '',
-        content: '',
-        sender_id: currentUser?.id,
-        receiver_id: user.id
-      }]
+    const allMessages = await firstValueFrom(this.messageFacade.messages$.pipe(filter(msg => !!msg)))
+    const isConvExist = allMessages.find(msg => msg.messages[0].sender_id === currentUser?.id || msg.messages[0].receiver_id === currentUser?.id)
+    
+    if(isConvExist){
+      this.messageFacade.setCurrentConversation(isConvExist)
+    }else{
+      const newConversation: Conversation = {
+        conversation_id: '',
+        messages: [{
+          id: '',
+          content: '',
+          sender_id: currentUser?.id,
+          receiver_id: user.id
+        }]
+      }
+      this.messageFacade.setCurrentConversation(newConversation)
     }
-    this.messageFacade.setCurrentConversation(newConversation)
   }
 
   filterUser(){
