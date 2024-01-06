@@ -5,11 +5,28 @@ import { User } from '@library_v2/interfaces/user';
 import { MessageFacade } from '../stores/message/message.facade';
 import { RightAction, ViewsService } from './views.service';
 import { MessageService } from '../stores/message/message.services';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-views',
   templateUrl: './views.component.html',
-  styleUrls: ['./views.component.scss']
+  styleUrls: ['./views.component.scss'],
+  animations: [
+     trigger('showSidebar', [
+      transition(':enter', [
+        style({
+          transform: 'translateX(-100%)',
+        }),
+        animate('.5s', style({transform: 'translateX(0)'}))
+      ]),
+      transition(':leave', [
+        style({
+          transform: 'translateX(0)'
+        }),
+        animate('.5s', style({transform: 'translateX(-100%)'}))
+      ]),
+     ])
+  ]
 })
 export class ViewsComponent implements OnInit{
 
@@ -22,6 +39,8 @@ export class ViewsComponent implements OnInit{
 
   showRightComponent$ = this.viewsService.showRightComponent$
   rightAction = RightAction
+
+  isShown: boolean = false
 
   users$: Observable<User> | undefined;
   viewsModel$ = combineLatest({
@@ -46,6 +65,10 @@ export class ViewsComponent implements OnInit{
     audio.src = "/assets/sound.mp3";
     audio.load();
     audio.play();
+  }
+
+  show(){
+    this.isShown = !this.isShown
   }
 
 }

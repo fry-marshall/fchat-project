@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { UiModule } from "@library_v2/ui-module";
 import { ComponentsModule } from "../components/components.module";
 import { ViewsService } from "./views.service";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const routes: Routes = [
     {
@@ -28,7 +29,7 @@ const routes: Routes = [
         ReactiveFormsModule,
         HttpClientModule,
         CommonModule,
-        RouterModule.forChild(routes),
+        RouterModule.forChild(routes)
     ],
     providers: [
         ViewsService

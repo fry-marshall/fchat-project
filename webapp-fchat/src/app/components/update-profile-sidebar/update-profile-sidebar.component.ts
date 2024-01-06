@@ -99,7 +99,6 @@ export class UpdateProfileSidebarComponent implements OnInit{
         tap(action => {
           if (action.type === UpdateUserAccountFailure.type) {
             this.error.hasError = true
-            console.log(action.error)
             this.error.msg = globalErrorMsg(action.error)
             if (this.notificationComponent) {
               this.notificationComponent.setVisibility(true)

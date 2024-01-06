@@ -13,6 +13,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { environment } from '@environments/environment';
 import { MessageEffects } from './stores/message/message.effects';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const config: SocketIoConfig = { url: environment.apiUrl, options: {} };
 
@@ -37,6 +38,7 @@ const routes: Routes = [
       //logOnly: !environment.production
     }),
     SocketIoModule.forRoot(config),
+    BrowserAnimationsModule
   ],
   providers: [
     CookieService,

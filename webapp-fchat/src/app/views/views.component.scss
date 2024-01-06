@@ -17,6 +17,20 @@
             background: #FFF;
         }
 
+        .conversations{
+            position: relative;
+
+            app-new-message-sidebar, app-update-profile-sidebar{
+                background-color: #FFFFFF;
+            }
+        }
+
+        .conversations > *{
+            display: block;
+            position: absolute;
+            inset: 0;
+        }
+
         .logo-top{
             width: 100%;
 
