@@ -19,9 +19,19 @@
     }
 
     .separator {
-        width: 348px;
         height: 7px;
         background: #195289;
+        animation: separatorAnim 1s;
+        width: 348px;
+    }
+
+    @keyframes separatorAnim {
+        from{
+            width: 0px;
+        }
+        to{
+            width: 348px;
+        }
     }
 
     .logo {
@@ -31,7 +41,6 @@
     #main-content{
         width: 55%;
     }
-
 
     @media screen and (max-width: 860px) {
         flex-direction: column;
