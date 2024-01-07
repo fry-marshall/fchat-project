@@ -123,9 +123,12 @@ class MessageController extends Controller {
             await message.setConversation(conversation)
 
             res.locals.io.emit(receiverUserId, {
+                id: message.id,
                 conversation_id: conversation.id,
                 content: message.content,
-                date: message.date
+                sender_id: user.id,
+                receiver_id: receiverUserId,
+                date: new Date().toISOString()
             })
 
             return res.status(201).json(Helpers.queryResponse({conversation_id: conversation.id, message_id: message.id, msg: 'msg sent successfully' }))
