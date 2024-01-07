@@ -15,4 +15,13 @@
             opacity: .7;
         }
     }
+
+    .convs{
+        height: calc(100% - 110px);
+        overflow-y: scroll;
+    }
+
+    .sidebar-padding{
+        padding: 0 32px 10px 32px;
+    }
 }

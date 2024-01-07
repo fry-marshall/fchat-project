@@ -1,4 +1,4 @@
-<div class="top l-padding is-flex is-space-between is-align-center">
+<div class="top sidebar-padding is-flex is-space-between is-align-center">
     <div class="profile_img is-flex is-justify-center is-cursor-pointer">
         <img src="assets/default.png" alt="" (click)="showUpdateProfile()">
     </div>
@@ -7,12 +7,16 @@
         <app-option (action)="optionSelected($event)" [options]="options" [color]="'#D9D9D9'"></app-option>
     </div>
 </div>
-<div class="searchbar l-padding">
+<div class="searchbar sidebar-padding">
     <app-input [(ngModel)]="filterUserName" (ngModelChange)="filterConversation()" prefixIcon="search" class="rounded"></app-input>
 </div>
-<ng-container *ngFor="let conversation of conversations">
-    <app-conversation-card (click)="setCurrentConversation(conversation)" [userInfos]="getUserInfos(conversation)" [conversation]="conversation" class="is-100w"></app-conversation-card>
-</ng-container>
+
+<div class="convs">
+    <ng-container *ngFor="let conversation of conversations">
+        <app-conversation-card (click)="setCurrentConversation(conversation)" [userInfos]="getUserInfos(conversation)" [conversation]="conversation" class="is-100w"></app-conversation-card>
+    </ng-container>
+</div>
+
 
 <!-- Modal change password -->
 <app-modal *ngIf="displayChangePasswordModal" [open]="displayChangePasswordModal">

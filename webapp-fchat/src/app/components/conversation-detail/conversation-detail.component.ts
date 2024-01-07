@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { User } from "@library_v2/interfaces/user";
-import { combineLatest, filter, firstValueFrom, map } from "rxjs";
+import { combineLatest, filter, map } from "rxjs";
 import { MessageFacade } from "src/app/stores/message/message.facade";
-import { Conversation, Message } from "src/app/stores/message/message.interface";
+import { Message } from "src/app/stores/message/message.interface";
 import { UserFacade } from "src/app/stores/user/user.facade";
 
 @Component({
@@ -31,7 +31,7 @@ export class ConversationDetailComponent implements OnInit, AfterViewInit  {
 
     ngAfterViewInit() {
         document.getElementsByClassName('messages')[0].scrollTo({
-            top: document.body.scrollHeight,
+            top: document.getElementsByClassName('messages')[0].scrollHeight,
             behavior: 'smooth'
         });
     }

@@ -6,6 +6,7 @@ import { Actions, ofType } from "@ngrx/effects";
 import { BehaviorSubject, firstValueFrom, take, tap } from "rxjs";
 import { LogInUserFailure, LogInUserSuccess } from "src/app/stores/user/user.actions";
 import { UserFacade } from "src/app/stores/user/user.facade";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: 'app-login',
@@ -87,6 +88,7 @@ export class LoginComponent {
             if (this.notificationComponent) {
               this.notificationComponent.setVisibility(false)
             }
+            window.location.href = environment.appUrl
           }
           this.isLoading.next(false)
         })

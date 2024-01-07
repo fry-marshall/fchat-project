@@ -4,6 +4,7 @@ import { UserService } from "./user.services";
 import * as userActions from './user.actions';
 import { catchError, map, of, switchMap } from "rxjs";
 import { CookieService } from "ngx-cookie-service";
+import { environment } from "@environments/environment";
 
 @Injectable()
 export class UserEffects {
@@ -55,7 +56,7 @@ export class UserEffects {
                 map(() => {
                     this.cookieService.delete('access_token')
                     this.cookieService.delete('refresh_token')
-                    window.location.href = 'https://auth-fchat.mfry.io'
+                    window.location.href = environment.authUrl
                     return userActions.LogOutUserSuccess()
                 }),
                 catchError((error) => of(userActions.LogOutUserFailure(error)))
