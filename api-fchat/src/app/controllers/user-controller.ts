@@ -89,7 +89,7 @@ class UserController extends Controller {
             }
 
             // send the verification email
-            const url = `${process.env.HOST_NAME}/verifyemail?token=${(response as any).data.email_verified_token}`
+            const url = `${process.env.AUTH_URL}/verifyemail?token=${(response as any).data.email_verified_token}`
             await Helpers.mailTransporter.sendMail({
                 from: process.env.MAIL_USERNAME,
                 to: body.email,

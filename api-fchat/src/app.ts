@@ -8,7 +8,7 @@ const app = Express()
 const server = new http.Server(app)
 const io = new Server(server, {
   cors: {
-    origin: "https://fchat.mfry.io",
+    origin: "*",
     methods: ["GET", "POST"]
   }
 })
