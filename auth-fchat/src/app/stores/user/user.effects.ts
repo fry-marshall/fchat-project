@@ -4,6 +4,7 @@ import { UserService } from "./user.services";
 import * as userActions from './user.actions';
 import { catchError, map, of, switchMap } from "rxjs";
 import { CookieService } from "ngx-cookie-service";
+import { environment } from "src/environments/environment";
 
 @Injectable()
 export class UserEffects {
@@ -29,8 +30,8 @@ export class UserEffects {
         switchMap(({ login, password }) => {
             return this.userService.logInUser({login, password}).pipe(
                 map((value: any) => {
-                    this.cookieService.set('access_token', value.data.access_token)
-                    this.cookieService.set('refresh_token', value.data.refresh_token)
+                    this.cookieService.set('access_token', value.data.access_token, new Date().getTime() + 3600, '/', environment.appUrl)
+                    this.cookieService.set('refresh_token', value.data.refresh_token, new Date().getTime() + 3600, '/', environment.appUrl)
                     return userActions.LogInUserSuccess()
                 }),
                 catchError((error) => of(userActions.LogInUserFailure(error)))
