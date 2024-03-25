@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+
+  fchatauth:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: fchatauth
+    volumes:
+      - ./src:/app
+    ports: 
+      - 4200:80
+    networks:
+      - fchatproject_fchat_network
+
+
+networks:
+  fchatproject_fchat_network:
+    external: true

@@ -3,3 +3,4 @@ api-fchat/dist/src
 api-fchat/dist/assets/test.png
 api-fchat/dist/jest.config.js
 api-fchat/.env
+api-fchat/db

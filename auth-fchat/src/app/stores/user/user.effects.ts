@@ -30,8 +30,10 @@ export class UserEffects {
         switchMap(({ login, password }) => {
             return this.userService.logInUser({login, password}).pipe(
                 map((value: any) => {
-                    this.cookieService.set('access_token', value.data.access_token, undefined, '/', '*.mfry.io', true)
-                    this.cookieService.set('refresh_token', value.data.refresh_token, undefined, '/', '*.mfry.io', true)
+                    this.cookieService.set('access_token', value.data.access_token, undefined, '/', 'localhost', true)
+                    this.cookieService.set('access_token', value.data.access_token, undefined, '/', 'fchat.mfry.io', true)
+                    this.cookieService.set('refresh_token', value.data.refresh_token, undefined, '/', 'localhost', true)
+                    this.cookieService.set('refresh_token', value.data.refresh_token, undefined, '/', 'fchat.mfry.io', true)
                     return userActions.LogInUserSuccess()
                 }),
                 catchError((error) => of(userActions.LogInUserFailure(error)))
