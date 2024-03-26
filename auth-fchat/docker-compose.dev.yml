@@ -11,10 +11,3 @@ services:
       - ./src:/app
     ports: 
       - 4200:80
-    networks:
-      - fchatproject_fchat_network
-
-
-networks:
-  fchatproject_fchat_network:
-    external: true
