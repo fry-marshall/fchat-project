@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "test": "jest --watchAll",
-    "start": "node dist/src/app.js",
+    "compile": "npx tsc",
+    "prod": "node dist/src/app.js",
+    "start": "tsc -w & nodemon dist/src/app.js",
     "migrate": "node dist/src/config/migrations.js"
   },
   "author": "",

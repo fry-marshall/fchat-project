@@ -43,6 +43,7 @@ export class MessageFacade{
     }
 
     setCurrentConversation(conversation: Conversation){
+        console.log("setCurrentConversation", conversation)
         this.store.dispatch(messageActions.SetCurrentConversation({conversation}))
     }
 

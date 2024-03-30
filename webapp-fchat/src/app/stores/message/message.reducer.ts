@@ -59,11 +59,11 @@ export const messageReducer = createReducer(
     //set current conversation
     on(messageActions.SetCurrentConversation, (state, {conversation}) => {
         const hasConv = state.allMessages?.some(conv => conv.conversation_id === conversation.conversation_id)
-        let allMessages = state.allMessages
         if(!hasConv){
-            allMessages?.push(conversation)
+            return {...state, allMessages: [{...conversation}], currentConversation: conversation}
         }
-        return {...state, allMessages, currentConversation: conversation}
+        return {...state, currentConversation: conversation}
+
     }),
 
 

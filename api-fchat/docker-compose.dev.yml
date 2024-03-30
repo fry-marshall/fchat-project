@@ -19,10 +19,13 @@ services:
     depends_on:
       - mysqldb
     container_name: fchatapi
-    image: frymarshall/fchat_api
-    command: ["./wait-for-db.sh"]
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
     restart: unless-stopped
     env_file: ./.env
+    volumes:
+      - .:/app
     ports:
       - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
     environment:

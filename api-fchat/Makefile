@@ -1,5 +1,5 @@
-start: 
-	npm run start
+start:
+	docker-compose -f docker-compose.dev.yml up -d
 compile: 
 	npx tsc
 migrate: 

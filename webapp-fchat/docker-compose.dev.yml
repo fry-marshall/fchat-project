@@ -8,6 +8,6 @@ services:
       dockerfile: Dockerfile.dev
     container_name: fchatwebapp
     volumes:
-      - ./src:/app
+      - .:/app
     ports: 
-      - 4201:80
+      - 4201:4200
