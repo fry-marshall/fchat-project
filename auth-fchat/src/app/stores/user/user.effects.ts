@@ -20,7 +20,7 @@ export class UserEffects {
         switchMap(({ user }) => {
             return this.userService.signUpUser(user).pipe(
                 map((data) => userActions.CreateUserAccountSuccess()),
-                catchError((error) =>of(userActions.CreateUserAccountFailure(error)))
+                catchError((error) => of(userActions.CreateUserAccountFailure(error)))
             )
         })
     ))
@@ -28,8 +28,15 @@ export class UserEffects {
     logInUser = createEffect(() => this.actions$.pipe(
         ofType(userActions.LogInUser),
         switchMap(({ login, password }) => {
-            return this.userService.logInUser({login, password}).pipe(
+            return this.userService.logInUser({ login, password }).pipe(
                 map((value: any) => {
+                    const accessTokenValue = value.data.access_token;
+                    const refreshTokenValue = value.data.refresh_token;
+
+                    const cookieAccessTokenString = "access_token=" + encodeURIComponent(accessTokenValue) + "; domain=.mfry.io; expires=" + + "; path=/";
+
+                    document.cookie = cookieAccessTokenString;
+                    
                     this.cookieService.set('access_token', value.data.access_token, undefined, '/', environment.cookieDomain, true)
                     this.cookieService.set('refresh_token', value.data.refresh_token, undefined, '/', environment.cookieDomain, true)
                     return userActions.LogInUserSuccess()
