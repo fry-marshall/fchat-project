@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "jest --watchAll",
+    "test": "jest --runInBand --testRegex '\\.test\\.ts$' --watchAll",
     "compile": "npx tsc",
     "prod": "node dist/src/app.js",
     "start": "tsc -w & nodemon dist/src/app.js",

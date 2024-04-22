@@ -12,4 +12,4 @@ compile:
 migrate: 
 	npm run migrate
 test: 
-	tsc -w & npm run test --watch
+	npm run test

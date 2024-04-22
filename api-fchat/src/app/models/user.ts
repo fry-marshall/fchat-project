@@ -4,16 +4,16 @@ import sequelize from "../../config/sequelize";
 
 interface UserAttributes{
     id: string;
-    fullname: string,
-    description: string,
-    email: string;
-    email_verified_token: string;
-    email_expiredtime: string;
-    email_verified: boolean;
-    forgotpasswordtoken: string,
-    forgotpasswordused: boolean
-    password: string;
-    profile_img: string
+    fullname?: string,
+    description?: string,
+    email?: string;
+    email_verified_token?: string;
+    email_expiredtime?: string;
+    email_verified?: boolean;
+    forgotpasswordtoken?: string,
+    forgotpasswordused?: boolean
+    password?: string;
+    profile_img?: string
 }
 
 interface UserInstance extends Model<UserAttributes>, UserAttributes{}

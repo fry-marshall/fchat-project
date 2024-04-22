@@ -50,6 +50,14 @@ class Helpers{
         return numberFormat
     }
 
+    public static generateVerifyNumber(){
+        return  Math.floor(Math.random() * 999999 + 100000).toString()
+    }
+
+    public static getFakeEmail(){
+        return "marshalfry"+ this.generateVerifyNumber() +"@gmail.com"
+    }
+
 }
 
 export default Helpers;

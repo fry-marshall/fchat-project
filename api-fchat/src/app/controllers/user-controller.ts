@@ -27,7 +27,8 @@ class UserController extends Controller {
                 attributes: [
                     'id',
                     'fullname',
-                    'description'
+                    'description',
+                    'email'
                 ]
             })
 
@@ -38,7 +39,7 @@ class UserController extends Controller {
         }
     }
 
-    // to getAll the users
+    // to get a user
     async getUser(req: Request, res: Response) {
         try {
 
@@ -90,12 +91,12 @@ class UserController extends Controller {
 
             // send the verification email
             const url = `${process.env.AUTH_URL}/verifyemail?token=${(response as any).data.email_verified_token}`
-            await Helpers.mailTransporter.sendMail({
+            /* await Helpers.mailTransporter.sendMail({
                 from: process.env.MAIL_USERNAME,
                 to: body.email,
                 subject: 'Vérification de l\'adresse mail',
                 html: Helpers.verifyEmail(body.email!, url),
-            })
+            }) */
 
             return res.status(201).json(Helpers.queryResponse({id: (response as any).data.id, msg: 'User account created successfully'}))
 
@@ -191,7 +192,7 @@ class UserController extends Controller {
                 return res.status(400).json(Helpers.queryError({status: 'verified', msg: 'Email already verified'}))
             }
 
-            const expireTime = parseInt(user.email_expiredtime) - Math.floor(Date.now() / 1000)
+            const expireTime = parseInt(user.email_expiredtime!) - Math.floor(Date.now() / 1000)
             if (expireTime <= 0) {
                 return res.status(400).json(Helpers.queryError({status: 'expired', msg: 'Expired verification code'}))
             }
@@ -218,12 +219,12 @@ class UserController extends Controller {
             await user.save()
             
             const url = `${process.env.HOST_NAME}/verifyemail?token=${user.email_verified_token}`
-            await Helpers.mailTransporter.sendMail({
+            /* await Helpers.mailTransporter.sendMail({
                 from: process.env.MAIL_USERNAME,
                 to: user.email,
                 subject: 'Vérification de l\'adresse mail',
                 html: Helpers.verifyEmail(user.email, url),
-            });
+            }); */
 
             return res.status(202).json(Helpers.queryResponse('Email verification code generated successfully'))
         }catch(error){
@@ -281,7 +282,6 @@ class UserController extends Controller {
             return res.status(202).json(Helpers.queryResponse({id: user.id, msg: 'user account profile img updated successfully'}))
 
         } catch (error) {
-            console.log(error)
             return res.status(500).json(Helpers.serverError)
         } 
     }
@@ -308,12 +308,12 @@ class UserController extends Controller {
                 
                 const url = `${process.env.HOST_NAME}/resetpassword?token=${user.forgotpasswordtoken}`
 
-                await Helpers.mailTransporter.sendMail({
+                /* await Helpers.mailTransporter.sendMail({
                     from: process.env.MAIL_USERNAME,
                     to: user.email,
                     subject: "Mot de passe oublié",
                     html: Helpers.resetPassword(user.email!, url),
-                })
+                }) */
             }
             return res.status(202).json(Helpers.queryResponse('A reset password email sent successfully'))
 

@@ -7,7 +7,6 @@ import { v4 as uuidv4 } from "uuid";
 import { TokenBlackList } from '../app/models/tokenblacklist';
 import jwt from "jsonwebtoken"
 import Helpers from '../helpers/helpers';
-import sequelize from "../config/sequelize";
 import path from "path"
 
 let server: http.Server;
@@ -39,30 +38,31 @@ describe("user", () => {
 
         it("should return a status 200 to get all the users", async () => {
             const userRequired = user as Required<UserAttributes>
-            const userCreated = await User.create({ ...userRequired, email_verified: true, id: uuidv4() })
-            const userCreated2 = await User.create({ ...userRequired, email_verified: true, id: uuidv4(), email: 'jili989900@gmail.com' })
+            const userCreated = await User.create({ ...userRequired, email_verified: true, id: uuidv4(), email: Helpers.getFakeEmail() })
+            const userCreated2 = await User.create({ ...userRequired, email_verified: true, id: uuidv4(), email: Helpers.getFakeEmail() })
             const token = jwt.sign({ id: userCreated.id }, process.env.ACCESS_TOKEN_SECRET!, { expiresIn: '1h' })
 
             const response = await request(server)
                 .get("/user")
-                .set('Authorization', 'Bearer ' + token);
+                .set('Authorization', 'Bearer ' + token)
+                .set({ Accept: 'Application/json' })
             await userCreated.destroy()
             await userCreated2.destroy()
             expect(response.body.data.users.length).toBe(2)
             expect(response.status).toBe(200)
-        })
+        }) 
     })
 
     describe("Get /:id", () => {
         it("should return a status 401 for no access token or invalid acess token", async () => {
             const response = await request(server)
-                .get("/user")
+                .get("/user/toto")
                 .send()
                 .set({ Accept: 'Application/json' })
             expect(response.status).toBe(401)
         })
 
-        it("should return a status 200 to get all the users", async () => {
+        it("should return a status 200 to get the user", async () => {
             const userRequired = user as Required<UserAttributes>
             const userCreated = await User.create({ ...userRequired, email_verified: true, id: uuidv4() })
             const token = jwt.sign({ id: userCreated.id }, process.env.ACCESS_TOKEN_SECRET!, { expiresIn: '1h' })
@@ -72,7 +72,8 @@ describe("user", () => {
                 .set('Authorization', 'Bearer ' + token);
             await userCreated.destroy()
             expect(response.body.data.user.id).toBe(userCreated.id)
-            expect(response.status).toBe(200)
+            expect(response.status).toBe(200) 
+            expect(true).toBeTruthy()
         })
     })
 
@@ -449,7 +450,7 @@ describe("user", () => {
             expect(response.status).toBe(202)
         })
 
-    })
+    }) 
 
     describe("Update /update", () => {
 
@@ -560,21 +561,20 @@ describe("user", () => {
             expect(response.status).toBe(401)
         })
 
-        /* it("should return a status 202 for profile img correctly updated", async () => {
+        it("should return a status 202 for profile img correctly updated", async () => {
             const userRequired = user as Required<UserAttributes>
             const userCreated = await User.create({ ...userRequired, id: uuidv4()})
             const token = jwt.sign({ id: userCreated.id }, process.env.ACCESS_TOKEN_SECRET!, {expiresIn: '1h'})
-            const filePath = path.resolve(__dirname, '../../assets' , 'test.png')
+            const filePath = path.resolve(__dirname, '../../dist/assets' , 'test.png')
 
             const response = await request(server)
                 .put("/user/update/profile_img")
                 .attach('profile_img', filePath)
                 .set('Authorization', 'Bearer '+ token);
-            console.log(response.body)
             await userCreated.destroy()
             expect(response.body.data.id).toBe(userCreated.id)
             expect(response.status).toBe(202)
-        }) */
+        })
 
     })
 

@@ -6,6 +6,7 @@ import { ConversationInstance } from "./conversation";
 interface MessageAttributes{
     id?: string;
     content?: string;
+    is_read?: boolean;
     date?: string;
     sender_id?: string;
     receiver_id?: string;
@@ -29,6 +30,10 @@ const Message = sequelize.define<MessageInstance>('message', {
         validate: {
             notEmpty: true
         }
+    },
+    is_read: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
     },
     date: {
         type: DataTypes.DATE,

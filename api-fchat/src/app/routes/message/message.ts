@@ -13,6 +13,14 @@ router.post(
     MessageController.sendMessage
 )
 
+router.put(
+    '/read', 
+    Express.json(),
+    GlobalMiddlewares.verifyToken,
+    userMiddlewares.getUser,
+    MessageController.readMessage
+)
+
 router.get(
     '/', 
     Express.json(),

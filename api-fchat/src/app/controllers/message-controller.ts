@@ -62,7 +62,6 @@ class MessageController extends Controller {
                     }
                 )
             }
-
             return res.status(200).json(Helpers.queryResponse(response))
 
         } catch (e) {
@@ -76,8 +75,6 @@ class MessageController extends Controller {
 
             const user = res.locals.user;
             const receiverUserId = req.body?.receiver_id;
-
-            console.log("yoooooooooooooo")
 
             if (receiverUserId === user.id) {
                 return res.status(400).json(Helpers.queryResponse({ msg: 'Receiver user cannot be the sender user' }))
@@ -131,10 +128,43 @@ class MessageController extends Controller {
                 date: new Date().toISOString()
             })
 
-            return res.status(201).json(Helpers.queryResponse({conversation_id: conversation.id, message_id: message.id, msg: 'msg sent successfully' }))
+            return res.status(201).json(Helpers.queryResponse({conversation_id: conversation.id, message_id: message.id, msg: 'msg sent successfully', date: new Date().toISOString() }))
 
         } catch (e) {
             console.log(e)
+            return res.status(500).json(Helpers.serverError)
+        }
+    }
+
+     // to read a message
+     async readMessage(req: Request, res: Response) {
+        try {
+
+            const user = res.locals.user;
+
+            const messages = await Message.findAll({
+                where: {
+                    conversation_id: req.body.conversation_id,
+                    receiver_id: user.id
+                }
+            })
+
+            if(messages.length > 0){
+
+                for(let message of messages){
+                    message.set({is_read: true})
+                    await message.save()
+                }
+
+                const senderId = messages[0].sender_id
+
+                res.locals.io.emit(senderId, [...messages])
+            }
+
+
+            return res.status(202).json(Helpers.queryResponse({ msg: "Message read successfully" }))
+
+        } catch (e) {
             return res.status(500).json(Helpers.serverError)
         }
     }
