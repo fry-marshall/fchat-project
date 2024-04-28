@@ -3,13 +3,14 @@ import { BehaviorSubject, firstValueFrom, take, tap } from "rxjs";
 import { UserFacade } from "src/app/stores/user/user.facade";
 import { Actions, ofType } from "@ngrx/effects";
 import { VerifyEmailUserFailure, VerifyEmailUserSuccess } from "src/app/stores/user/user.actions";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: 'app-verifyemail',
   templateUrl: './verifyemail.component.html',
   styleUrls: ['./verifyemail.component.scss']
 })
-export class VerifyEmailComponent implements OnInit{
+export class VerifyEmailComponent implements OnInit {
 
   isLoading: BehaviorSubject<boolean> = new BehaviorSubject(true)
   error = {
@@ -35,18 +36,22 @@ export class VerifyEmailComponent implements OnInit{
       tap(action => {
         if (action.type === VerifyEmailUserFailure.type) {
           this.error.hasError = true
-          if(action.error.errors.status === "verified"){
+          if (action.error.errors.status === "verified") {
             this.error.msg.subtitle = 'L\'adresse mail a déjà été verifiée.'
-          }else{
+          } else {
             this.error.msg.subtitle = 'La session a expiré.\nVeuillez vous connecter afin de renvoyer un mail de vérification.\"'
           }
-          
-        }else{
+
+        } else {
           this.success.isSuccess = true;
-            this.success.msg = {
-              title: 'Succès',
-              subtitle: 'Votre mot de passe a été vérifié avec succès.'
-            }
+          this.success.msg = {
+            title: 'Succès',
+            subtitle: 'Votre mot de passe a été vérifié avec succès.'
+          }
+          setTimeout(() => {
+            window.location.href = environment.appUrl + 'login';          
+          }, 3000)
+
         }
         this.isLoading.next(false)
       })
