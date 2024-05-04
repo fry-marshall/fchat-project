@@ -86,21 +86,23 @@ class UserController extends Controller {
             const response = await this.service.insert(body)
 
             if (response.is_error){
+                console.log(response)
                 return res.status(400).send(response);
             }
 
             // send the verification email
             const url = `${process.env.AUTH_URL}/verifyemail?token=${(response as any).data.email_verified_token}`
-            /* await Helpers.mailTransporter.sendMail({
+            await Helpers.mailTransporter.sendMail({
                 from: process.env.MAIL_USERNAME,
                 to: body.email,
                 subject: 'Vérification de l\'adresse mail',
                 html: Helpers.verifyEmail(body.email!, url),
-            }) */
+            })
 
             return res.status(201).json(Helpers.queryResponse({id: (response as any).data.id, msg: 'User account created successfully'}))
 
         } catch (e) {
+            console.log(e)
             return res.status(500).json(Helpers.serverError)
         }
     }
@@ -219,12 +221,12 @@ class UserController extends Controller {
             await user.save()
             
             const url = `${process.env.HOST_NAME}/verifyemail?token=${user.email_verified_token}`
-            /* await Helpers.mailTransporter.sendMail({
+            await Helpers.mailTransporter.sendMail({
                 from: process.env.MAIL_USERNAME,
                 to: user.email,
                 subject: 'Vérification de l\'adresse mail',
                 html: Helpers.verifyEmail(user.email, url),
-            }); */
+            });
 
             return res.status(202).json(Helpers.queryResponse('Email verification code generated successfully'))
         }catch(error){
@@ -308,12 +310,12 @@ class UserController extends Controller {
                 
                 const url = `${process.env.HOST_NAME}/resetpassword?token=${user.forgotpasswordtoken}`
 
-                /* await Helpers.mailTransporter.sendMail({
+                await Helpers.mailTransporter.sendMail({
                     from: process.env.MAIL_USERNAME,
                     to: user.email,
                     subject: "Mot de passe oublié",
                     html: Helpers.resetPassword(user.email!, url),
-                }) */
+                })
             }
             return res.status(202).json(Helpers.queryResponse('A reset password email sent successfully'))
 
