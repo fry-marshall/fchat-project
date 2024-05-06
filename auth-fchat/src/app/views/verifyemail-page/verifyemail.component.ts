@@ -36,7 +36,7 @@ export class VerifyEmailComponent implements OnInit {
       tap(action => {
         if (action.type === VerifyEmailUserFailure.type) {
           this.error.hasError = true
-          if (action.error.errors.status === "verified") {
+          if (action.error.errors?.status === "verified") {
             this.error.msg.subtitle = 'L\'adresse mail a déjà été verifiée.'
           } else {
             this.error.msg.subtitle = 'La session a expiré.\nVeuillez vous connecter afin de renvoyer un mail de vérification.\"'
@@ -48,10 +48,6 @@ export class VerifyEmailComponent implements OnInit {
             title: 'Succès',
             subtitle: 'Votre mot de passe a été vérifié avec succès.'
           }
-          setTimeout(() => {
-            window.location.href = environment.appUrl + 'login';          
-          }, 3000)
-
         }
         this.isLoading.next(false)
       })
