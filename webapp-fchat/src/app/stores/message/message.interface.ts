@@ -5,7 +5,8 @@ export interface Message{
     date?: string;
     sender_id?: string;
     receiver_id?: string;
-    conversation_id?: string
+    conversation_id?: string;
+    is_read?: boolean
 }
 
 export interface Conversation{

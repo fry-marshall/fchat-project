@@ -25,7 +25,7 @@ export const SendNewMessage = createAction(
 
 export const SendNewMessageSuccess = createAction(
     "[Message] send new message success",
-    props<{conversation_id: string, message_id: string, receiver_id: string, content: string, sender_id: string}>()
+    props<{conversation_id: string, message_id: string, receiver_id: string, content: string, sender_id: string, date: string}>()
 ) 
 
 export const SendNewMessageFailure = createAction(

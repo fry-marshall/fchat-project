@@ -11,8 +11,7 @@
 
         .sidebar {
             display: grid;
-            grid-template-rows: 1fr 6fr;
-            min-width: 360px;
+            width: 360px;
             border-right: 1px solid #DBDBDB;
             background: #FFF;
         }
@@ -23,10 +22,10 @@
             app-new-message-sidebar, app-update-profile-sidebar{
                 background-color: #FFFFFF;
             }
-            margin-top: 30px;
         }
 
         .conversations > *{
+            margin-top: 20px;
             display: block;
             position: absolute;
             inset: 0;

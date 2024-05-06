@@ -8,8 +8,10 @@
     </div>
 </div>
 <div class="searchbar sidebar-padding">
-    <app-input [(ngModel)]="filterUserName" (ngModelChange)="filterConversation()" prefixIcon="search" class="rounded"></app-input>
+    <app-input placeholder="Rechercher" [(ngModel)]="filterUserName" (ngModelChange)="filterConversation()" prefixIcon="search"></app-input>
 </div>
+
+<div class="separator"></div>
 
 <div class="convs">
     <ng-container *ngFor="let conversation of conversations">

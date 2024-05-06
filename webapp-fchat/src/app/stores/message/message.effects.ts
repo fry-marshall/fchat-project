@@ -33,7 +33,7 @@ export class MessageEffects {
         ofType(messagesActions.SendNewMessage),
         switchMap(({ content, receiver_id, sender_id }) => {
             return this.messageService.sendNewMessage({content, receiver_id}).pipe(
-                map(({data}) => messagesActions.SendNewMessageSuccess({content, sender_id, message_id: data.message_id, conversation_id: data.conversation_id, receiver_id})),
+                map(({data}) => messagesActions.SendNewMessageSuccess({content, sender_id, message_id: data.message_id, conversation_id: data.conversation_id, receiver_id, date: data.date})),
                 catchError((error) =>of(messagesActions.SendNewMessageFailure(error)))
             )
         })

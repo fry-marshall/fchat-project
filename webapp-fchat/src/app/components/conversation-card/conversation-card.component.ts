@@ -14,6 +14,7 @@ export class ConversationCardComponent implements OnInit{
   @Input() userInfos: User | undefined;
   
   lastMessage: Message
+  nbMessageRead: number = 0
 
   constructor(
     private messageService: MessageService
@@ -23,6 +24,8 @@ export class ConversationCardComponent implements OnInit{
 
     const lastIndex = this.conversation?.messages.length ?? 1
     this.lastMessage = this.conversation?.messages[lastIndex - 1]!
+    this.nbMessageRead = this.conversation?.messages.filter(msg => !msg.is_read).length ?? 0
+    console.log(this.nbMessageRead)
   }
 
   getFullName(fullname?: string){
