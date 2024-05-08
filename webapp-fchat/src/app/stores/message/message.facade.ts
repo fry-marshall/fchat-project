@@ -43,8 +43,11 @@ export class MessageFacade{
     }
 
     setCurrentConversation(conversation: Conversation){
-        console.log("setCurrentConversation", conversation)
         this.store.dispatch(messageActions.SetCurrentConversation({conversation}))
+    }
+
+    readMessages(conversation_id: string, user_id: string){
+        this.store.dispatch(messageActions.ReadMessages({conversation_id, user_id}))
     }
 
     notifyNewMessage(message: Message){

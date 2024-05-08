@@ -11,7 +11,7 @@ import { MessageService } from 'src/app/stores/message/message.services';
 export class ConversationCardComponent implements OnInit{
 
   @Input() conversation: Conversation | undefined;
-  @Input() userInfos: User | undefined;
+  @Input() receiverUserInfos: User | undefined;
   
   lastMessage: Message
   nbMessageRead: number = 0
@@ -24,8 +24,7 @@ export class ConversationCardComponent implements OnInit{
 
     const lastIndex = this.conversation?.messages.length ?? 1
     this.lastMessage = this.conversation?.messages[lastIndex - 1]!
-    this.nbMessageRead = this.conversation?.messages.filter(msg => !msg.is_read).length ?? 0
-    console.log(this.nbMessageRead)
+    this.nbMessageRead = this.conversation?.messages.filter(msg => msg.receiver_id !== this.receiverUserInfos?.id && !msg.is_read).length ?? 0
   }
 
   getFullName(fullname?: string){

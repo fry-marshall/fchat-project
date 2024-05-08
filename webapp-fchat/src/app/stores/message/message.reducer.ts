@@ -88,4 +88,30 @@ export const messageReducer = createReducer(
         return {...state, allMessages: updateMessages}
     }),
 
+
+     //read messages
+     on(messageActions.ReadMessagesSuccess, (state, {conversation_id, user_id}) => {
+        let updateMessages = state.allMessages?.map(conv => {
+            if(conv.conversation_id === conversation_id){
+                conv = {
+                    ...conv,
+                    messages: [...conv.messages].map(msg => {
+                        if(msg.receiver_id === user_id){
+                            return {
+                                ...msg,
+                                is_read: true
+                            }
+                        }
+                        return msg
+                    })
+                }
+                console.log("cconv", conv)
+                return conv
+            }
+            return conv
+        })
+        
+        return {...state, allMessages: updateMessages}
+    }),
+
 )

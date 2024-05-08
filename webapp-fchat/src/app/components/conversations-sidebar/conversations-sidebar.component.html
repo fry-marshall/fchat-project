@@ -15,7 +15,7 @@
 
 <div class="convs">
     <ng-container *ngFor="let conversation of conversations">
-        <app-conversation-card (click)="setCurrentConversation(conversation)" [userInfos]="getUserInfos(conversation)" [conversation]="conversation" class="is-100w"></app-conversation-card>
+        <app-conversation-card (click)="setCurrentConversation(conversation)" [receiverUserInfos]="getUserInfos(conversation)" [conversation]="conversation" class="is-100w"></app-conversation-card>
     </ng-container>
 </div>
 

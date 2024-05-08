@@ -27,6 +27,10 @@ export class MessageService {
     return this.http.post('message/send', body) as Observable<any>
   }
 
+  readMessage(conversation_id: string) {
+    return this.http.put('message/read', {conversation_id}) as Observable<any>
+  }
+
   getDate(date: string){
     const date_ = new Date(date);
     const hours = date_.getHours().toString()

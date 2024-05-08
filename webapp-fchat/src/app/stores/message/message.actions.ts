@@ -42,4 +42,19 @@ export const SetCurrentConversation = createAction(
 export const NotifyNewMessage = createAction(
     "[Message] notify new message",
     props<{message: Message}>()
+)
+
+export const ReadMessages = createAction(
+    "[Message] read messages",
+    props<{conversation_id: string, user_id: string}>()
 ) 
+
+export const ReadMessagesSuccess = createAction(
+    "[Message] read messages success",
+    props<{conversation_id: string, user_id: string}>()
+) 
+
+export const ReadMessagesFailure = createAction(
+    "[Message] read messages failure",
+    props<{error: any}>()
+)

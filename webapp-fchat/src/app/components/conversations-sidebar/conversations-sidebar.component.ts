@@ -75,6 +75,7 @@ export class ConversationsSidebarComponent {
 
   setCurrentConversation(conversation: Conversation) {
     this.messageFacade.setCurrentConversation(conversation)
+    this.messageFacade.readMessages(conversation.conversation_id!, this.currentUser.id)
   }
 
   getUserInfos(conversation: Conversation) {

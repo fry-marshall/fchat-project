@@ -38,4 +38,14 @@ export class MessageEffects {
             )
         })
     ))
+
+    readMessages = createEffect(() => this.actions$.pipe(
+        ofType(messagesActions.ReadMessages),
+        switchMap(({ conversation_id, user_id }) => {
+            return this.messageService.readMessage(conversation_id).pipe(
+                map(() => messagesActions.ReadMessagesSuccess({conversation_id, user_id})),
+                catchError((error) =>of(messagesActions.ReadMessagesFailure(error)))
+            )
+        })
+    ))
 }
