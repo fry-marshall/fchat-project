@@ -120,12 +120,15 @@ class MessageController extends Controller {
             await message.setConversation(conversation)
 
             res.locals.io.emit(receiverUserId, {
-                id: message.id,
-                conversation_id: conversation.id,
-                content: message.content,
-                sender_id: user.id,
-                receiver_id: receiverUserId,
-                date: new Date().toISOString()
+                type: 'new_message',
+                data: {
+                    id: message.id,
+                    conversation_id: conversation.id,
+                    content: message.content,
+                    sender_id: user.id,
+                    receiver_id: receiverUserId,
+                    date: new Date().toISOString()
+                }
             })
 
             return res.status(201).json(Helpers.queryResponse({conversation_id: conversation.id, message_id: message.id, msg: 'msg sent successfully', date: new Date().toISOString() }))
@@ -158,7 +161,13 @@ class MessageController extends Controller {
 
                 const senderId = messages[0].sender_id
 
-                res.locals.io.emit(senderId, [...messages])
+                res.locals.io.emit(senderId, {
+                    type: 'read_message',
+                    data: {
+                        conversation_id: req.body.conversation_id,
+                        messages
+                    }
+                })
             }
 
 

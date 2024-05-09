@@ -7,6 +7,11 @@ import { RightAction, ViewsService } from './views.service';
 import { MessageService } from '../stores/message/message.services';
 import { animate, style, transition, trigger } from '@angular/animations';
 
+export interface Notification{
+  type?: string,
+  data?: any
+}
+
 @Component({
   selector: 'app-views',
   templateUrl: './views.component.html',
@@ -52,10 +57,15 @@ export class ViewsComponent implements OnInit{
 
   async ngOnInit() {
     const {currentUser} = await firstValueFrom(this.viewsModel$.pipe(filter(vm => !!vm)))
-    this.messageService.getMessageNotification(currentUser?.id!).subscribe(msg => {
-      if(msg){
-        this.messageFacade.notifyNewMessage(msg)
-        this.playAudio()
+    this.messageService.getMessageNotification(currentUser?.id!).subscribe((notification: Notification) => {
+      switch(notification.type){
+        case 'new_message':
+          this.messageFacade.notifyNewMessage(notification.data)
+          this.playAudio()
+          break;
+        case 'read_message':
+          this.messageFacade.notifyReadMessage(notification.data)
+          break
       }
     })
   }

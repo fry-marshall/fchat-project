@@ -58,3 +58,8 @@ export const ReadMessagesFailure = createAction(
     "[Message] read messages failure",
     props<{error: any}>()
 )
+
+export const NotifyReadMessage = createAction(
+    "[Message] notify read message",
+    props<{messages: Message[], conversation_id: string}>()
+)

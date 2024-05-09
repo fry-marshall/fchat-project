@@ -54,6 +54,10 @@ export class MessageFacade{
         this.store.dispatch(messageActions.NotifyNewMessage({message}))
     }
 
+    notifyReadMessage(body: {messages: Message[], conversation_id: string}){
+        this.store.dispatch(messageActions.NotifyReadMessage({messages: body.messages, conversation_id: body.conversation_id}))
+    }
+
     getUserInfos(currentConversation?: Conversation, currentUser?: User, users?: User[]){
 
         let userId: string | undefined = ''

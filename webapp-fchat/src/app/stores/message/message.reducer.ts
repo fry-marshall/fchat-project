@@ -1,6 +1,7 @@
 import { createReducer, on } from "@ngrx/store";
 import * as messageActions from "./message.actions";
 import { initialMessageState } from "./message.state";
+import { Conversation } from "./message.interface";
 
 export const messageReducer = createReducer(
     initialMessageState,
@@ -107,6 +108,31 @@ export const messageReducer = createReducer(
                 }
                 console.log("cconv", conv)
                 return conv
+            }
+            return conv
+        })
+        
+        return {...state, allMessages: updateMessages}
+    }),
+
+    //notify read message
+    on(messageActions.NotifyReadMessage, (state, {messages, conversation_id}) => {
+        let convExisted: Conversation = state.allMessages!.filter(conv => conv.conversation_id === conversation_id)[0]
+        convExisted = {
+            ...convExisted,
+            messages: convExisted?.messages.map(msg => {
+                const msgExisted = messages.find(m => m.id === msg.id)
+                if(msgExisted){
+                    return msgExisted
+                }
+                return msg
+            })
+        }
+
+        let updateMessages = state.allMessages
+        updateMessages = state.allMessages?.map(conv => {
+            if(conv.conversation_id === conversation_id){
+                return convExisted
             }
             return conv
         })
