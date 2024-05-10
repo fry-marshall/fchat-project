@@ -38,6 +38,26 @@ export class MessageService {
     return this.getRealDateValue(hours)+':'+this.getRealDateValue(minutes)
   }
 
+  getNormalDate(date: string){
+    const date_ = new Date(date);
+    const day = date_.getDate().toString()
+    const month = date_.getMonth().toString()
+    const year = date_.getFullYear().toString()
+    return this.getRealDateValue(day)+'/'+this.getRealDateValue(month)+'/'+this.getRealDateValue(year)
+  }
+
+  isToday(date: string){
+    const today = new Date()
+    const date_ = new Date(date)
+    return today.getDate() === date_.getDate() && today.getMonth() === date_.getMonth() && today.getFullYear() === date_.getFullYear()
+  }
+
+  isYesterday(date: string){
+    const today = new Date()
+    const date_ = new Date(date)
+    return today.getDate() === (date_.getDate() + 1) && today.getMonth() === date_.getMonth() && today.getFullYear() === date_.getFullYear()
+  }
+
   getRealDateValue(value: string){
     return value.length === 1 ? "0" + value : value
   }

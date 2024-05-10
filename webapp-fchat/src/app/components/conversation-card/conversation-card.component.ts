@@ -34,6 +34,12 @@ export class ConversationCardComponent implements OnInit{
   }
 
   get date(){
-    return this.messageService.getDate(this.lastMessage.date!)
+    if(this.messageService.isToday(this.lastMessage.date!)){
+      return this.messageService.getDate(this.lastMessage.date!)
+    } else if(this.messageService.isYesterday(this.lastMessage.date!)){
+      return "Yesterday"
+    } else{
+      return this.messageService.getNormalDate(this.lastMessage.date!)
+    }
   }
 }
