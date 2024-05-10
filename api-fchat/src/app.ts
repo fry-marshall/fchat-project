@@ -3,6 +3,7 @@ import router from "./app/routes/router"
 import http from "http"
 import cors from "cors"
 import { Server } from "socket.io";
+import path from "path"
 
 const app = Express()
 const server = new http.Server(app)
@@ -16,10 +17,8 @@ const io = new Server(server, {
 app.use(cors())
 router(app, io)
 
-/*
-  To add asset routes
-  app.use('/assets/asset_route', Express.static('assets/asset_folder'))
-*/
+const assetsPath = path.join(__dirname, 'assets');
+app.use('/assets', Express.static(assetsPath))
 
 server.listen(process.env.PORT, () => { })
 

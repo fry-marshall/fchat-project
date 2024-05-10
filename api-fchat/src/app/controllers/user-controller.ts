@@ -28,7 +28,8 @@ class UserController extends Controller {
                     'id',
                     'fullname',
                     'description',
-                    'email'
+                    'email',
+                    'profile_img'
                 ]
             })
 
@@ -51,7 +52,8 @@ class UserController extends Controller {
                 attributes: [
                     'id',
                     'fullname',
-                    'description'
+                    'description',
+                    'profile_img'
                 ]
             })
 
