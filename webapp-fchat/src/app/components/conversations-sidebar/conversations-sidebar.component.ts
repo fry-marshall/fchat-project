@@ -65,6 +65,11 @@ export class ConversationsSidebarComponent {
   get newPassword() { return this.formChangePassword.get('new_password'); }
   get confirmNewPassword() { return this.formChangePassword.get('confirm_new_password'); }
 
+  get profileImg() {
+    const url = (this.currentUser.profile_img !== null) ? environment.apiUrl + 'assets/'+this.currentUser.profile_img : 'assets/default.png'
+    return url
+  }
+
   showNewMessage() {
     this.viewsService.updateShowRightComponent(RightAction.new_message)
   }

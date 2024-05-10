@@ -1,6 +1,6 @@
 <div class="container is-flex is-100w">
     <div class="profile_img is-flex is-justify-center">
-        <img src="assets/default.png" alt="">
+        <img [src]="profileImg" alt="">
     </div>
     <div class="infos">
         <app-text class="name fs-16 elipsis">{{ getFullName(user.fullname) }}</app-text>

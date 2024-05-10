@@ -3,6 +3,13 @@
     .container{
         height: 100%;
         position: relative;
+
+        app-button{
+            position: absolute;
+            bottom: 5px;
+            left: 20px;
+            right: 20px;
+        }
     }
 
     .form {
@@ -36,6 +43,26 @@
                 color: white;
             }
         }
+
+        .options{
+            display: none;
+            min-width: 210px;
+            background: #FFFFFF;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 6px;
+            position: absolute;
+            z-index: 2;
+    
+            .option{
+                padding: 14px;
+                text-align: start;
+                color: #747474;
+            }
+    
+            .option:hover{
+                background: #ededed;
+            }
+        }
     }
 
     .profile_img:hover{
@@ -44,12 +71,15 @@
         .update-picture{
             display: flex;
         }
+
+        .options{
+            display: block;
+        }
     }
 
-    app-button{
-        position: absolute;
-        bottom: 5px;
-        left: 20px;
-        right: 20px;
+    .photo_uploaded{
+        width: 74%;
+        height: 70%;
+        object-fit: cover;
     }
 }

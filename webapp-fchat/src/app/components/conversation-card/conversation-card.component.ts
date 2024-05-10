@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { environment } from '@environments/environment';
 import { User } from '@library_v2/interfaces/user';
 import { Conversation, Message } from 'src/app/stores/message/message.interface';
 import { MessageService } from 'src/app/stores/message/message.services';
@@ -31,6 +32,11 @@ export class ConversationCardComponent implements OnInit{
 
   getFullName(fullname?: string){
     return fullname ?? 'Unknown fullname'
+  }
+
+  get profileImg() {
+    const url = (this.currentUser.profile_img !== null) ? environment.apiUrl + 'assets/'+this.currentUser.profile_img : 'assets/default.png'
+    return url
   }
 
   get date(){

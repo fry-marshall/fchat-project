@@ -5,7 +5,7 @@ import { globalErrorMsg } from '@library_v2/interfaces/error';
 import { User } from '@library_v2/interfaces/user';
 import { Actions, ofType } from '@ngrx/effects';
 import { BehaviorSubject, Observable, combineLatest, firstValueFrom, map, of, take, tap } from 'rxjs';
-import { UpdateUserAccountFailure, UpdateUserAccountSuccess } from 'src/app/stores/user/user.actions';
+import { UpdateUserAccountFailure, UpdateUserAccountSuccess, UpdateUserProfilImgFailure, UpdateUserProfilImgSuccess } from 'src/app/stores/user/user.actions';
 import { UserFacade } from 'src/app/stores/user/user.facade';
 import { RightAction, ViewsService } from 'src/app/views/views.service';
 
@@ -18,6 +18,8 @@ export class UpdateProfileSidebarComponent implements OnInit{
 
   @Input() user: User;
 
+  imageURL: string | ArrayBuffer | null = null;
+  selectedFile: File | null = null;
   formUpdateProfile = new FormGroup({
     fullname: new FormControl('', Validators.required),
     description: new FormControl('', Validators.required),
@@ -32,6 +34,15 @@ export class UpdateProfileSidebarComponent implements OnInit{
     isSuccess: false,
     msg: { title: '', subtitle: '' },
   }
+
+  options = [
+    "Afficher ma photo",
+    "Prendre une photo",
+    "Importer une photo"
+  ]
+  displayUploadPictureModal: boolean = false;
+
+  @ViewChild('fileInput') fileInput: any;
 
   @ViewChild(NotificationComponent, { static: false })
   private notificationComponent!: NotificationComponent;
@@ -64,8 +75,67 @@ export class UpdateProfileSidebarComponent implements OnInit{
   get fullname() { return this.formUpdateProfile.get('fullname'); }
   get description() { return this.formUpdateProfile.get('description'); }
 
+  selectFile() {
+    this.fileInput.nativeElement.click();
+  }
+
+  onFileSelected(event: any) {
+    this.selectedFile = event.target.files[0];
+    if (this.selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.imageURL = e.target?.result!;
+      };
+      reader.readAsDataURL(this.selectedFile);
+      this.displayUploadPictureModal = true
+    }
+  }
+  
   showConvList(){
     this.viewsService.updateShowRightComponent(RightAction.show_conversations)
+  }
+
+  actionSelected(option: string) {
+    switch (option) {
+      case this.options[0]:
+        break;
+
+      case this.options[1]:
+        break;
+
+      case this.options[2]:
+        break;
+    }
+  }
+
+  async uploadPicture(){
+    this.isLoading.next(true)
+    this.userFacade.updateUserProfileImg(this.selectedFile)
+
+    await firstValueFrom(this.actions$.pipe(
+      ofType(UpdateUserProfilImgFailure, UpdateUserProfilImgSuccess),
+      take(1),
+      tap(action => {
+        if (action.type === UpdateUserProfilImgFailure.type) {
+          this.error.hasError = true
+          this.error.msg = globalErrorMsg(action.error)
+          if (this.notificationComponent) {
+            this.notificationComponent.setVisibility(true)
+          }
+        } else {
+          this.success.isSuccess = true;
+          this.success.msg = {
+            title: 'Succès',
+            subtitle: 'Votre photo de profile a été modifié avec succès.'
+          }
+          if (this.notificationComponent) {
+            this.notificationComponent.setVisibility(false)
+          }
+        }
+        this.isLoading.next(false)
+        this.displayUploadPictureModal = false
+      })
+    ))
   }
 
   async updateProfile() {

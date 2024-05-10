@@ -1,7 +1,7 @@
 <div class="container is-flex sidebar-padding is-space-between">
     <div class="infos is-flex">
         <div class="profile_img is-flex is-justify-center">
-            <img src="assets/default.png" alt="">
+            <img [src]="profileImg" alt="">
         </div>
         <div class="infos l-margin-left">
             <app-text class="name fs-16 elipsis">{{ getFullName(receiverUserInfos?.fullname) }}</app-text>

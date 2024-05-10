@@ -1,6 +1,6 @@
 <div class="top sidebar-padding is-flex is-space-between is-align-center">
     <div class="profile_img is-flex is-justify-center is-cursor-pointer">
-        <img src="assets/default.png" alt="" (click)="showUpdateProfile()">
+        <img [src]="profileImg" alt="" (click)="showUpdateProfile()">
     </div>
     <div class="icons is-flex">
         <app-icon (click)="showNewMessage()" class="l-margin-right is-cursor-pointer" name="add_circle"></app-icon>
@@ -40,7 +40,7 @@
         </div>
     </ng-container>
     <ng-container body>
-        <form [formGroup]="formChangePassword" class="is-flex is-column l-margin-top">
+        <!-- <form [formGroup]="formChangePassword" class="is-flex is-column l-margin-top">
             <app-input type="password" formControlName="old_password" [ngClass]="{'invalid': oldPassword?.errors?.['novalid']}"
                 [isPassword]="true" [errorMsg]="oldPassword?.errors?.['novalid']" label="Mot de passe actuel*">
             </app-input>
@@ -50,7 +50,7 @@
             <app-input type="password" formControlName="confirm_new_password" [ngClass]="{'invalid': confirmNewPassword?.errors?.['novalid']}"
                 [isPassword]="true" [errorMsg]="confirmNewPassword?.errors?.['novalid']" label="Confirmer le mot de passe*">
             </app-input>
-        </form>
+        </form> -->
     </ng-container>
     <ng-container footer class="is-align-center">
         <app-text (click)="displayChangePasswordModal = false" class="close fs-14" color="#00A3FF">Fermer</app-text>
