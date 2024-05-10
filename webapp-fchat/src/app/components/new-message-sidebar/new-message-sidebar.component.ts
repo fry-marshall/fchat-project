@@ -46,7 +46,6 @@ export class NewMessageSidebarComponent{
           receiver_id: user.id
         }]
       }
-      console.log("newConversation", newConversation)
       this.messageFacade.setCurrentConversation(newConversation)
     }
   }

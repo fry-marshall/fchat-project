@@ -106,7 +106,6 @@ export const messageReducer = createReducer(
                         return msg
                     })
                 }
-                console.log("cconv", conv)
                 return conv
             }
             return conv

@@ -4,12 +4,12 @@
             <img src="assets/default.png" alt="">
         </div>
         <div class="infos l-margin-left">
-            <app-text class="name fs-16">{{ getFullName(receiverUserInfos?.fullname) }}</app-text>
+            <app-text class="name fs-16 elipsis">{{ getFullName(receiverUserInfos?.fullname) }}</app-text>
             <div class="is-flex">
                 <ng-container *ngIf="showReadMessage">
                     <app-icon name="done_all" class="small icon-read" [ngClass]="{'is-read': lastMessage?.is_read}"></app-icon>
                 </ng-container>
-                <app-text class="last-message fs-10">{{ lastMessage?.content }}</app-text>
+                <app-text class="last-message fs-10 elipsis">{{ lastMessage?.content }}</app-text>
             </div>
         </div>
         </div>

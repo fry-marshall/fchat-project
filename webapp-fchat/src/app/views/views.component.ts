@@ -7,7 +7,7 @@ import { RightAction, ViewsService } from './views.service';
 import { MessageService } from '../stores/message/message.services';
 import { animate, style, transition, trigger } from '@angular/animations';
 
-export interface Notification{
+export interface NotificationMessage {
   type?: string,
   data?: any
 }
@@ -17,30 +17,30 @@ export interface Notification{
   templateUrl: './views.component.html',
   styleUrls: ['./views.component.scss'],
   animations: [
-     trigger('showSidebar', [
+    trigger('showSidebar', [
       transition(':enter', [
         style({
           transform: 'translateX(-100%)',
         }),
-        animate('.5s', style({transform: 'translateX(0)'}))
+        animate('.5s', style({ transform: 'translateX(0)' }))
       ]),
       transition(':leave', [
         style({
           transform: 'translateX(0)'
         }),
-        animate('.5s', style({transform: 'translateX(-100%)'}))
+        animate('.5s', style({ transform: 'translateX(-100%)' }))
       ]),
-     ])
+    ])
   ]
 })
-export class ViewsComponent implements OnInit{
+export class ViewsComponent implements OnInit {
 
   constructor(
     private userFacade: UserFacade,
     private messageFacade: MessageFacade,
     private messageService: MessageService,
     private viewsService: ViewsService
-  ){}
+  ) { }
 
   showRightComponent$ = this.viewsService.showRightComponent$
   rightAction = RightAction
@@ -56,12 +56,16 @@ export class ViewsComponent implements OnInit{
   })
 
   async ngOnInit() {
-    const {currentUser} = await firstValueFrom(this.viewsModel$.pipe(filter(vm => !!vm)))
-    this.messageService.getMessageNotification(currentUser?.id!).subscribe((notification: Notification) => {
-      switch(notification.type){
+    const { currentUser } = await firstValueFrom(this.viewsModel$.pipe(filter(vm => !!vm)))
+    this.messageService.getMessageNotification(currentUser?.id!).subscribe((notification: NotificationMessage) => {
+      switch (notification.type) {
         case 'new_message':
           this.messageFacade.notifyNewMessage(notification.data)
           this.playAudio()
+          document.getElementsByClassName('messages')[0].scrollTo({
+            top: document.getElementsByClassName('messages')[0].scrollHeight,
+            behavior: 'smooth'
+          });
           break;
         case 'read_message':
           this.messageFacade.notifyReadMessage(notification.data)
@@ -70,14 +74,14 @@ export class ViewsComponent implements OnInit{
     })
   }
 
-  playAudio(){
+  playAudio() {
     let audio = new Audio();
     audio.src = "/assets/sound.mp3";
     audio.load();
     audio.play();
   }
 
-  show(){
+  show() {
     this.isShown = !this.isShown
   }
 
