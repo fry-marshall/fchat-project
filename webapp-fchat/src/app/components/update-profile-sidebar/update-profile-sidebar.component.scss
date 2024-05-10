@@ -1,9 +1,55 @@
-:host{
-    .form{
+:host {
+
+    .container{
+        height: 100%;
+        position: relative;
+    }
+
+    .form {
         margin-top: 25px;
     }
 
-    .profile_img{
+    .profile_img {
         align-self: center;
+    }
+
+    .profile_img {
+        width: 195px;
+        height: 195px;
+        border-radius: 100%;
+        overflow: hidden;
+        border: 1px solid #767676;
+        position: relative;
+
+        img {
+            width: 200px;
+            height: 200px;
+            opacity: 0.7;
+        }
+
+        .update-picture{
+            display: none;
+            position: absolute;
+            inset: 0;
+
+            app-text, app-icon{
+                color: white;
+            }
+        }
+    }
+
+    .profile_img:hover{
+        background-color: rgba(0, 0, 0, .4);
+
+        .update-picture{
+            display: flex;
+        }
+    }
+
+    app-button{
+        position: absolute;
+        bottom: 5px;
+        left: 20px;
+        right: 20px;
     }
 }

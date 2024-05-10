@@ -1,7 +1,7 @@
-<div class="container">
+<div class="container is-100h is-relative">
     <div class="topbar is-flex l-padding-left l-padding-right">
         <app-icon (click)="showConvList()" class="l-margin-right is-cursor-pointer" name="arrow_back"></app-icon>
-        <app-text>Modifier le profil</app-text>
+        <app-text>Profile</app-text>
     </div>
     <div class="form l-padding-left l-padding-right is-flex is-column">
         <app-notification *ngIf="success.isSuccess" type="info"
@@ -18,13 +18,17 @@
         </app-notification>
         <div class="profile_img is-flex is-justify-center is-cursor-pointer">
             <img src="assets/default.png" alt="">
+            <div class="update-picture is-flex is-column is-justify-center is-align-center">
+                <app-icon name="photo_camera"></app-icon>
+                <app-text class="text-center">Changer ma photo de profile</app-text>
+            </div>
         </div>
         <form [formGroup]="formUpdateProfile" class="is-flex is-column l-margin-top">
             <app-input type="text" formControlName="fullname" class="no-padding" [ngClass]="{'invalid': fullname?.errors?.['novalid']}"
                     [errorMsg]="fullname?.errors?.['novalid']" label="Nom complet*">
             </app-input>
             <app-text-area formControlName="description" class="no-padding" [ngClass]="{'invalid': description?.errors?.['novalid']}"
-                [errorMsg]="description?.errors?.['novalid']" label="Description*"></app-text-area>
+                [errorMsg]="description?.errors?.['novalid']" [rows]="8" label="Description*"></app-text-area>
             <ng-container *ngIf="confirmButton | async">
                 <app-button  (click)="updateProfile()" class="is-100w l-margin-top" [loading]="(isLoading | async) || false">Modifier</app-button>
             </ng-container>
