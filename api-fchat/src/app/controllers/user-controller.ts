@@ -283,7 +283,7 @@ class UserController extends Controller {
                 await user.save()
             }
 
-            return res.status(202).json(Helpers.queryResponse({id: user.id, msg: 'user account profile img updated successfully'}))
+            return res.status(202).json(Helpers.queryResponse({id: user.id, img: file.filename, msg: 'user account profile img updated successfully'}))
 
         } catch (error) {
             return res.status(500).json(Helpers.serverError)
