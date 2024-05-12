@@ -118,6 +118,11 @@ export const userReducer = createReducer(
         return { ...state, isLoading: false, error }
     }),
 
+
+    on(userActions.UpdateUserProfilImgSuccess, (state, { img }) => {
+        const user = {...state.user, profile_img: img}
+        return { ...state , user}
+    }),
     
     // verfy user email account
     on(userActions.VerifyEmailUserFailure, (state, { error }) => {

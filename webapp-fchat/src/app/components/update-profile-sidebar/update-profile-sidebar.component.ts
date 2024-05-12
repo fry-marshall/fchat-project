@@ -262,8 +262,7 @@ export class UpdateProfileSidebarComponent implements OnInit {
   }
 
   get profileImg() {
-    const url = (this.user.profile_img !== null) ? environment.apiUrl + 'assets/'+this.user.profile_img : 'assets/default.png'
-    return url
+    return environment.apiUrl + 'assets/'+this.user.profile_img
   }
 
 }

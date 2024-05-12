@@ -142,6 +142,7 @@ export const UpdateUserProfilImg = createAction(
 
 export const UpdateUserProfilImgSuccess = createAction(
     "[User] update user profile img success",
+    props<{img: string}>()
 ) 
 
 export const UpdateUserProfilImgFailure = createAction(

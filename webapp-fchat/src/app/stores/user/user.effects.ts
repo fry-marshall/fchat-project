@@ -118,7 +118,7 @@ export class UserEffects {
         ofType(userActions.UpdateUserProfilImg),
         switchMap(({ profile_img }) => {
             return this.userService.updateUserProfileImg(profile_img).pipe(
-                map(() => userActions.UpdateUserProfilImgSuccess()),
+                map((response: any) => userActions.UpdateUserProfilImgSuccess({img: response.data.img})),
                 catchError((error) => of(userActions.UpdateUserProfilImgFailure(error)))
             )
         })

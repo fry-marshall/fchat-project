@@ -35,8 +35,7 @@ export class ConversationCardComponent implements OnInit{
   }
 
   get profileImg() {
-    const url = (this.currentUser.profile_img !== null) ? environment.apiUrl + 'assets/'+this.currentUser.profile_img : 'assets/default.png'
-    return url
+    return environment.apiUrl + 'assets/'+this.receiverUserInfos?.profile_img
   }
 
   get date(){
