@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { environment } from "@environments/environment";
 import { User } from "@library_v2/interfaces/user";
 import { combineLatest, filter, map } from "rxjs";
 import { MessageFacade } from "src/app/stores/message/message.facade";
@@ -42,5 +43,10 @@ export class ConversationDetailComponent implements OnInit, AfterViewInit  {
 
     isSender(user: User, message: Message) {
         return user.id === message.sender_id
+    }
+
+    profileImg(user: User) {
+        const url = (user.profile_img !== null) ? environment.apiUrl + 'assets/'+user.profile_img : 'assets/default.png'
+        return url
     }
 }

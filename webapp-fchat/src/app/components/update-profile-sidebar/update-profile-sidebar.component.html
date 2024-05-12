@@ -17,7 +17,7 @@
         >
         </app-notification>
         <div class="profile_img is-flex is-justify-center is-cursor-pointer">
-            <img src="assets/default.png" alt="">
+            <img [src]="profileImg" alt="">
             <div class="update-picture is-flex is-column is-justify-center is-align-center" (click)="displayPictureModal = true">
                 <app-icon name="photo_camera"></app-icon>
                 <app-text class="text-center">Changer ma photo de profile</app-text>

@@ -1,7 +1,7 @@
 <ng-container *ngIf="(viewModel$ | async) as vm">
     <div class="header is-flex is-align-center is-absolute l-padding">
         <div class="profile_img">
-            <img src="/assets/default.png" alt="">
+            <img [src]="profileImg(vm.userInfos!)" alt="">
         </div>
         <app-text class="l-margin-left">{{ getFullName(vm.userInfos?.fullname) }}</app-text>
     </div>

@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { environment } from '@environments/environment';
 import { NotificationComponent } from '@library_v2/components/molecules/notification/notification.component';
 import { globalErrorMsg } from '@library_v2/interfaces/error';
 import { User } from '@library_v2/interfaces/user';
@@ -258,6 +259,11 @@ export class UpdateProfileSidebarComponent implements OnInit {
     this.displayTakePictureModal = false; 
     this.selectedFile = null; 
     this.turnOffCamera()
+  }
+
+  get profileImg() {
+    const url = (this.user.profile_img !== null) ? environment.apiUrl + 'assets/'+this.user.profile_img : 'assets/default.png'
+    return url
   }
 
 }
