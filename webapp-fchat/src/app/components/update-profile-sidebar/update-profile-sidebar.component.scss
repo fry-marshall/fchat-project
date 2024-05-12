@@ -1,10 +1,10 @@
 :host {
 
-    .container{
+    .container {
         height: 100%;
         position: relative;
 
-        app-button{
+        app-button {
             position: absolute;
             bottom: 5px;
             left: 20px;
@@ -34,17 +34,18 @@
             opacity: 0.7;
         }
 
-        .update-picture{
+        .update-picture {
             display: none;
             position: absolute;
             inset: 0;
 
-            app-text, app-icon{
+            app-text,
+            app-icon {
                 color: white;
             }
         }
 
-        .options{
+        .options {
             display: none;
             min-width: 210px;
             background: #FFFFFF;
@@ -52,34 +53,55 @@
             border-radius: 6px;
             position: absolute;
             z-index: 2;
-    
-            .option{
+
+            .option {
                 padding: 14px;
                 text-align: start;
                 color: #747474;
             }
-    
-            .option:hover{
+
+            .option:hover {
                 background: #ededed;
             }
         }
     }
 
-    .profile_img:hover{
+    .profile_img:hover {
         background-color: rgba(0, 0, 0, .4);
 
-        .update-picture{
+        .update-picture {
             display: flex;
         }
 
-        .options{
+        .options {
             display: block;
         }
     }
 
-    .photo_uploaded{
+    .photo_uploaded {
         width: 74%;
         height: 70%;
         object-fit: cover;
+    }
+
+    .options {
+        min-width: 210px;
+        background: #FFFFFF;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 6px;
+        position: absolute;
+        top: 200px;
+        right: -90px;
+        z-index: 2;
+
+        .option {
+            padding: 14px;
+            text-align: start;
+            color: #747474;
+        }
+
+        .option:hover {
+            background: #ededed;
+        }
     }
 }

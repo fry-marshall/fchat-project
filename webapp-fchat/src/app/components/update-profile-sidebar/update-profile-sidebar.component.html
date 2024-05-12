@@ -3,7 +3,7 @@
         <app-icon (click)="showConvList()" class="l-margin-right is-cursor-pointer" name="arrow_back"></app-icon>
         <app-text>Profile</app-text>
     </div>
-    <div class="form l-padding-left l-padding-right is-flex is-column">
+    <div class="form l-padding-left l-padding-right is-flex is-column is-relative">
         <app-notification *ngIf="success.isSuccess" type="info"
             [title]="success.msg.title"
             [subtitle]="success.msg.subtitle"
@@ -18,21 +18,21 @@
         </app-notification>
         <div class="profile_img is-flex is-justify-center is-cursor-pointer">
             <img src="assets/default.png" alt="">
-            <div class="update-picture is-flex is-column is-justify-center is-align-center">
+            <div class="update-picture is-flex is-column is-justify-center is-align-center" (click)="displayPictureModal = true">
                 <app-icon name="photo_camera"></app-icon>
                 <app-text class="text-center">Changer ma photo de profile</app-text>
             </div>
         </div>
-        <div class="options">
+        <div class="options is-absolute" [ngStyle]="{'display': displayPictureModal ? 'block' : 'none'}"  (appClickOutside)="displayPictureModal = false">
             <ul>
                 <li class="option is-cursor-pointer" (click)="actionSelected(options[0])">
-                    <app-text (click)="displayUserPicture = true">Afficher ma photo</app-text>
+                    <app-text>Afficher ma photo</app-text>
                 </li>
                 <li class="option is-cursor-pointer" (click)="actionSelected(options[1])">
-                    <app-text (click)="startCamera()">Prendre ma photo</app-text>
+                    <app-text>Prendre ma photo</app-text>
                 </li>
                 <li class="option is-cursor-pointer" (click)="actionSelected(options[2])">
-                    <app-text (click)="selectFile()">Importer ma photo</app-text>
+                    <app-text>Importer ma photo</app-text>
                     <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)">
                 </li>
             </ul>
@@ -67,7 +67,7 @@
         <img class="photo_uploaded" [src]="imageURL" alt="Ma Photo">
     </ng-container>
     <ng-container footer class="is-align-center">
-        <app-text (click)="displayUploadPictureModal = false" class="close fs-14" color="#00A3FF">Annuler</app-text>
+        <app-text (click)="displayUploadPictureModal = false; selectedFile = null" class="close fs-14 is-cursor-pointer" color="#00A3FF">Annuler</app-text>
         <app-button class="m-margin-left" [loading]="(isLoading | async) || false" (click)="uploadPicture()">Confirmer</app-button>
     </ng-container>
 </app-modal>
@@ -88,17 +88,17 @@
     <ng-container body class="is-justify-center is-align-center">
         <video #video autoplay class="photo_uploaded"></video>
         <canvas #canvas style="display: none;" class="photo_uploaded"></canvas>
-        <app-icon *ngIf="!selectedFile" class="l-margin-top" (click)="takePicture()" name="photo_camera"></app-icon>
+        <app-icon *ngIf="!selectedFile" class="l-margin-top is-cursor-pointer" (click)="takePicture()" name="photo_camera"></app-icon>
     </ng-container>
-    <ng-container footer class="is-align-center" *ngIf="selectedFile">
-        <app-text (click)="displayTakePictureModal = false" class="close fs-14" color="#00A3FF">Annuler</app-text>
-        <app-button class="m-margin-left" [loading]="(isLoading | async) || false" (click)="uploadPicture()">Confirmer</app-button>
+    <ng-container footer class="is-align-center">
+        <app-text (click)="displayTakePictureModal = false; selectedFile = null" class="close fs-14 is-cursor-pointer" color="#00A3FF">Annuler</app-text>
+        <app-button *ngIf="selectedFile" class="m-margin-left" [loading]="(isLoading | async) || false" (click)="uploadPicture()">Confirmer</app-button>
     </ng-container>
 </app-modal>
 
 
 <app-user-profile-picture [user]="user" *ngIf="displayUserPicture">
-    <app-icon style="position: absolute;
+    <app-icon class="is-cursor-pointer" style="position: absolute;
     right: 50px;
     top: 25px;
     color: white;" name="close" (click)="displayUserPicture = false"></app-icon>

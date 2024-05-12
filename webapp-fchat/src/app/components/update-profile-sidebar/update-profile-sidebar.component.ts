@@ -43,6 +43,7 @@ export class UpdateProfileSidebarComponent implements OnInit {
   displayUploadPictureModal: boolean = false;
   displayTakePictureModal: boolean = false;
   displayUserPicture: boolean = false;
+  displayPictureModal: boolean = false;
 
 
   @ViewChild('fileInput') fileInput: any;
@@ -104,14 +105,18 @@ export class UpdateProfileSidebarComponent implements OnInit {
   actionSelected(option: string) {
     switch (option) {
       case this.options[0]:
+        this.displayUserPicture = true
         break;
 
       case this.options[1]:
+        this.startCamera()
         break;
 
       case this.options[2]:
+        this.selectFile()
         break;
     }
+    this.displayPictureModal = false
   }
 
   async uploadPicture() {
@@ -215,10 +220,6 @@ export class UpdateProfileSidebarComponent implements OnInit {
   }
 
   async takePicture() {
-
-
-
-
     try {
       const context = this.canvas.nativeElement.getContext('2d');
       context.drawImage(this.videoElement.nativeElement, 0, 0, 640, 480);
