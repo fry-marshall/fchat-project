@@ -17,8 +17,10 @@ const io = new Server(server, {
 app.use(cors())
 router(app, io)
 
-const assetsPath = path.join(__dirname, 'assets');
+
+const assetsPath = path.join(__dirname, '../assets');
 app.use('/assets', Express.static(assetsPath))
+
 
 server.listen(process.env.PORT, () => { })
 

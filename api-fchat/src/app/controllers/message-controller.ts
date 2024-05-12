@@ -119,6 +119,31 @@ class MessageController extends Controller {
             await message.setReceiver(receiverUser)
             await message.setConversation(conversation)
 
+
+            const messages = await Message.findAll({
+                where: {
+                    conversation_id: conversation.id,
+                    receiver_id: user.id
+                }
+            })
+
+            if(messages.length > 0){
+
+                for(let message of messages){
+                    message.set({is_read: true})
+                    await message.save()
+                }
+            }
+
+            res.locals.io.emit(
+                receiverUserId, {
+                type: 'read_message',
+                data: {
+                    conversation_id: req.body.conversation_id,
+                    messages
+                }
+            })
+
             res.locals.io.emit(receiverUserId, {
                 type: 'new_message',
                 data: {
