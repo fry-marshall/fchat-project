@@ -254,4 +254,10 @@ export class UpdateProfileSidebarComponent implements OnInit {
     });
   }
 
+  closeTakePictureModal() {
+    this.displayTakePictureModal = false; 
+    this.selectedFile = null; 
+    this.turnOffCamera()
+  }
+
 }

@@ -91,7 +91,7 @@
         <app-icon *ngIf="!selectedFile" class="l-margin-top is-cursor-pointer" (click)="takePicture()" name="photo_camera"></app-icon>
     </ng-container>
     <ng-container footer class="is-align-center">
-        <app-text (click)="displayTakePictureModal = false; selectedFile = null" class="close fs-14 is-cursor-pointer" color="#00A3FF">Annuler</app-text>
+        <app-text (click)="closeTakePictureModal()" class="close fs-14 is-cursor-pointer" color="#00A3FF">Annuler</app-text>
         <app-button *ngIf="selectedFile" class="m-margin-left" [loading]="(isLoading | async) || false" (click)="uploadPicture()">Confirmer</app-button>
     </ng-container>
 </app-modal>
