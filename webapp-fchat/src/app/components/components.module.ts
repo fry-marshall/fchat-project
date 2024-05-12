@@ -10,6 +10,7 @@ import { SenderMessageInputComponent } from './sender-message-input/sender-messa
 import { ConversationDetailComponent } from './conversation-detail/conversation-detail.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UpdateProfileSidebarComponent } from './update-profile-sidebar/update-profile-sidebar.component';
+import { UserProfilePictureComponent } from './user-profile-picture/user-profile-picture.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { UpdateProfileSidebarComponent } from './update-profile-sidebar/update-p
     BubbleMessageComponent,
     SenderMessageInputComponent,
     ConversationDetailComponent,
-    UpdateProfileSidebarComponent
+    UpdateProfileSidebarComponent,
+    UserProfilePictureComponent
   ],
   imports: [
     UiModule,
@@ -37,7 +39,8 @@ import { UpdateProfileSidebarComponent } from './update-profile-sidebar/update-p
     BubbleMessageComponent,
     SenderMessageInputComponent,
     ConversationDetailComponent,
-    UpdateProfileSidebarComponent
+    UpdateProfileSidebarComponent,
+    UserProfilePictureComponent
   ]
 })
 export class ComponentsModule { }

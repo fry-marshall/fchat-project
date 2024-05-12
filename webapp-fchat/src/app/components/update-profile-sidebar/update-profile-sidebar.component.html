@@ -26,10 +26,10 @@
         <div class="options">
             <ul>
                 <li class="option is-cursor-pointer" (click)="actionSelected(options[0])">
-                    <app-text>Afficher ma photo</app-text>
+                    <app-text (click)="displayUserPicture = true">Afficher ma photo</app-text>
                 </li>
                 <li class="option is-cursor-pointer" (click)="actionSelected(options[1])">
-                    <app-text>Prendre ma photo</app-text>
+                    <app-text (click)="startCamera()">Prendre ma photo</app-text>
                 </li>
                 <li class="option is-cursor-pointer" (click)="actionSelected(options[2])">
                     <app-text (click)="selectFile()">Importer ma photo</app-text>
@@ -71,3 +71,35 @@
         <app-button class="m-margin-left" [loading]="(isLoading | async) || false" (click)="uploadPicture()">Confirmer</app-button>
     </ng-container>
 </app-modal>
+
+<!-- Modal take picture -->
+<app-modal *ngIf="displayTakePictureModal" [open]="displayTakePictureModal">
+    <ng-container header>
+        <div class="is-flex is-column">
+            <app-notification *ngIf="error.hasError" type="error"
+                [title]="error.msg.title"
+                [subtitle]="error.msg.subtitle"
+                class="l-margin-bottom"
+            >
+            </app-notification>
+            <app-text>Validation de la photo</app-text>
+        </div>
+    </ng-container>
+    <ng-container body class="is-justify-center is-align-center">
+        <video #video autoplay class="photo_uploaded"></video>
+        <canvas #canvas style="display: none;" class="photo_uploaded"></canvas>
+        <app-icon *ngIf="!selectedFile" class="l-margin-top" (click)="takePicture()" name="photo_camera"></app-icon>
+    </ng-container>
+    <ng-container footer class="is-align-center" *ngIf="selectedFile">
+        <app-text (click)="displayTakePictureModal = false" class="close fs-14" color="#00A3FF">Annuler</app-text>
+        <app-button class="m-margin-left" [loading]="(isLoading | async) || false" (click)="uploadPicture()">Confirmer</app-button>
+    </ng-container>
+</app-modal>
+
+
+<app-user-profile-picture [user]="user" *ngIf="displayUserPicture">
+    <app-icon style="position: absolute;
+    right: 50px;
+    top: 25px;
+    color: white;" name="close" (click)="displayUserPicture = false"></app-icon>
+</app-user-profile-picture>

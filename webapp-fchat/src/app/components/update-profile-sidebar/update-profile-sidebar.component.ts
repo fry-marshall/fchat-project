@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NotificationComponent } from '@library_v2/components/molecules/notification/notification.component';
 import { globalErrorMsg } from '@library_v2/interfaces/error';
@@ -14,7 +14,7 @@ import { RightAction, ViewsService } from 'src/app/views/views.service';
   templateUrl: './update-profile-sidebar.component.html',
   styleUrls: ['./update-profile-sidebar.component.scss']
 })
-export class UpdateProfileSidebarComponent implements OnInit{
+export class UpdateProfileSidebarComponent implements OnInit {
 
   @Input() user: User;
 
@@ -41,8 +41,13 @@ export class UpdateProfileSidebarComponent implements OnInit{
     "Importer une photo"
   ]
   displayUploadPictureModal: boolean = false;
+  displayTakePictureModal: boolean = false;
+  displayUserPicture: boolean = false;
+
 
   @ViewChild('fileInput') fileInput: any;
+  @ViewChild('video') videoElement: ElementRef;
+  @ViewChild('canvas') canvas: ElementRef;
 
   @ViewChild(NotificationComponent, { static: false })
   private notificationComponent!: NotificationComponent;
@@ -52,8 +57,9 @@ export class UpdateProfileSidebarComponent implements OnInit{
   constructor(
     private viewsService: ViewsService,
     private actions$: Actions,
-    private userFacade: UserFacade
-  ){}
+    private userFacade: UserFacade,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
     const data = {
@@ -67,7 +73,7 @@ export class UpdateProfileSidebarComponent implements OnInit{
       of(data)
     ]).pipe(
       map(([value, data]) => {
-        return value.description !== data.description || value.fullname !==data.fullname
+        return value.description !== data.description || value.fullname !== data.fullname
       }),
     )
   }
@@ -90,8 +96,8 @@ export class UpdateProfileSidebarComponent implements OnInit{
       this.displayUploadPictureModal = true
     }
   }
-  
-  showConvList(){
+
+  showConvList() {
     this.viewsService.updateShowRightComponent(RightAction.show_conversations)
   }
 
@@ -108,7 +114,7 @@ export class UpdateProfileSidebarComponent implements OnInit{
     }
   }
 
-  async uploadPicture(){
+  async uploadPicture() {
     this.isLoading.next(true)
     this.userFacade.updateUserProfileImg(this.selectedFile)
 
@@ -134,6 +140,7 @@ export class UpdateProfileSidebarComponent implements OnInit{
         }
         this.isLoading.next(false)
         this.displayUploadPictureModal = false
+        this.displayTakePictureModal = false
       })
     ))
   }
@@ -145,13 +152,13 @@ export class UpdateProfileSidebarComponent implements OnInit{
         this.formUpdateProfile.controls['fullname'].setErrors({
           novalid: 'Champ obligatoire'
         })
-      } 
+      }
 
       if (!this.description?.value || this.description.value === '') {
         this.formUpdateProfile.controls['description'].setErrors({
           novalid: 'Champ obligatoire'
         })
-      } 
+      }
     }
     else {
       // make request
@@ -187,6 +194,63 @@ export class UpdateProfileSidebarComponent implements OnInit{
         })
       ))
     }
+  }
+
+  startCamera() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        this.displayTakePictureModal = true;
+
+        setTimeout(() => {
+          if (this.videoElement) {
+            this.videoElement.nativeElement.srcObject = stream;
+          }
+        }, 100)
+
+        this.cdr.detectChanges();
+      })
+      .catch(error => {
+        console.error('Erreur lors de l\'accès à la caméra : ', error);
+      });
+  }
+
+  async takePicture() {
+
+
+
+
+    try {
+      const context = this.canvas.nativeElement.getContext('2d');
+      context.drawImage(this.videoElement.nativeElement, 0, 0, 640, 480);
+      const blob = await this.convertCanvasToBlob();
+      this.selectedFile = new File([blob], "profile.jpg", { type: "image/png" });
+
+      this.videoElement.nativeElement.style.display = 'none'
+      this.canvas.nativeElement.style.display = 'block'
+
+    } catch (error) {
+      console.error('Erreur lors du traitement de l\'image:', error);
+    }
+    this.turnOffCamera()
+  }
+
+  turnOffCamera() {
+    const videoTracks = this.videoElement.nativeElement.srcObject.getVideoTracks();
+    videoTracks.forEach((track: any) => {
+      track.stop();
+    });
+  }
+
+  convertCanvasToBlob(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.canvas.nativeElement.toBlob((blob: any) => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error('Erreur lors de la conversion du canvas en blob'));
+        }
+      }, 'image/png');
+    });
   }
 
 }
