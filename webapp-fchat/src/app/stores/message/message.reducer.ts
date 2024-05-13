@@ -83,7 +83,7 @@ export const messageReducer = createReducer(
                 return conv
             })
         }else{
-            updateMessages = [{conversation_id: message.conversation_id, messages: [message]}]
+            updateMessages = [...updateMessages, {conversation_id: message.conversation_id, messages: [message]}]
         }
         
         return {...state, allMessages: updateMessages}

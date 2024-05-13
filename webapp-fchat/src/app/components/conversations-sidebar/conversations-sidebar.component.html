@@ -40,7 +40,7 @@
         </div>
     </ng-container>
     <ng-container body>
-        <!-- <form [formGroup]="formChangePassword" class="is-flex is-column l-margin-top">
+        <form [formGroup]="formChangePassword" class="is-flex is-column l-margin-top is-100w">
             <app-input type="password" formControlName="old_password" [ngClass]="{'invalid': oldPassword?.errors?.['novalid']}"
                 [isPassword]="true" [errorMsg]="oldPassword?.errors?.['novalid']" label="Mot de passe actuel*">
             </app-input>
@@ -50,10 +50,10 @@
             <app-input type="password" formControlName="confirm_new_password" [ngClass]="{'invalid': confirmNewPassword?.errors?.['novalid']}"
                 [isPassword]="true" [errorMsg]="confirmNewPassword?.errors?.['novalid']" label="Confirmer le mot de passe*">
             </app-input>
-        </form> -->
+        </form>
     </ng-container>
     <ng-container footer class="is-align-center">
-        <app-text (click)="displayChangePasswordModal = false" class="close fs-14" color="#00A3FF">Fermer</app-text>
+        <app-text (click)="displayChangePasswordModal = false" class="close fs-14 is-cursor-pointer" color="#00A3FF">Fermer</app-text>
         <app-button class="m-margin-left" [loading]="(isLoading | async) || false" (click)="changePassword()">Modifier</app-button>
     </ng-container>
 </app-modal>

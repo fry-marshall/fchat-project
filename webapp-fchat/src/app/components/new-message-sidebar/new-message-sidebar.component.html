@@ -1,15 +1,11 @@
 <div class="container is-100h">
-    <div class="topbar is-flex m-padding-bottom">
+    <div class="title is-flex">
         <app-icon (click)="showConvList()" class="l-margin-right is-cursor-pointer" name="arrow_back"></app-icon>
         <app-text>Nouveau message</app-text>
     </div>
-    <div class="searchbar l-padding-bottom">
-        <app-input placeholder="Rechercher" [(ngModel)]="filterUserName" (ngModelChange)="filterUser()"
-            prefixIcon="search" class="rounded"></app-input>
-    </div>
+    <app-input placeholder="Rechercher" [(ngModel)]="filterUserName" (ngModelChange)="filterUser()" prefixIcon="search" class="searchbar"></app-input>
     <div class="separator"></div>
-
-    <div class="users l-padding-top">
+    <div class="users">
         <ng-container *ngFor="let user of usersFiltered">
             <app-user-card [user]="user" (click)="addNewConversation(user)"></app-user-card>
         </ng-container>

@@ -2,8 +2,9 @@
     <div class="profile_img is-flex is-justify-center">
         <img [src]="profileImg" alt="">
     </div>
-    <div class="infos">
+    <div class="infos l-margin-left">
         <app-text class="name fs-16 elipsis">{{ getFullName(user.fullname) }}</app-text>
-        <app-text class="description fs-10 m-margin-top elipsis">{{ getDescription(user.description) }}</app-text>
+        <app-text class="description fs-10 elipsis">{{ getDescription(user.description) }}</app-text>
     </div>
 </div>
+<div class="separator-user"></div>

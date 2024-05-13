@@ -111,7 +111,7 @@ export const userReducer = createReducer(
     }),
 
     on(userActions.UpdateUserAccountSuccess, (state, { user }) => {
-        return { ...state, user: {...user}, isLoading: true }
+        return { ...state, user: {...state.user, ...user}, isLoading: true }
     }),
 
     on(userActions.UpdateUserAccountFailure, (state, { error }) => {
@@ -128,8 +128,5 @@ export const userReducer = createReducer(
     on(userActions.VerifyEmailUserFailure, (state, { error }) => {
         return { ...state, isLoading: false, error }
     }),
-
-    
-
 
 )

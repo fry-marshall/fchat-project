@@ -46,7 +46,7 @@ export class VerifyEmailComponent implements OnInit {
           this.success.isSuccess = true;
           this.success.msg = {
             title: 'Succès',
-            subtitle: 'Votre mot de passe a été vérifié avec succès.'
+            subtitle: 'Votre adresse mail a été vérifiée avec succès.'
           }
         }
         this.isLoading.next(false)

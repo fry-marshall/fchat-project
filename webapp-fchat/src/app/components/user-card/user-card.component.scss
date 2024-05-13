@@ -2,24 +2,23 @@
     display: block;
     cursor: pointer;
 
-    .container{        
+    .container{       
+        padding: 15px 12px;
         .profile_img{
-            width: 45px;
-            height: 45px;
+            width: 35px;
+            height: 35px;
             border-radius: 100%;
             overflow: hidden;
             border: 1px solid #767676;
             img{
-                width: 50px;
-                height: 50px;
-                opacity: .7;
+                width: 40px;
+                height: 40px;
             }
         }
     }
 
     .infos{
         max-width: 210px;
-        margin-left: 25px;
         
         .name{
             font-weight: 500;
