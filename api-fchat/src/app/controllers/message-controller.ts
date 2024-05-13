@@ -7,7 +7,7 @@ import { Request, Response } from "express"
 import { User } from "../models/user";
 import Conversation from "../models/conversation";
 import { v4 as uuidv4 } from "uuid";
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 
 Conversation.belongsTo(User, { foreignKey: 'user_id_1', as: 'User1' })
 Conversation.belongsTo(User, { foreignKey: 'user_id_2', as: 'User2' })
@@ -30,14 +30,15 @@ class MessageController extends Controller {
 
             let conversations = await Conversation.findAll({
                 where: {
-                    [Op.or]: [
+                    [Op.and]: [
                         {
-                            user_id_1: user.id,
+                            [Op.or]: [
+                                { user_id_1: user.id },
+                                { user_id_2: user.id }
+                            ]
                         },
-                        {
-                            user_id_2: user.id
-                        },
-                    ],
+                        Sequelize.literal('user_id_1 IS NOT NULL AND user_id_2 IS NOT NULL')
+                    ]
                 }
             })
 
@@ -54,13 +55,14 @@ class MessageController extends Controller {
                     },
                     order: [['date', 'ASC']],
                 })
-
-                response.push(
-                    {
-                        conversation_id: conv.id,
-                        messages
-                    }
-                )
+                if(messages.length > 0){
+                    response.push(
+                        {
+                            conversation_id: conv.id,
+                            messages
+                        }
+                    )
+                }
             }
             return res.status(200).json(Helpers.queryResponse(response))
 
