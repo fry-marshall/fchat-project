@@ -8,7 +8,8 @@ import path from "path";
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'dist/assets')
+        const assetsPath = path.join(__dirname, '../../../../assets');
+        cb(null, assetsPath)
     },
     filename: function (req, file, cb) {
         const name = uuidv4() + path.extname(file.originalname)
