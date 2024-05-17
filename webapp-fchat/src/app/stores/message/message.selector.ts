@@ -10,7 +10,19 @@ const userState = (state: AppState) => state.userState
 export const getMessages = createSelector(
     messageState,
     (messages) => {
-        return messages.allMessages?.filter(msg => !!msg.messages[0].sender_id && !!msg.messages[0].receiver_id) ?? []
+        return messages.allMessages?.filter(msg => !!msg.messages[0].sender_id && !!msg.messages[0].receiver_id).sort((a,b) => {
+            const lastMessageDateA = new Date(a.messages[a.messages.length - 1].date)
+            const lastMessageDateB = new Date(b.messages[b.messages.length - 1].date)
+            if(lastMessageDateA > lastMessageDateB){
+                return -1
+            }
+            else if(lastMessageDateA < lastMessageDateB){
+                return 1
+            }
+            else{
+                return 0
+            }
+        }) ?? []
     }
 )
 

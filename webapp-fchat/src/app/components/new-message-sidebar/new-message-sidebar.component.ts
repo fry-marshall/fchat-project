@@ -32,8 +32,7 @@ export class NewMessageSidebarComponent{
   async addNewConversation(user: User){
     const currentUser = await firstValueFrom(this.userFacade.currentUser$.pipe(filter(user => !!user)))
     const allMessages = await firstValueFrom(this.messageFacade.messages$.pipe(filter(msg => !!msg)))
-    const isConvExist = allMessages.find(msg => msg.messages[0].sender_id === currentUser?.id || msg.messages[0].receiver_id === currentUser?.id)
-    
+    const isConvExist = allMessages.find(msg => msg.messages[0].sender_id === user?.id || msg.messages[0].receiver_id === user?.id)
     if(isConvExist){
       this.messageFacade.setCurrentConversation(isConvExist)
     }else{

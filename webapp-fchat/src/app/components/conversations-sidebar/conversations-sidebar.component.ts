@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { environment } from '@environments/environment';
 import { NotificationComponent } from '@library_v2/components/molecules/notification/notification.component';
@@ -18,7 +18,7 @@ import { RightAction, ViewsService } from 'src/app/views/views.service';
   templateUrl: './conversations-sidebar.component.html',
   styleUrls: ['./conversations-sidebar.component.scss']
 })
-export class ConversationsSidebarComponent {
+export class ConversationsSidebarComponent implements OnChanges{
 
   @Input() conversations: Conversation[] = [];
   @Input() currentUser: User;
@@ -61,6 +61,10 @@ export class ConversationsSidebarComponent {
     private cookieService: CookieService
   ) { }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    this.conversationFiltered = this.conversations
+  }
+
   get oldPassword() { return this.formChangePassword.get('old_password'); }
   get newPassword() { return this.formChangePassword.get('new_password'); }
   get confirmNewPassword() { return this.formChangePassword.get('confirm_new_password'); }
@@ -88,7 +92,13 @@ export class ConversationsSidebarComponent {
   }
 
   filterConversation() {
-    this.conversationFiltered = this.conversations.filter(conv => this.getUserInfos(conv)?.fullname.includes(this.filterUserName) || this.getUserInfos(conv)?.fullname === null)
+    if(this.filterUserName !== undefined){
+      this.conversationFiltered = this.conversations.filter(conv => {
+        return this.getUserInfos(conv)?.fullname === null || this.getUserInfos(conv)?.fullname.toLocaleLowerCase().includes(this.filterUserName.toLocaleLowerCase())
+      } )
+    } else{
+      this.conversationFiltered = this.conversations
+    }
   }
 
   optionSelected(option: string) {
