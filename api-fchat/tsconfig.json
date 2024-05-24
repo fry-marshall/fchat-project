@@ -10,5 +10,10 @@
     "noImplicitAny": true,                            /* Enable error reporting for expressions and declarations with an implied 'any' type. */
     "allowUnreachableCode": false,                     /* Disable error reporting for unreachable code. */
     "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
+    "paths": {
+      "@assets/*": [
+        "./dist/assets/*"
+      ]
+    }
   }
 }

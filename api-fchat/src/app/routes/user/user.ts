@@ -5,10 +5,24 @@ import GlobalMiddlewares from "../global-middlewares"
 import multer from "multer"
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
+import fs from "fs"
+
+function getAssetsPath(): string {
+    const distAssetsPath = path.resolve(__dirname, '../../../../dist/assets');
+    const srcAssetsPath = path.resolve(__dirname, '../../../../assets');
+
+    if (fs.existsSync(distAssetsPath)) {
+        return distAssetsPath;
+    } else if (fs.existsSync(srcAssetsPath)) {
+        return srcAssetsPath;
+    } else {
+        throw new Error('Assets directory not found');
+    }
+}
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const assetsPath = path.join(__dirname, '../../../../assets');
+        const assetsPath = getAssetsPath()
         cb(null, assetsPath)
     },
     filename: function (req, file, cb) {
