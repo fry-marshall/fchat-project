@@ -1,22 +1,11 @@
-# Utilisez l'image officielle de Node.js comme base
 FROM node:alpine
 
 RUN npm install -g @angular/cli
-
-# Définir le répertoire de travail dans le conteneur
 WORKDIR /app
-
-# Copier les fichiers package.json et package-lock.json dans le répertoire de travail
 COPY package*.json ./
 
-# Installer les dépendances
 RUN npm install
-
-# Copier le reste des fichiers de l'application dans le répertoire de travail
 COPY . .
-
-# Exposer le port 4201 pour l'application Angular
 EXPOSE 4200
 
-# Commande pour démarrer l'application Angular
 CMD ["npm", "start"]
