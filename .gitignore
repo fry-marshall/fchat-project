@@ -2,5 +2,4 @@ api-fchat/node_modules
 api-fchat/dist/src
 api-fchat/dist/assets/*
 api-fchat/dist/jest.config.js
-api-fchat/.env
 api-fchat/db
