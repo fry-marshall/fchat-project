@@ -7,22 +7,10 @@ import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import fs from "fs"
 
-function getAssetsPath(): string {
-    const distAssetsPath = path.resolve(__dirname, '../../../../dist/assets');
-    const srcAssetsPath = path.resolve(__dirname, '../../../../assets');
-
-    if (fs.existsSync(distAssetsPath)) {
-        return distAssetsPath;
-    } else if (fs.existsSync(srcAssetsPath)) {
-        return srcAssetsPath;
-    } else {
-        throw new Error('Assets directory not found');
-    }
-}
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const assetsPath = getAssetsPath()
+        const assetsPath = path.resolve(__dirname, '../../../../assets');
         cb(null, assetsPath)
     },
     filename: function (req, file, cb) {

@@ -22,6 +22,6 @@ const assetsPath = path.join(__dirname, '../assets');
 app.use('/assets', Express.static(assetsPath))
 
 
-server.listen(process.env.PORT, () => { })
+server.listen(process.env.NODE_DOCKER_PORT, () => { })
 
 export default server
