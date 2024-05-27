@@ -2,7 +2,7 @@ dev:
 	docker-compose -f docker-compose.dev.yml up -d
 
 start:
-	docker pull frymarshall/fchat_api && docker run frymarshall/fchat_api -d
+	docker pull frymarshall/fchat_api && docker run -d frymarshall/fchat_api
 
 deploy:
 	docker build -t fchat_api -f Dockerfile . && docker tag fchat_api frymarshall/fchat_api:latest && docker push frymarshall/fchat_api:latest 
