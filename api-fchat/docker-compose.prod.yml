@@ -4,17 +4,16 @@ services:
   mysqldb:
     image: mysql:5.7
     restart: unless-stopped
-    env_file: ./.env
     environment:
-      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
-      - MYSQL_DATABASE=$MYSQL_DATABASE_NAME
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE_NAME}
     ports:
-      - $MYSQL_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+      - "${MYSQL_LOCAL_PORT}:${MYSQL_DOCKER_PORT}"
     volumes:
       - ./db:/var/lib/mysql
     networks:
       - fchat_network
-  
+
   fchatapi:
     depends_on:
       - mysqldb
@@ -23,7 +22,7 @@ services:
     restart: unless-stopped
     env_file: ./.env
     ports:
-      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+      - "${NODE_LOCAL_PORT}:${NODE_DOCKER_PORT}"
     stdin_open: true
     tty: true
     networks:
@@ -31,6 +30,7 @@ services:
 
 volumes: 
   db:
+
 networks:
   fchat_network:
     driver: bridge
