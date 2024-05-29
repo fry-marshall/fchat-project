@@ -9,5 +9,3 @@ RUN npm install
 COPY . .
 RUN chmod +x wait-for-db.sh
 RUN npx tsc
-
-CMD ["/bin/sh", "./wait-for-db.sh"]

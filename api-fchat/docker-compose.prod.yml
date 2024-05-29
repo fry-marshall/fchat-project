@@ -18,6 +18,7 @@ services:
     depends_on:
       - mysqldb
     container_name: fchatapi
+    command: ["./wait-for-db.sh"]
     image: frymarshall/fchat_api
     restart: unless-stopped
     env_file: ./.env

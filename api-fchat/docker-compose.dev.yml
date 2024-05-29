@@ -4,11 +4,12 @@ services:
   mysqldb:
     image: mysql:5.7
     restart: unless-stopped
+    env_file: ./.env
     environment:
-      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
-      - MYSQL_DATABASE=$MYSQL_DATABASE_NAME
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE_NAME}
     ports:
-      - $MYSQL_LOCAL_PORT:$MYSQL_DOCKER_PORT
+      - "${MYSQL_LOCAL_PORT}:${MYSQL_DOCKER_PORT}"
     volumes:
       - ./db:/var/lib/mysql
     networks:
@@ -18,6 +19,7 @@ services:
     depends_on:
       - mysqldb
     container_name: fchatapi
+    command: ["/bin/sh", "./wait-for-db.sh"]
     build: .
     restart: unless-stopped
     env_file: ./.env
