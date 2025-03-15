@@ -3,3 +3,9 @@ api-fchat/dist/src
 api-fchat/dist/assets/*
 api-fchat/dist/jest.config.js
 api-fchat/db
+
+
+api-fchat-new/db
+api-fchat-new/node_modules
+
+
