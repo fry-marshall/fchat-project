@@ -1,0 +1,12 @@
+services:
+
+  api:
+    build: .
+    container_name: fchat_api
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - $DOCKER_PORT:$PORT
+    environment:
+      - NODE_ENV=${NODE_ENV}
