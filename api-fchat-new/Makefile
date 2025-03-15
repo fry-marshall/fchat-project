@@ -1,7 +1,7 @@
 
 dev:
 	@echo "Starting app in development environment..."
-	NODE_ENV=dev docker compose --env-file .env.dev up 
+	NODE_ENV=dev docker compose --env-file .env.dev up
 
 # Commande pour démarrer avec l'environnement de production
 prod:

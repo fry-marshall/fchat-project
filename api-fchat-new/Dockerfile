@@ -1,10 +1,14 @@
-FROM node:alpine
-
-RUN apk update && \
-    apk add --no-cache netcat-openbsd
-
+# Étape 1 : Base commune
+FROM node:18-alpine AS base
 WORKDIR /app
-COPY package.json ./
-RUN npm install
+COPY package.json package-lock.json ./
+RUN npm ci --no-cache
+
+# Étape 2 : Développement
+FROM base AS dev
 COPY . .
-CMD npm run start:$NODE_ENV
+
+# Étape 3 : Production
+FROM base AS prod
+COPY . .
+RUN npm run build
