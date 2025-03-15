@@ -17,7 +17,7 @@ const io = new Server(server, {
 app.use(cors())
 router(app, io)
 
-
+console.log("C'est lui l'enfant guerrier")
 const assetsPath = path.join(__dirname, '../assets');
 app.use('/assets', Express.static(assetsPath))
 
