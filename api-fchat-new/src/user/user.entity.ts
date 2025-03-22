@@ -1,0 +1,48 @@
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ nullable: true })
+  fullname?: string;
+
+  @Column({ nullable: true })
+  description?: string;
+
+  @Column({ unique: true })
+  email?: string;
+
+  @Column({ nullable: true })
+  email_verified_token?: string;
+
+  @Column({ nullable: true })
+  email_expiredtime?: string;
+
+  @Column({ default: false })
+  email_verified?: boolean;
+
+  @Column({ nullable: true })
+  forgotpasswordtoken?: string;
+
+  @Column({ nullable: true })
+  forgotpasswordused?: boolean;
+
+  @Column()
+  password?: string;
+
+  @Column({ default: 'default.png' })
+  profile_img?: string;
+
+  @Column({ type: 'text', nullable: true })
+  refresh_token?: string | null;
+
+  @CreateDateColumn()
+  createdAt: Date;
+}

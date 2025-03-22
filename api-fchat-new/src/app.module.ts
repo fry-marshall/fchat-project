@@ -4,6 +4,8 @@ import { AppService } from './app.service';
 import * as Joi from 'joi';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 const NODE_ENV = process.env.NODE_ENV || 'dev';
 
@@ -14,8 +16,8 @@ const NODE_ENV = process.env.NODE_ENV || 'dev';
       validationSchema: Joi.object({
         LOCAL_PORT: Joi.number().default(3000),
         DOCKER_PORT: Joi.number().default(3000),
-        ACCESS_TOKEN_SECRET: Joi.string().required(),
-        REFRESH_TOKEN_SECRET: Joi.string().required(),
+        ACCESS_TOKEN_SECRET: Joi.string().required().default('access_token'),
+        REFRESH_TOKEN_SECRET: Joi.string().required().default('refresh_token'),
         DB_HOST: Joi.string().required(),
         DB_NAME: Joi.string().required(),
         DB_USERNAME: Joi.string().required(),
@@ -34,6 +36,8 @@ const NODE_ENV = process.env.NODE_ENV || 'dev';
       autoLoadEntities: true,
       synchronize: NODE_ENV === 'dev',
     }),
+    AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
