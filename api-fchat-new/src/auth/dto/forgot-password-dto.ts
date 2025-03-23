@@ -1,8 +1,13 @@
-import { IsEmail, Matches, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, Matches, MinLength } from 'class-validator';
 
-export class AuthCredentialsDto {
+export class ForgotPasswordDto {
   @IsEmail()
   email: string;
+}
+
+export class ChangeForgotPasswordDto {
+  @IsNotEmpty()
+  token: string;
 
   @MinLength(8)
   @Matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/, {

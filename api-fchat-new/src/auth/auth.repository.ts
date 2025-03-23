@@ -9,12 +9,16 @@ import { AuthCredentialsDto } from './dto/auth-credentials-dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { RefreshTokenDto } from './dto/refresh-token-dto';
+import { ForgotPasswordDto } from './dto/forgot-password-dto';
+import { MailService } from 'src/mail.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AuthRepository {
   constructor(
     private userRepository: UserRepository,
     private jwtService: JwtService,
+    private mailService: MailService,
   ) {}
 
   async signup(authCredentialsDto: AuthCredentialsDto) {
@@ -107,5 +111,24 @@ export class AuthRepository {
   async logout(user_id: string) {
     await this.userRepository.update(user_id, { refresh_token: null });
     return { message: 'user logout successfully' };
+  }
+
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+    const user = await this.userRepository.findOne({
+      where: {
+        email: forgotPasswordDto.email,
+      },
+    });
+
+    if (user) {
+      await this.userRepository.update(user.id, {
+        forgotpasswordtoken: uuidv4(),
+        forgotpasswordused: false,
+      });
+      const url = `${process.env.HOST_NAME}/resetpassword?token=${user.forgotpasswordtoken}`;
+      await this.mailService.sendEmailResetPassword(user.email ?? '', url);
+    }
+
+    return { message: 'email for reset password sent successfully' };
   }
 }
