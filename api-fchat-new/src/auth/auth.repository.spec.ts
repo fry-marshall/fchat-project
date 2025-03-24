@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthRepository } from './auth.repository';
 import { UserRepository } from '../user/user.repository';
@@ -10,11 +12,15 @@ import {
 import * as bcrypt from 'bcryptjs';
 import { AuthCredentialsDto } from './dto/auth-credentials-dto';
 import { RefreshTokenDto } from './dto/refresh-token-dto';
+import { v4 as uuidv4 } from 'uuid';
+import { MailService } from '../mail.service';
+import { ForgotPasswordDto } from './dto/forgot-password-dto';
 
 describe('AuthRepository', () => {
   let authRepository: AuthRepository;
   let userRepository: UserRepository;
   let jwtService: JwtService;
+  let mailService: MailService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -36,12 +42,19 @@ describe('AuthRepository', () => {
             verify: jest.fn(),
           },
         },
+        {
+          provide: MailService,
+          useValue: {
+            sendEmailResetPassword: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     authRepository = module.get<AuthRepository>(AuthRepository);
     userRepository = module.get<UserRepository>(UserRepository);
     jwtService = module.get<JwtService>(JwtService);
+    mailService = module.get<MailService>(MailService);
   });
 
   describe('signup', () => {
@@ -199,6 +212,70 @@ describe('AuthRepository', () => {
         refresh_token: null,
       });
       expect(result).toEqual({ message: 'user logout successfully' });
+    });
+  });
+
+  describe('forgotPassword', () => {
+    it('should send a reset password email when user exists', async () => {
+      const user = {
+        id: '123',
+        email: 'test@example.com',
+        forgotpasswordtoken: uuidv4(),
+      };
+
+      userRepository.findOne = jest.fn().mockResolvedValue(user);
+      userRepository.update = jest.fn().mockResolvedValue(undefined);
+      mailService.sendEmailResetPassword = jest
+        .fn()
+        .mockResolvedValue(undefined);
+
+      const forgotPasswordDto: ForgotPasswordDto = {
+        email: 'test@example.com',
+      };
+
+      const response = await authRepository.forgotPassword(forgotPasswordDto);
+
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { email: forgotPasswordDto.email },
+      });
+
+      expect(userRepository.update).toHaveBeenCalledWith(
+        user.id,
+        expect.objectContaining({
+          forgotpasswordtoken: expect.any(String),
+          forgotpasswordused: false,
+        }),
+      );
+
+      expect(mailService.sendEmailResetPassword).toHaveBeenCalledWith(
+        user.email,
+        expect.stringContaining('/resetpassword?token='),
+      );
+
+      expect(response).toEqual({
+        message: 'email for reset password sent successfully',
+      });
+    });
+
+    it('should return success message even if user is not found', async () => {
+      userRepository.findOne = jest.fn().mockResolvedValue(null);
+
+      const forgotPasswordDto: ForgotPasswordDto = {
+        email: 'unknown@example.com',
+      };
+
+      const response = await authRepository.forgotPassword(forgotPasswordDto);
+
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { email: forgotPasswordDto.email },
+      });
+
+      expect(userRepository.update).not.toHaveBeenCalled();
+      expect(mailService.sendEmailResetPassword).not.toHaveBeenCalled();
+
+      expect(response).toEqual({
+        message: 'email for reset password sent successfully',
+      });
     });
   });
 });

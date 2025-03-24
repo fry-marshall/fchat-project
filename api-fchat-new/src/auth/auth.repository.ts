@@ -10,7 +10,7 @@ import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { RefreshTokenDto } from './dto/refresh-token-dto';
 import { ForgotPasswordDto } from './dto/forgot-password-dto';
-import { MailService } from 'src/mail.service';
+import { MailService } from '../mail.service';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()

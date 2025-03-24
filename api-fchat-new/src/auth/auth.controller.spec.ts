@@ -41,6 +41,9 @@ describe('AuthController', () => {
             refreshToken: jest
               .fn()
               .mockResolvedValue({ access_token: 'access_token' }),
+            forgotPassword: jest.fn().mockResolvedValue({
+              message: 'email for reset password sent successfully',
+            }),
           },
         },
       ],
@@ -255,6 +258,44 @@ describe('AuthController', () => {
           .post('/auth/refresh')
           .send({ refresh_token: `${token}toto` })
           .expect(401);
+      });
+    });
+  });
+
+  describe('forgotpassword', () => {
+    describe('success cases', () => {
+      it('should return 200 for forgetting password', async () => {
+        const response = await request(app.getHttpServer())
+          .post('/auth/forgotpassword')
+          .send({ email: 'toto@gmail.com' })
+          .expect(200);
+
+        expect(response.body.message).toBe(
+          'email for reset password sent successfully',
+        );
+      });
+    });
+
+    describe('error cases', () => {
+      it('should return bad request exception for missing email', async () => {
+        authService.forgotPassword = jest
+          .fn()
+          .mockRejectedValue(new BadRequestException());
+
+        await request(app.getHttpServer())
+          .post('/auth/forgotpassword')
+          .expect(400);
+      });
+
+      it('should return bad request exception for wrong email', async () => {
+        authService.forgotPassword = jest
+          .fn()
+          .mockRejectedValue(new BadRequestException());
+
+        await request(app.getHttpServer())
+          .post('/auth/forgotpassword')
+          .send({ email: 'toto' })
+          .expect(400);
       });
     });
   });

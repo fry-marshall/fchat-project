@@ -33,6 +33,9 @@ describe('AuthService', () => {
             refreshToken: jest
               .fn()
               .mockResolvedValue({ access_token: 'access_token' }),
+            forgotPassword: jest.fn().mockResolvedValue({
+              message: 'email for reset password sent successfully',
+            }),
           },
         },
       ],
@@ -154,6 +157,24 @@ describe('AuthService', () => {
       await expect(
         service.refreshToken({ refresh_token: 'toto' }),
       ).rejects.toThrow('Invalid refresh token');
+    });
+  });
+
+  describe('forgotPassword', () => {
+    it('should forgot user password', async () => {
+      expect(
+        (await service.forgotPassword({ email: 'toto@gmail.com' })).message,
+      ).toBe('email for reset password sent successfully');
+    });
+
+    it('should trigger bad request exception', async () => {
+      authRepository.forgotPassword = jest
+        .fn()
+        .mockRejectedValue(new BadRequestException('invalid email'));
+
+      await expect(service.forgotPassword({ email: 'toto' })).rejects.toThrow(
+        'invalid email',
+      );
     });
   });
 });
