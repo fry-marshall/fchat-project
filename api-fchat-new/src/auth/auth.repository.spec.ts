@@ -5,6 +5,7 @@ import { AuthRepository } from './auth.repository';
 import { UserRepository } from '../user/user.repository';
 import { JwtService } from '@nestjs/jwt';
 import {
+  BadRequestException,
   ConflictException,
   NotFoundException,
   UnauthorizedException,
@@ -275,6 +276,82 @@ describe('AuthRepository', () => {
 
       expect(response).toEqual({
         message: 'email for reset password sent successfully',
+      });
+    });
+  });
+
+  describe('resetPassword', () => {
+    describe('success cases', () => {
+      it('should reset password successfully with a valid token', async () => {
+        const resetPasswordDto = {
+          token: 'valid-token',
+          password: 'newPassword123',
+        };
+        const user = {
+          id: 1,
+          forgotpasswordtoken: 'valid-token',
+          forgotpasswordused: false,
+          password: 'oldPassword123',
+        };
+
+        userRepository.findOne = jest.fn().mockResolvedValue(user);
+        userRepository.update = jest.fn().mockResolvedValue({});
+
+        const result = await authRepository.resetPassword(resetPasswordDto);
+
+        expect(result).toEqual({ message: 'Password reset successfully' });
+        expect(userRepository.findOne).toHaveBeenCalledWith({
+          where: { forgotpasswordtoken: 'valid-token' },
+        });
+        expect(userRepository.update).toHaveBeenCalledWith(
+          user.id,
+          expect.objectContaining({
+            forgotpasswordtoken: null,
+            forgotpasswordused: true,
+          }),
+        );
+      });
+    });
+
+    describe('failure cases', () => {
+      it('should throw UnauthorizedException if the token is already used', async () => {
+        const resetPasswordDto = {
+          token: 'used-token',
+          password: 'newPassword123',
+        };
+        const user = {
+          id: 1,
+          forgotpasswordtoken: 'used-token',
+          forgotpasswordused: true,
+          password: 'oldPassword123',
+        };
+
+        userRepository.findOne = jest.fn().mockResolvedValue(user);
+
+        await expect(
+          authRepository.resetPassword(resetPasswordDto),
+        ).rejects.toThrow(
+          new UnauthorizedException('Token has already been used'),
+        );
+        expect(userRepository.findOne).toHaveBeenCalledWith({
+          where: { forgotpasswordtoken: 'used-token' },
+        });
+      });
+
+      it('should throw NotFoundException if the user is not found', async () => {
+        const resetPasswordDto = {
+          token: 'invalid-token',
+          password: 'newPassword123',
+        };
+
+        userRepository.findOne = jest.fn().mockResolvedValue(null);
+
+        await expect(
+          authRepository.resetPassword(resetPasswordDto),
+        ).rejects.toThrow(new NotFoundException('User not found'));
+        expect(userRepository.findOne).toHaveBeenCalledWith({
+          where: { forgotpasswordtoken: 'invalid-token' },
+        });
       });
     });
   });

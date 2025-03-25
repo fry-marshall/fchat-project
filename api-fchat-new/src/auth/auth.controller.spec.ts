@@ -12,6 +12,7 @@ import {
 import * as request from 'supertest';
 import { JwtService } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { ResetPasswordDto } from './dto/forgot-password-dto';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -44,6 +45,7 @@ describe('AuthController', () => {
             forgotPassword: jest.fn().mockResolvedValue({
               message: 'email for reset password sent successfully',
             }),
+            resetPassword: jest.fn(),
           },
         },
       ],
@@ -296,6 +298,94 @@ describe('AuthController', () => {
           .post('/auth/forgotpassword')
           .send({ email: 'toto' })
           .expect(400);
+      });
+    });
+  });
+
+  describe('resetpassword', () => {
+    describe('success cases', () => {
+      it('should reset password successfully', async () => {
+        const resetPasswordDto: ResetPasswordDto = {
+          token: 'valid-token',
+          password: 'newPassword123',
+        };
+
+        authService.resetPassword = jest.fn().mockResolvedValue({
+          message: 'Password reset successfully',
+        });
+
+        return request(app.getHttpServer())
+          .post('/auth/resetpassword')
+          .send(resetPasswordDto)
+          .expect(200)
+          .expect({
+            message: 'Password reset successfully',
+          });
+      });
+    });
+
+    describe('error cases', () => {
+      it('should return Unauthorized if token is invalid', async () => {
+        const resetPasswordDto: ResetPasswordDto = {
+          token: 'invalid-token',
+          password: 'newPassword123',
+        };
+
+        authService.resetPassword = jest
+          .fn()
+          .mockRejectedValue(new UnauthorizedException('Invalid token'));
+
+        return request(app.getHttpServer())
+          .post('/auth/resetpassword')
+          .send(resetPasswordDto)
+          .expect(401)
+          .expect({
+            message: 'Invalid token',
+            error: 'Unauthorized',
+            statusCode: 401,
+          });
+      });
+
+      it('should return NotFound if user not found for the token', async () => {
+        const resetPasswordDto: ResetPasswordDto = {
+          token: 'valid-token-but-no-user',
+          password: 'newPassword123',
+        };
+
+        authService.resetPassword = jest
+          .fn()
+          .mockRejectedValue(new NotFoundException('User not found'));
+
+        return request(app.getHttpServer())
+          .post('/auth/resetpassword')
+          .send(resetPasswordDto)
+          .expect(404)
+          .expect({
+            message: 'User not found',
+            error: 'Not Found',
+            statusCode: 404,
+          });
+      });
+
+      it('should return 400 if newPassword is too weak', async () => {
+        const resetPasswordDto: ResetPasswordDto = {
+          token: 'valid-token',
+          password: '123',
+        };
+
+        authService.resetPassword = jest
+          .fn()
+          .mockRejectedValue(new BadRequestException('Password is too weak'));
+
+        return request(app.getHttpServer())
+          .post('/auth/resetpassword')
+          .send(resetPasswordDto)
+          .expect(400)
+          .expect({
+            statusCode: 400,
+            error: 'Bad Request',
+            message: 'Password is too weak',
+          });
       });
     });
   });

@@ -29,7 +29,10 @@ export class User {
   email_verified?: boolean;
 
   @Column({ nullable: true })
-  forgotpasswordtoken?: string;
+  forgotpasswordtoken?: string | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  forgotpassword_expires_at?: Date;
 
   @Column({ nullable: true })
   forgotpasswordused?: boolean;

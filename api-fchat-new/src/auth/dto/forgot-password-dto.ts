@@ -5,7 +5,7 @@ export class ForgotPasswordDto {
   email: string;
 }
 
-export class ChangeForgotPasswordDto {
+export class ResetPasswordDto {
   @IsNotEmpty()
   token: string;
 

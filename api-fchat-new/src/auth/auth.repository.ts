@@ -9,7 +9,7 @@ import { AuthCredentialsDto } from './dto/auth-credentials-dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { RefreshTokenDto } from './dto/refresh-token-dto';
-import { ForgotPasswordDto } from './dto/forgot-password-dto';
+import { ForgotPasswordDto, ResetPasswordDto } from './dto/forgot-password-dto';
 import { MailService } from '../mail.service';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -124,11 +124,41 @@ export class AuthRepository {
       await this.userRepository.update(user.id, {
         forgotpasswordtoken: uuidv4(),
         forgotpasswordused: false,
+        forgotpassword_expires_at: new Date(Date.now() + 15 * 60 * 1000),
       });
       const url = `${process.env.HOST_NAME}/resetpassword?token=${user.forgotpasswordtoken}`;
       await this.mailService.sendEmailResetPassword(user.email ?? '', url);
     }
 
     return { message: 'email for reset password sent successfully' };
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    const { token, password } = resetPasswordDto;
+
+    const user = await this.userRepository.findOne({
+      where: {
+        forgotpasswordtoken: token,
+      },
+    });
+
+    if (user) {
+      if (user.forgotpasswordused) {
+        throw new UnauthorizedException('Token has already been used');
+      }
+
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(password, salt);
+
+      await this.userRepository.update(user.id, {
+        password: hashedPassword,
+        forgotpasswordtoken: null,
+        forgotpasswordused: true,
+      });
+
+      return { message: 'Password reset successfully' };
+    } else {
+      throw new NotFoundException('User not found');
+    }
   }
 }

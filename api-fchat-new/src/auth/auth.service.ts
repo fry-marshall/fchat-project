@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AuthRepository } from './auth.repository';
 import { AuthCredentialsDto } from './dto/auth-credentials-dto';
 import { RefreshTokenDto } from './dto/refresh-token-dto';
-import { ForgotPasswordDto } from './dto/forgot-password-dto';
+import { ForgotPasswordDto, ResetPasswordDto } from './dto/forgot-password-dto';
 
 @Injectable()
 export class AuthService {
@@ -26,5 +26,9 @@ export class AuthService {
 
   forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
     return this.authRepository.forgotPassword(forgotPasswordDto);
+  }
+
+  resetPassword(resetPasswordDto: ResetPasswordDto) {
+    return this.authRepository.resetPassword(resetPasswordDto);
   }
 }

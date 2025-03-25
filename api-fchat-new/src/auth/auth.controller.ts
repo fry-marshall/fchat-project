@@ -10,7 +10,7 @@ import { AuthCredentialsDto } from './dto/auth-credentials-dto';
 import { AuthService } from './auth.service';
 import { RefreshTokenDto } from './dto/refresh-token-dto';
 import { AuthGuard } from '@nestjs/passport';
-import { ForgotPasswordDto } from './dto/forgot-password-dto';
+import { ForgotPasswordDto, ResetPasswordDto } from './dto/forgot-password-dto';
 
 @Controller('auth')
 export class AuthController {
@@ -44,5 +44,11 @@ export class AuthController {
   @HttpCode(200)
   forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
     return this.authService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Post('resetpassword')
+  @HttpCode(200)
+  resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.authService.resetPassword(resetPasswordDto);
   }
 }
