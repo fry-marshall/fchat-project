@@ -28,8 +28,8 @@ export class User {
   @Column({ default: false })
   email_verified?: boolean;
 
-  @Column({ nullable: true })
-  forgotpasswordtoken?: string | null;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  forgotpasswordtoken: string | null;
 
   @Column({ type: 'timestamp', nullable: true })
   forgotpassword_expires_at?: Date;
