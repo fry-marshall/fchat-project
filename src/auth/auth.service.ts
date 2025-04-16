@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from '../users/users.entity';
 import { Repository } from 'typeorm';
@@ -6,6 +10,8 @@ import { SignupDto } from './dto/signup.dto';
 import * as bcrypt from 'bcryptjs';
 import { randomUUID } from 'crypto';
 import { MailService } from '../common/mail.service';
+import { SigninDto } from './dto/signin.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +19,7 @@ export class AuthService {
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
     private readonly mailService: MailService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async signup(signupDto: SignupDto) {
@@ -48,5 +55,47 @@ export class AuthService {
       }
       throw error;
     }
+  }
+
+  async signin(signinDto: SigninDto) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        email: signinDto.email,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+
+    const isValidPassword = await bcrypt.compare(
+      signinDto.password,
+      user.password!,
+    );
+
+    if (!isValidPassword) {
+      throw new NotFoundException('user not found');
+    }
+
+    const payload = {
+      id: user.id,
+      email: user.email,
+    };
+
+    const access_token = this.jwtService.sign(payload, {
+      secret: process.env.ACCESS_TOKEN,
+      expiresIn: '1h',
+    });
+
+    const refresh_token = this.jwtService.sign(payload, {
+      secret: process.env.REFRESH_TOKEN,
+      expiresIn: '7d',
+    });
+
+    await this.usersRepository.update(user.id, {
+      refresh_token,
+    });
+
+    return { access_token, refresh_token };
   }
 }

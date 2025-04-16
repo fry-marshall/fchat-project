@@ -34,4 +34,7 @@ export class Users {
 
   @Column({ type: 'varchar', default: 'default.png' })
   profile_img?: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  refresh_token?: string;
 }

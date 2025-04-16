@@ -6,6 +6,7 @@ import * as Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 
 const NODE_ENV = process.env.NODE_ENV || 'dev';
 
@@ -36,6 +37,7 @@ const NODE_ENV = process.env.NODE_ENV || 'dev';
       autoLoadEntities: true,
       synchronize: NODE_ENV === 'dev',
     }),
+    JwtModule.register({}),
     UsersModule,
     AuthModule,
   ],

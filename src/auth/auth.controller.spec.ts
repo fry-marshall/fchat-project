@@ -6,6 +6,7 @@ import * as request from 'supertest';
 import {
   ConflictException,
   INestApplication,
+  NotFoundException,
   ValidationPipe,
 } from '@nestjs/common';
 
@@ -14,6 +15,7 @@ describe('AuthController', () => {
   let app: INestApplication;
   const mockAuthService = {
     signup: jest.fn(),
+    signin: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -207,6 +209,142 @@ describe('AuthController', () => {
           .post('/auth/signup')
           .send(dto)
           .expect(201);
+      });
+    });
+  });
+
+  describe('/signin', () => {
+    describe('failure cases', () => {
+      describe('dto errors', () => {
+        it('should return a bad request exception empty body', async () => {
+          const dto = {};
+
+          await request(app.getHttpServer())
+            .post('/auth/signin')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception missing email', async () => {
+          const dto = {
+            password: '12345678ABC',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/signin')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception password is missing', async () => {
+          const dto = {
+            email: 'jane@example.com',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/signin')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception email is not an email', async () => {
+          const dto = {
+            email: 'not-an-email',
+            password: 'Password1',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/signin')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception password too short', async () => {
+          const dto = {
+            email: 'jane@example.com',
+            password: 'Ab1',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/signin')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception password without digits', async () => {
+          const dto = {
+            email: 'jane@example.com',
+            password: 'Password',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/signin')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception password without letters', async () => {
+          const dto = {
+            email: 'jane@example.com',
+            password: '12345678',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/signin')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception non authorized parameters', async () => {
+          const dto = {
+            email: 'jane@example.com',
+            password: '12345678',
+            toto: 'bonjour',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/signin')
+            .send(dto)
+            .expect(400);
+        });
+      });
+
+      it("it should return 404 for email doesn't existed", async () => {
+        const dto = {
+          email: 'jane@example.com',
+          password: '12345678ABC',
+        };
+
+        mockAuthService.signin.mockRejectedValue(
+          new NotFoundException('User not found'),
+        );
+
+        await request(app.getHttpServer())
+          .post('/auth/signin')
+          .send(dto)
+          .expect(404);
+      });
+    });
+
+    describe('success cases', () => {
+      it('should return 200 for user created successfully', async () => {
+        const dto = {
+          email: 'jane@example.com',
+          password: '12455801HA',
+        };
+
+        mockAuthService.signin.mockResolvedValue({
+          access_token: 'toto',
+          refresh_token: 'tata',
+        });
+
+        const res = await request(app.getHttpServer())
+          .post('/auth/signin')
+          .send(dto);
+
+        expect(res.body.access_token).toBe('toto');
+        expect(res.body.refresh_token).toBe('tata');
+        expect(res.status).toBe(200);
       });
     });
   });
