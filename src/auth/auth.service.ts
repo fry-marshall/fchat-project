@@ -44,7 +44,7 @@ export class AuthService {
       };
     } catch (error) {
       if (error.code === '23505') {
-        throw new ConflictException('Phone number already exists');
+        throw new ConflictException('Email already exists');
       }
       throw error;
     }
