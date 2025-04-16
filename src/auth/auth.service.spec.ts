@@ -8,6 +8,7 @@ import { SignupDto } from './dto/signup.dto';
 import * as bcrypt from 'bcryptjs';
 import { SigninDto } from './dto/signin.dto';
 import { JwtService } from '@nestjs/jwt';
+import { LogoutDto } from './dto/logout.dto';
 
 jest.mock('bcryptjs', () => ({
   genSalt: jest.fn().mockResolvedValue('salt'),
@@ -162,6 +163,46 @@ describe('AuthService', () => {
           signinDto.password,
         );
         expect(mockJwtService.sign).toHaveBeenCalledTimes(2);
+      });
+    });
+  });
+
+  describe('logout', () => {
+    describe('failure cases', () => {
+      it("should return not found exception for refresh token doesn't exist", async () => {
+        const logoutDto: LogoutDto = {
+          refresh_token: 'JaneDoe98',
+        };
+
+        mockUsersRepository.findOne.mockResolvedValue(null);
+
+        await expect(authService.logout(logoutDto)).rejects.toThrow(
+          NotFoundException,
+        );
+      });
+    });
+
+    describe('success cases', () => {
+      it('should return access_token and refresh_token', async () => {
+        const logoutDto: LogoutDto = {
+          refresh_token: 'JaneDoe98',
+        };
+
+        const mockUser = {
+          id: 'toto',
+          fullname: 'Jane Doe',
+          email: 'jane@example.com',
+          password: 'JaneDoe98',
+        };
+
+        mockUsersRepository.findOne.mockResolvedValue(mockUser);
+
+        const res = await authService.logout(logoutDto);
+
+        expect(res.message).toBe('User logged out successfully');
+        expect(mockUsersRepository.update).toHaveBeenCalledWith(mockUser.id, {
+          refresh_token: null,
+        });
       });
     });
   });

@@ -12,6 +12,7 @@ import { randomUUID } from 'crypto';
 import { MailService } from '../common/mail.service';
 import { SigninDto } from './dto/signin.dto';
 import { JwtService } from '@nestjs/jwt';
+import { LogoutDto } from './dto/logout.dto';
 
 @Injectable()
 export class AuthService {
@@ -97,5 +98,23 @@ export class AuthService {
     });
 
     return { access_token, refresh_token };
+  }
+
+  async logout(logoutDto: LogoutDto) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        refresh_token: logoutDto.refresh_token,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    await this.usersRepository.update(user.id, {
+      refresh_token: null,
+    });
+
+    return { message: 'User logged out successfully' };
   }
 }

@@ -36,5 +36,5 @@ export class Users {
   profile_img?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  refresh_token?: string;
+  refresh_token?: string | null;
 }
