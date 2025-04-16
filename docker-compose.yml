@@ -1,0 +1,38 @@
+services:
+
+  api:
+    build:
+      context: .
+      target: 
+    container_name: fchat_api
+    command: [/bin/sh, ./wait-for-db.sh]
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - :
+    environment:
+      - NODE_ENV=
+    networks:
+      - api-fchat-2_network
+
+  db:
+    image: postgres:15
+    restart: always
+    container_name: postgres_db
+    ports:
+      - :
+    environment:
+      - POSTGRES_USER=
+      - POSTGRES_PASSWORD=
+      - POSTGRES_DB=
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      - api-fchat-2_network
+
+volumes:
+  db:
+networks:
+  api-fchat-2_network:
+    driver: bridge
