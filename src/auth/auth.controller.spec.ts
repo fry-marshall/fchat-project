@@ -4,6 +4,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import * as request from 'supertest';
 import {
+  BadRequestException,
   ConflictException,
   INestApplication,
   NotFoundException,
@@ -19,6 +20,7 @@ describe('AuthController', () => {
     signin: jest.fn(),
     logout: jest.fn(),
     refreshToken: jest.fn(),
+    verify: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -486,6 +488,82 @@ describe('AuthController', () => {
 
         expect(res.body.access_token).toBe('toto');
         expect(res.body.refresh_token).toBe('tata');
+        expect(res.status).toBe(200);
+      });
+    });
+  });
+
+  describe('/verify', () => {
+    describe('failure cases', () => {
+      describe('dto errors', () => {
+        it('should return a bad request exception empty body', async () => {
+          const dto = {};
+
+          await request(app.getHttpServer())
+            .post('/auth/verify')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception non authorized parameters', async () => {
+          const dto = {
+            token: 'bonjourbonjourbonjourbonjour',
+            toto: 'test',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/verify')
+            .send(dto)
+            .expect(400);
+        });
+      });
+
+      it("it should return 404 for token doesn't existed", async () => {
+        const dto = {
+          token: '12345678ABC',
+        };
+
+        mockAuthService.verify.mockRejectedValue(
+          new NotFoundException('User not found'),
+        );
+
+        await request(app.getHttpServer())
+          .post('/auth/verify')
+          .send(dto)
+          .expect(404);
+      });
+
+      it('it should return 400 for expired token', async () => {
+        const dto = {
+          token: '12345678ABC',
+        };
+
+        mockAuthService.verify.mockRejectedValue(
+          new BadRequestException('Token expired'),
+        );
+
+        await request(app.getHttpServer())
+          .post('/auth/verify')
+          .send(dto)
+          .expect(400);
+      });
+    });
+
+    describe('success cases', () => {
+      it('should return 200 for verifying email token successfully', async () => {
+        const dto = {
+          token: '12455801HA',
+        };
+
+        mockAuthService.verify.mockResolvedValue({
+          message: 'Email verified successfully',
+        });
+
+        const res = await request(app.getHttpServer())
+          .post('/auth/verify')
+          .send(dto);
+
+        expect(res.body.message).toBe('Email verified successfully');
         expect(res.status).toBe(200);
       });
     });

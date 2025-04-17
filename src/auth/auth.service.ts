@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -15,6 +16,7 @@ import { SigninDto } from './dto/signin.dto';
 import { JwtService } from '@nestjs/jwt';
 import { LogoutDto } from './dto/logout.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { VerifyDto } from './dto/verify.dto';
 
 @Injectable()
 export class AuthService {
@@ -162,5 +164,28 @@ export class AuthService {
       }
       throw new UnauthorizedException('Invalid refresh token');
     }
+  }
+
+  async verify(verifyDto: VerifyDto) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        email_verified_token: verifyDto.token,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const currentTime = new Date();
+    if (currentTime > user.email_expiredtime!) {
+      throw new BadRequestException('Verification code expired');
+    }
+
+    await this.usersRepository.update(user.id, {
+      email_verified: true,
+    });
+
+    return { message: 'Email verified successfully' };
   }
 }

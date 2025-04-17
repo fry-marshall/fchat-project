@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Users } from '../users/users.entity';
 import { MailService } from '../common/mail.service';
 import {
+  BadRequestException,
   ConflictException,
   NotFoundException,
   UnauthorizedException,
@@ -14,6 +15,7 @@ import { SigninDto } from './dto/signin.dto';
 import { JwtService } from '@nestjs/jwt';
 import { LogoutDto } from './dto/logout.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { VerifyDto } from './dto/verify.dto';
 
 jest.mock('bcryptjs', () => ({
   genSalt: jest.fn().mockResolvedValue('salt'),
@@ -61,6 +63,7 @@ describe('AuthService', () => {
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -263,6 +266,72 @@ describe('AuthService', () => {
         expect(res.message).toBe('User logged out successfully');
         expect(mockUsersRepository.update).toHaveBeenCalledWith(mockUser.id, {
           refresh_token: null,
+        });
+      });
+    });
+  });
+
+  describe('verify', () => {
+    describe('failure cases', () => {
+      it('should return not found exception for invalid token', async () => {
+        const verifyDto: VerifyDto = {
+          token: 'JaneDoe98',
+        };
+
+        mockUsersRepository.findOne.mockResolvedValueOnce(null);
+
+        await expect(authService.verify(verifyDto)).rejects.toThrow(
+          NotFoundException,
+        );
+        expect(mockUsersRepository.findOne).toHaveBeenCalledTimes(1);
+      });
+
+      it("should return not found exception for refresh token doesn't exist", async () => {
+        const verifyDto: VerifyDto = {
+          token: 'JaneDoe98',
+        };
+
+        const expiredTime = new Date();
+        expiredTime.setMinutes(expiredTime.getMinutes() - 10);
+
+        const mockUser = {
+          id: 'toto',
+          email: 'toto@example.com',
+          email_expiredtime: expiredTime,
+        };
+
+        mockUsersRepository.findOne.mockResolvedValueOnce(mockUser);
+
+        await expect(authService.verify(verifyDto)).rejects.toThrow(
+          BadRequestException,
+        );
+        expect(mockUsersRepository.findOne).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('success cases', () => {
+      it('should return 200 for user email verified successfully', async () => {
+        const verifyDto: VerifyDto = {
+          token: 'JaneDoe98',
+        };
+
+        const expiredTime = new Date();
+        expiredTime.setMinutes(expiredTime.getMinutes() + 5);
+
+        const mockUser = {
+          id: 'toto',
+          fullname: 'Jane Doe',
+          email: 'jane@example.com',
+          email_expiredtime: expiredTime,
+        };
+
+        mockUsersRepository.findOne.mockResolvedValue(mockUser);
+
+        const res = await authService.verify(verifyDto);
+
+        expect(res.message).toBe('Email verified successfully');
+        expect(mockUsersRepository.update).toHaveBeenCalledWith(mockUser.id, {
+          email_verified: true,
         });
       });
     });
