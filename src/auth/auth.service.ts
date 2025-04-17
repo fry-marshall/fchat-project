@@ -17,6 +17,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LogoutDto } from './dto/logout.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { VerifyDto } from './dto/verify.dto';
+import { ForgotpasswordDto } from './dto/forgotpassword.dto';
 
 @Injectable()
 export class AuthService {
@@ -48,6 +49,7 @@ export class AuthService {
           signupDto.email,
           'Verification du compte',
           url,
+          'verify-account',
         );
       }
 
@@ -187,5 +189,34 @@ export class AuthService {
     });
 
     return { message: 'Email verified successfully' };
+  }
+
+  async forgotPassword(forgotpasswordDto: ForgotpasswordDto) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        email: forgotpasswordDto.email,
+      },
+    });
+
+    if (user) {
+      const forgotpasswordtoken = randomUUID();
+
+      await this.usersRepository.update(user.id, {
+        forgotpasswordtoken,
+        forgotpasswordused: false,
+      });
+
+      if (process.env.NODE_ENV === 'prod') {
+        const url: string = `https://fchat.mfry.io/resetpassword?token${forgotpasswordtoken}`;
+        await this.mailService.sendMail(
+          user.email!,
+          'Reset your password',
+          url,
+          'reset-password',
+        );
+      }
+    }
+
+    return { message: 'Email to reset your password sent successfully' };
   }
 }

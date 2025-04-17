@@ -21,6 +21,7 @@ describe('AuthController', () => {
     logout: jest.fn(),
     refreshToken: jest.fn(),
     verify: jest.fn(),
+    forgotPassword: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -564,6 +565,63 @@ describe('AuthController', () => {
           .send(dto);
 
         expect(res.body.message).toBe('Email verified successfully');
+        expect(res.status).toBe(200);
+      });
+    });
+  });
+
+  describe('/forgotpassword', () => {
+    describe('failure cases', () => {
+      describe('dto errors', () => {
+        it('should return a bad request exception empty body', async () => {
+          const dto = {};
+
+          await request(app.getHttpServer())
+            .post('/auth/forgotpassword')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception non authorized parameters', async () => {
+          const dto = {
+            email: 'jade@example.com',
+            toto: 'test',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/forgotpassword')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception for wrong email adress', async () => {
+          const dto = {
+            email: 'jade@example',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/forgotpassword')
+            .send(dto)
+            .expect(400);
+        });
+      });
+    });
+
+    describe('success cases', () => {
+      it('should return 200 for sending reset password request successfully', async () => {
+        const dto = {
+          email: 'jade@example.com',
+        };
+
+        mockAuthService.forgotPassword.mockResolvedValue({
+          message: 'Email to reset your password sent successfully',
+        });
+
+        const res = await request(app.getHttpServer())
+          .post('/auth/forgotpassword')
+          .send(dto);
+
+        expect(res.body.message).toBe('Email to reset your password sent successfully');
         expect(res.status).toBe(200);
       });
     });

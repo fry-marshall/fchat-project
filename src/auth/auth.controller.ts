@@ -5,6 +5,7 @@ import { SigninDto } from './dto/signin.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { VerifyDto } from './dto/verify.dto';
+import { ForgotpasswordDto } from './dto/forgotpassword.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -37,5 +38,11 @@ export class AuthController {
   @Post('verify')
   verify(@Body() verifyDto: VerifyDto) {
     return this.authService.verify(verifyDto);
+  }
+
+  @HttpCode(200)
+  @Post('forgotpassword')
+  forgotPassword(@Body() forgotpasswordDto: ForgotpasswordDto) {
+    return this.authService.forgotPassword(forgotpasswordDto);
   }
 }

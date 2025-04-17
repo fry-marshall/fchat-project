@@ -16,6 +16,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LogoutDto } from './dto/logout.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { VerifyDto } from './dto/verify.dto';
+import { ForgotpasswordDto } from './dto/forgotpassword.dto';
 
 jest.mock('bcryptjs', () => ({
   genSalt: jest.fn().mockResolvedValue('salt'),
@@ -333,6 +334,31 @@ describe('AuthService', () => {
         expect(mockUsersRepository.update).toHaveBeenCalledWith(mockUser.id, {
           email_verified: true,
         });
+      });
+    });
+  });
+
+  describe('forgotPassword', () => {
+    describe('success cases', () => {
+      it('should return 200 for sending reset password request successfully', async () => {
+        const forgotpasswordDto: ForgotpasswordDto = {
+          email: 'jade@example.com',
+        };
+
+        const mockUser = {
+          id: 'toto',
+          fullname: 'Jane Doe',
+          email: 'jane@example.com',
+        };
+
+        mockUsersRepository.findOne.mockResolvedValue(mockUser);
+
+        const res = await authService.forgotPassword(forgotpasswordDto);
+
+        expect(res.message).toBe(
+          'Email to reset your password sent successfully',
+        );
+        expect(mockUsersRepository.update).toHaveBeenCalledTimes(1);
       });
     });
   });
