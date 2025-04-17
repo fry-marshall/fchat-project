@@ -24,7 +24,7 @@ export class Users {
   email_verified?: boolean;
 
   @Column({ type: 'varchar', nullable: true })
-  forgotpasswordtoken?: string;
+  forgotpasswordtoken?: string | null;
 
   @Column({ type: 'boolean', default: false })
   forgotpasswordused?: boolean;

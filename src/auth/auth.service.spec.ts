@@ -17,12 +17,14 @@ import { LogoutDto } from './dto/logout.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { VerifyDto } from './dto/verify.dto';
 import { ForgotpasswordDto } from './dto/forgotpassword.dto';
+import { ResetpasswordDto } from './dto/resetpassword';
+import { randomUUID } from 'crypto';
 
 jest.mock('bcryptjs', () => ({
-  genSalt: jest.fn().mockResolvedValue('salt'),
-  hash: jest.fn().mockResolvedValue('hashedPassword'),
-  compare: jest.fn().mockResolvedValue(true),
-  hashSync: jest.fn().mockReturnValue('hashedRefreshToken'),
+  genSalt: jest.fn(),
+  hash: jest.fn(),
+  compare: jest.fn(),
+  hashSync: jest.fn(),
 }));
 
 describe('AuthService', () => {
@@ -358,6 +360,74 @@ describe('AuthService', () => {
         expect(res.message).toBe(
           'Email to reset your password sent successfully',
         );
+        expect(mockUsersRepository.update).toHaveBeenCalledTimes(1);
+      });
+    });
+  });
+
+  describe('resetPassword', () => {
+    describe('failure cases', () => {
+      it('should return not found exception for invalid token', async () => {
+        const resetpasswordDto: ResetpasswordDto = {
+          token: randomUUID(),
+          password: '12345678ABCD',
+        };
+
+        mockUsersRepository.findOne.mockResolvedValue(null);
+
+        await expect(
+          authService.resetPassword(resetpasswordDto),
+        ).rejects.toThrow(NotFoundException);
+        expect(mockUsersRepository.findOne).toHaveBeenCalledTimes(1);
+      });
+
+      it('should return bad request exception for token already used', async () => {
+        const resetpasswordDto: ResetpasswordDto = {
+          token: randomUUID(),
+          password: '12345678ABCD',
+        };
+
+        const mockUser = {
+          id: 'toto',
+          forgotpasswordused: true,
+        };
+
+        mockUsersRepository.findOne.mockResolvedValue(mockUser);
+
+        await expect(
+          authService.resetPassword(resetpasswordDto),
+        ).rejects.toThrow(BadRequestException);
+        expect(mockUsersRepository.findOne).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('success cases', () => {
+      it('should return reset password done successfully', async () => {
+        const resetpasswordDto: ResetpasswordDto = {
+          token: randomUUID(),
+          password: '12345678ABCD',
+        };
+
+        const mockUser = {
+          id: 'toto',
+          fullname: 'Jane Doe',
+          email: 'jane@example.com',
+          password: 'JaneDoe98',
+          forgotpasswordused: false,
+        };
+
+        mockUsersRepository.findOne.mockResolvedValue(mockUser);
+        const password = resetpasswordDto.password + 'toto';
+
+        (bcrypt.hash as jest.Mock).mockResolvedValue(password);
+        const res = await authService.resetPassword(resetpasswordDto);
+
+        expect(res.message).toBe('Password reset successfully');
+        expect(mockUsersRepository.update).toHaveBeenCalledWith(mockUser.id, {
+          forgotpasswordtoken: null,
+          forgotpasswordused: true,
+          password,
+        });
         expect(mockUsersRepository.update).toHaveBeenCalledTimes(1);
       });
     });

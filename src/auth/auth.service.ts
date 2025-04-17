@@ -18,6 +18,7 @@ import { LogoutDto } from './dto/logout.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { VerifyDto } from './dto/verify.dto';
 import { ForgotpasswordDto } from './dto/forgotpassword.dto';
+import { ResetpasswordDto } from './dto/resetpassword';
 
 @Injectable()
 export class AuthService {
@@ -218,5 +219,31 @@ export class AuthService {
     }
 
     return { message: 'Email to reset your password sent successfully' };
+  }
+
+  async resetPassword(resetpasswordDto: ResetpasswordDto) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        forgotpasswordtoken: resetpasswordDto.token,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.forgotpasswordused) {
+      throw new BadRequestException('Token already used');
+    }
+
+    const password = await bcrypt.hash(resetpasswordDto.password, 10);
+
+    await this.usersRepository.update(user.id, {
+      forgotpasswordtoken: null,
+      forgotpasswordused: true,
+      password,
+    });
+
+    return { message: 'Password reset successfully' };
   }
 }

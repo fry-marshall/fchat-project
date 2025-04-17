@@ -11,6 +11,7 @@ import {
   UnauthorizedException,
   ValidationPipe,
 } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -22,6 +23,7 @@ describe('AuthController', () => {
     refreshToken: jest.fn(),
     verify: jest.fn(),
     forgotPassword: jest.fn(),
+    resetPassword: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -621,7 +623,159 @@ describe('AuthController', () => {
           .post('/auth/forgotpassword')
           .send(dto);
 
-        expect(res.body.message).toBe('Email to reset your password sent successfully');
+        expect(res.body.message).toBe(
+          'Email to reset your password sent successfully',
+        );
+        expect(res.status).toBe(200);
+      });
+    });
+  });
+
+  describe('/resetpassword', () => {
+    describe('failure cases', () => {
+      describe('dto errors', () => {
+        it('should return a bad request exception empty body', async () => {
+          const dto = {};
+
+          await request(app.getHttpServer())
+            .post('/auth/resetpassword')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception non authorized parameters', async () => {
+          const dto = {
+            token: randomUUID(),
+            password: '12345678ABCD',
+            toto: 'test',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/resetpassword')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception for wrong token not uuid', async () => {
+          const dto = {
+            token: 'toto',
+            password: '12345678ABCD',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/resetpassword')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception for missing token', async () => {
+          const dto = {
+            password: '12345678ABCD',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/resetpassword')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception for missing password', async () => {
+          const dto = {
+            token: 'toto',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/resetpassword')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception for wrong password length', async () => {
+          const dto = {
+            token: 'toto',
+            password: 'ABC12',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/resetpassword')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception for wrong password without digit', async () => {
+          const dto = {
+            token: 'toto',
+            password: 'ABCDEFGHI',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/resetpassword')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception for wrong password without letter', async () => {
+          const dto = {
+            token: 'toto',
+            password: '12345678',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/resetpassword')
+            .send(dto)
+            .expect(400);
+        });
+      });
+
+      it('should return 404 for user not found', async () => {
+        const dto = {
+          token: randomUUID(),
+          password: 'ABCD12345678',
+        };
+
+        mockAuthService.resetPassword.mockRejectedValue(
+          new NotFoundException('User not found'),
+        );
+
+        await request(app.getHttpServer())
+          .post('/auth/resetpassword')
+          .send(dto)
+          .expect(404);
+      });
+
+      it('should return 400 for token already used', async () => {
+        const dto = {
+          token: randomUUID(),
+          password: 'ABCD12345678',
+        };
+
+        mockAuthService.resetPassword.mockRejectedValue(
+          new BadRequestException('Token already used'),
+        );
+
+        await request(app.getHttpServer())
+          .post('/auth/resetpassword')
+          .send(dto)
+          .expect(400);
+      });
+    });
+
+    describe('success cases', () => {
+      it('should return 200 for resetting password successfully', async () => {
+        const dto = {
+          token: randomUUID(),
+          password: '12345678ABCD',
+        };
+
+        mockAuthService.resetPassword.mockResolvedValue({
+          message: 'Password reset successfully',
+        });
+
+        const res = await request(app.getHttpServer())
+          .post('/auth/resetpassword')
+          .send(dto);
+
+        expect(res.body.message).toBe('Password reset successfully');
         expect(res.status).toBe(200);
       });
     });
