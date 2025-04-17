@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from '../users/users.entity';
@@ -13,6 +14,7 @@ import { MailService } from '../common/mail.service';
 import { SigninDto } from './dto/signin.dto';
 import { JwtService } from '@nestjs/jwt';
 import { LogoutDto } from './dto/logout.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Injectable()
 export class AuthService {
@@ -116,5 +118,49 @@ export class AuthService {
     });
 
     return { message: 'User logged out successfully' };
+  }
+
+  async refreshToken(refreshTokenDto: RefreshTokenDto) {
+    try {
+      await this.jwtService.verifyAsync(refreshTokenDto.refresh_token, {
+        secret: process.env.REFRESH_TOKEN,
+      });
+
+      const user = await this.usersRepository.findOne({
+        where: {
+          refresh_token: refreshTokenDto.refresh_token,
+        },
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      const payload = {
+        id: user.id,
+        email: user.email,
+      };
+
+      const access_token = this.jwtService.sign(payload, {
+        secret: process.env.ACCESS_TOKEN,
+        expiresIn: '1h',
+      });
+
+      const refresh_token = this.jwtService.sign(payload, {
+        secret: process.env.REFRESH_TOKEN,
+        expiresIn: '7d',
+      });
+
+      await this.usersRepository.update(user.id, {
+        refresh_token,
+      });
+
+      return { access_token, refresh_token };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException('User not found');
+      }
+      throw new UnauthorizedException('Invalid refresh token');
+    }
   }
 }

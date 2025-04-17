@@ -3,12 +3,17 @@ import { AuthService } from './auth.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Users } from '../users/users.entity';
 import { MailService } from '../common/mail.service';
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { SignupDto } from './dto/signup.dto';
 import * as bcrypt from 'bcryptjs';
 import { SigninDto } from './dto/signin.dto';
 import { JwtService } from '@nestjs/jwt';
 import { LogoutDto } from './dto/logout.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 jest.mock('bcryptjs', () => ({
   genSalt: jest.fn().mockResolvedValue('salt'),
@@ -33,6 +38,7 @@ describe('AuthService', () => {
 
   const mockJwtService = {
     sign: jest.fn(),
+    verifyAsync: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -179,6 +185,61 @@ describe('AuthService', () => {
         await expect(authService.logout(logoutDto)).rejects.toThrow(
           NotFoundException,
         );
+      });
+    });
+
+    describe('success cases', () => {
+      it('should return access_token and refresh_token', async () => {
+        const logoutDto: LogoutDto = {
+          refresh_token: 'JaneDoe98',
+        };
+
+        const mockUser = {
+          id: 'toto',
+          fullname: 'Jane Doe',
+          email: 'jane@example.com',
+          password: 'JaneDoe98',
+        };
+
+        mockUsersRepository.findOne.mockResolvedValue(mockUser);
+
+        const res = await authService.logout(logoutDto);
+
+        expect(res.message).toBe('User logged out successfully');
+        expect(mockUsersRepository.update).toHaveBeenCalledWith(mockUser.id, {
+          refresh_token: null,
+        });
+      });
+    });
+  });
+
+  describe('refreshToken', () => {
+    describe('failure cases', () => {
+      it('should return not found exception for invalid refresh token', async () => {
+        const refreshTokenDto: RefreshTokenDto = {
+          refresh_token: 'JaneDoe98',
+        };
+
+        mockJwtService.verifyAsync.mockRejectedValue(null);
+
+        await expect(authService.refreshToken(refreshTokenDto)).rejects.toThrow(
+          UnauthorizedException,
+        );
+        expect(mockJwtService.verifyAsync).toHaveBeenCalledTimes(1);
+      });
+
+      it("should return not found exception for refresh token doesn't exist", async () => {
+        const refreshTokenDto: RefreshTokenDto = {
+          refresh_token: 'JaneDoe98',
+        };
+
+        mockJwtService.verifyAsync.mockResolvedValue('');
+        mockUsersRepository.findOne.mockResolvedValue(null);
+
+        await expect(authService.refreshToken(refreshTokenDto)).rejects.toThrow(
+          NotFoundException,
+        );
+        expect(mockUsersRepository.findOne).toHaveBeenCalledTimes(1);
       });
     });
 

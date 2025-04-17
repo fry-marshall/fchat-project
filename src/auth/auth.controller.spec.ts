@@ -7,6 +7,7 @@ import {
   ConflictException,
   INestApplication,
   NotFoundException,
+  UnauthorizedException,
   ValidationPipe,
 } from '@nestjs/common';
 
@@ -17,6 +18,7 @@ describe('AuthController', () => {
     signup: jest.fn(),
     signin: jest.fn(),
     logout: jest.fn(),
+    refreshToken: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -406,6 +408,84 @@ describe('AuthController', () => {
           .send(dto);
 
         expect(res.body.message).toBe('User logged out successfully');
+        expect(res.status).toBe(200);
+      });
+    });
+  });
+
+  describe('/refresh', () => {
+    describe('failure cases', () => {
+      describe('dto errors', () => {
+        it('should return a bad request exception empty body', async () => {
+          const dto = {};
+
+          await request(app.getHttpServer())
+            .post('/auth/refresh')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception non authorized parameters', async () => {
+          const dto = {
+            refresh_token: 'bonjourbonjourbonjourbonjour',
+            toto: 'test',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/refresh')
+            .send(dto)
+            .expect(400);
+        });
+      });
+
+      it("it should return 404 for refresh token doesn't existed", async () => {
+        const dto = {
+          refresh_token: '12345678ABC',
+        };
+
+        mockAuthService.refreshToken.mockRejectedValue(
+          new NotFoundException('User not found'),
+        );
+
+        await request(app.getHttpServer())
+          .post('/auth/refresh')
+          .send(dto)
+          .expect(404);
+      });
+
+      it('it should return 401 for expired or invalid refresh token', async () => {
+        const dto = {
+          refresh_token: '12345678ABC',
+        };
+
+        mockAuthService.refreshToken.mockRejectedValue(
+          new UnauthorizedException('User not found'),
+        );
+
+        await request(app.getHttpServer())
+          .post('/auth/refresh')
+          .send(dto)
+          .expect(401);
+      });
+    });
+
+    describe('success cases', () => {
+      it('should return 200 for refreshing token successfully', async () => {
+        const dto = {
+          refresh_token: '12455801HA',
+        };
+
+        mockAuthService.refreshToken.mockResolvedValue({
+          access_token: 'toto',
+          refresh_token: 'tata',
+        });
+
+        const res = await request(app.getHttpServer())
+          .post('/auth/refresh')
+          .send(dto);
+
+        expect(res.body.access_token).toBe('toto');
+        expect(res.body.refresh_token).toBe('tata');
         expect(res.status).toBe(200);
       });
     });
