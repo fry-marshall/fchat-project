@@ -19,6 +19,7 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { VerifyDto } from './dto/verify.dto';
 import { ForgotpasswordDto } from './dto/forgotpassword.dto';
 import { ResetpasswordDto } from './dto/resetpassword';
+import { GenerateTokenDto } from './dto/generatetoken.dto';
 
 @Injectable()
 export class AuthService {
@@ -48,7 +49,7 @@ export class AuthService {
         const url: string = `https://fchat.mfry.io/verify/${user.email_verified_token}`;
         await this.mailService.sendMail(
           signupDto.email,
-          'Verification du compte',
+          'Account verification',
           url,
           'verify-account',
         );
@@ -245,5 +246,43 @@ export class AuthService {
     });
 
     return { message: 'Password reset successfully' };
+  }
+
+  async generateToken(generateTokenDto: GenerateTokenDto) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        email: generateTokenDto.email,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.email_verified) {
+      throw new UnauthorizedException('Email already verified');
+    }
+
+    const expiredTime = new Date();
+    expiredTime.setMinutes(expiredTime.getMinutes() + 10);
+
+    const token = randomUUID();
+
+    await this.usersRepository.update(user.id, {
+      email_expiredtime: expiredTime,
+      email_verified_token: token,
+    });
+
+    if (process.env.NODE_ENV === 'prod') {
+      const url: string = `https://fchat.mfry.io/verify/${token}`;
+      await this.mailService.sendMail(
+        user.email!,
+        'Account verification',
+        url,
+        'verify-account',
+      );
+    }
+
+    return { message: 'Token generated successfully' };
   }
 }

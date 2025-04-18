@@ -24,6 +24,7 @@ describe('AuthController', () => {
     verify: jest.fn(),
     forgotPassword: jest.fn(),
     resetPassword: jest.fn(),
+    generateToken: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -776,6 +777,93 @@ describe('AuthController', () => {
           .send(dto);
 
         expect(res.body.message).toBe('Password reset successfully');
+        expect(res.status).toBe(200);
+      });
+    });
+  });
+
+  describe('/generatetoken', () => {
+    describe('failure cases', () => {
+      describe('dto errors', () => {
+        it('should return a bad request exception empty body', async () => {
+          const dto = {};
+
+          await request(app.getHttpServer())
+            .post('/auth/generatetoken')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception non authorized parameters', async () => {
+          const dto = {
+            email: 'jade@example.com',
+            toto: 'test',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/generatetoken')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return a bad request exception for wrong email adress', async () => {
+          const dto = {
+            email: 'wrong-email',
+          };
+
+          await request(app.getHttpServer())
+            .post('/auth/generatetoken')
+            .send(dto)
+            .expect(400);
+        });
+      });
+
+      it('should return 404 for user not found', async () => {
+        const dto = {
+          email: 'jade@example.com',
+        };
+
+        mockAuthService.generateToken.mockRejectedValue(
+          new NotFoundException('User not found'),
+        );
+
+        await request(app.getHttpServer())
+          .post('/auth/generatetoken')
+          .send(dto)
+          .expect(404);
+      });
+
+      it('should return 401 for token already used', async () => {
+        const dto = {
+          email: 'jade@example.com',
+        };
+
+        mockAuthService.generateToken.mockRejectedValue(
+          new UnauthorizedException('Account already verified'),
+        );
+
+        await request(app.getHttpServer())
+          .post('/auth/generatetoken')
+          .send(dto)
+          .expect(401);
+      });
+    });
+
+    describe('success cases', () => {
+      it('should return 200 for resetting password successfully', async () => {
+        const dto = {
+          email: 'jade@example.com',
+        };
+
+        mockAuthService.generateToken.mockResolvedValue({
+          message: 'Token generated successfully',
+        });
+
+        const res = await request(app.getHttpServer())
+          .post('/auth/generatetoken')
+          .send(dto);
+
+        expect(res.body.message).toBe('Token generated successfully');
         expect(res.status).toBe(200);
       });
     });

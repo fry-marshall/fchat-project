@@ -7,6 +7,7 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { VerifyDto } from './dto/verify.dto';
 import { ForgotpasswordDto } from './dto/forgotpassword.dto';
 import { ResetpasswordDto } from './dto/resetpassword';
+import { GenerateTokenDto } from './dto/generatetoken.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -51,5 +52,11 @@ export class AuthController {
   @Post('resetpassword')
   resetPassword(@Body() resetpasswordDto: ResetpasswordDto) {
     return this.authService.resetPassword(resetpasswordDto);
+  }
+
+  @HttpCode(200)
+  @Post('generatetoken')
+  generateToken(@Body() generateTokenDto: GenerateTokenDto) {
+    return this.authService.generateToken(generateTokenDto);
   }
 }

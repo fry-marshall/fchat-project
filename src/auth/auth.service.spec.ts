@@ -19,6 +19,7 @@ import { VerifyDto } from './dto/verify.dto';
 import { ForgotpasswordDto } from './dto/forgotpassword.dto';
 import { ResetpasswordDto } from './dto/resetpassword';
 import { randomUUID } from 'crypto';
+import { GenerateTokenDto } from './dto/generatetoken.dto';
 
 jest.mock('bcryptjs', () => ({
   genSalt: jest.fn(),
@@ -428,6 +429,63 @@ describe('AuthService', () => {
           forgotpasswordused: true,
           password,
         });
+        expect(mockUsersRepository.update).toHaveBeenCalledTimes(1);
+      });
+    });
+  });
+
+  describe('generateToken', () => {
+    describe('failure cases', () => {
+      it("should return not found exception for email does't exist", async () => {
+        const generateTokenDto: GenerateTokenDto = {
+          email: 'jade@example.com',
+        };
+
+        mockUsersRepository.findOne.mockResolvedValue(null);
+
+        await expect(
+          authService.generateToken(generateTokenDto),
+        ).rejects.toThrow(NotFoundException);
+        expect(mockUsersRepository.findOne).toHaveBeenCalledTimes(1);
+      });
+
+      it('should return unauthorized exception for account already verified', async () => {
+        const generateTokenDto: GenerateTokenDto = {
+          email: 'jade@example.com',
+        };
+
+        const mockUser = {
+          id: 'toto',
+          email_verified: true,
+        };
+
+        mockUsersRepository.findOne.mockResolvedValue(mockUser);
+
+        await expect(
+          authService.generateToken(generateTokenDto),
+        ).rejects.toThrow(BadRequestException);
+        expect(mockUsersRepository.findOne).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('success cases', () => {
+      it('should return reset password done successfully', async () => {
+        const generateTokenDto: GenerateTokenDto = {
+          email: 'jade@example.com',
+        };
+
+        const mockUser = {
+          id: 'toto',
+          fullname: 'Jane Doe',
+          email: 'jane@example.com',
+          password: 'JaneDoe98',
+          email_verified: false,
+        };
+
+        mockUsersRepository.findOne.mockResolvedValue(mockUser);
+        const res = await authService.generateToken(generateTokenDto);
+
+        expect(res.message).toBe('Token generated successfully');
         expect(mockUsersRepository.update).toHaveBeenCalledTimes(1);
       });
     });
