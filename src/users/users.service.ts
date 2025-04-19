@@ -66,4 +66,10 @@ export class UsersService {
       },
     };
   }
+
+  async deleteUser(userId: string) {
+    await this.usersRepository.delete(userId);
+
+    return { message: 'User deleted successfully' };
+  }
 }

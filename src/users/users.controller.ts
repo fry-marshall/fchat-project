@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   FileTypeValidator,
   Get,
   HttpCode,
@@ -56,5 +57,12 @@ export class UsersController {
       updateUserDto.profile_img = img;
     }
     return this.usersService.updateUser(req.user.id, updateUserDto);
+  }
+
+  @Delete('/me')
+  @HttpCode(200)
+  @UseGuards(JwtAuthGuard)
+  async deleteUser(@Request() req) {
+    return this.usersService.deleteUser(req.user.id);
   }
 }

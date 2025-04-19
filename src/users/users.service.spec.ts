@@ -18,6 +18,7 @@ describe('UsersService', () => {
     findOne: jest.fn(),
     find: jest.fn(),
     update: jest.fn(),
+    delete: jest.fn(),
   };
 
   const mockS3Service = {
@@ -101,6 +102,17 @@ describe('UsersService', () => {
 
       expect(mockUsersRepository.update).toHaveBeenCalledTimes(1);
       expect(mockUsersRepository.update).toHaveBeenCalledWith('toto', dto);
+    });
+  });
+
+  describe('deleteUser', () => {
+    it('should return the right message for user deleted', async () => {
+      mockUsersRepository.delete.mockResolvedValue({});
+      const res = await service.deleteUser('toto');
+      expect(res.message).toBe('User deleted successfully');
+
+      expect(mockUsersRepository.delete).toHaveBeenCalledTimes(1);
+      expect(mockUsersRepository.delete).toHaveBeenCalledWith('toto');
     });
   });
 });

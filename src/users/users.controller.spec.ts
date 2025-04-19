@@ -33,6 +33,7 @@ describe('UsersController', () => {
     getProfile: jest.fn(),
     getUsers: jest.fn(),
     updateUser: jest.fn(),
+    deleteUser: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -200,6 +201,29 @@ describe('UsersController', () => {
         expect(res.body.message).toBe('User infos updated successfully');
         expect(res.body.user.fullname).toBe(dto.fullname);
         expect(res.body.user.description).toBe(dto.description);
+        expect(res.status).toBe(200);
+      });
+    });
+  });
+
+  describe('DELETE /users/me', () => {
+    describe('failure cases', () => {
+      it('should return Forbiden exception', async () => {
+        DynamicMockJwtAuthGuard.allow = false;
+        await request(app.getHttpServer()).get('/users/me').expect(403);
+      });
+    });
+
+    describe('success cases', () => {
+      it('should return 200 for deleting user successfully', async () => {
+        DynamicMockJwtAuthGuard.allow = true;
+        DynamicMockJwtAuthGuard.user = { id: 'toto' };
+        mockUsersService.deleteUser.mockResolvedValue({
+          message: 'User deleted successfully',
+        });
+        const res = await request(app.getHttpServer()).delete('/users/me');
+
+        expect(res.body.message).toBe('User deleted successfully');
         expect(res.status).toBe(200);
       });
     });
