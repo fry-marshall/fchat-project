@@ -28,6 +28,7 @@ describe('UsersController', () => {
 
   const mockUsersService = {
     getProfile: jest.fn(),
+    getUsers: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -83,6 +84,41 @@ describe('UsersController', () => {
         expect(res.body.id).toBe(mockUser.id);
         expect(res.body.fullname).toBe(mockUser.fullname);
         expect(res.body.description).toBe(mockUser.description);
+        expect(res.status).toBe(200);
+      });
+    });
+  });
+
+  describe('/users', () => {
+    describe('failure cases', () => {
+      it('should return Forbiden exception', async () => {
+        DynamicMockJwtAuthGuard.allow = false;
+        await request(app.getHttpServer()).get('/users').expect(403);
+      });
+    });
+
+    describe('success cases', () => {
+      it('should return 200 for users infos', async () => {
+        const mockUsers = [
+          {
+            id: 'toto',
+            fullname: 'Marshall FRY',
+            description: "I'm a chill guy :)",
+          },
+          {
+            id: 'tata',
+            fullname: 'Marshall FRY',
+            description: "I'm a chill guy :)",
+          },
+        ];
+        DynamicMockJwtAuthGuard.allow = true;
+        DynamicMockJwtAuthGuard.user = { id: 'toto' };
+        mockUsersService.getUsers.mockResolvedValue(mockUsers);
+        const res = await request(app.getHttpServer()).get('/users');
+
+        expect(res.body.length).toBe(mockUsers.length);
+        expect(res.body[0].fullname).toBe(mockUsers[0].fullname);
+        expect(res.body[0].description).toBe(mockUsers[0].description);
         expect(res.status).toBe(200);
       });
     });

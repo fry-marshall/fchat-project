@@ -18,4 +18,13 @@ export class UsersService {
       select: ['id', 'fullname', 'description', 'email', 'profile_img'],
     });
   }
+
+  async getUsers() {
+    return await this.usersRepository.find({
+      where: {
+        email_verified: true,
+      },
+      select: ['id', 'fullname', 'description', 'email', 'profile_img'],
+    });
+  }
 }

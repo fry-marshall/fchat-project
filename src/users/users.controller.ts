@@ -9,7 +9,12 @@ export class UsersController {
   @Get('/me')
   @UseGuards(JwtAuthGuard)
   async getProfile(@Request() req) {
-    console.log(req.user)
     return this.usersService.getProfile(req.user.id);
+  }
+
+  @Get('')
+  @UseGuards(JwtAuthGuard)
+  async getUsers() {
+    return this.usersService.getUsers();
   }
 }

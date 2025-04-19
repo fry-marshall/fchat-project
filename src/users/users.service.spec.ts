@@ -8,6 +8,7 @@ describe('UsersService', () => {
 
   const mockUsersRepository = {
     findOne: jest.fn(),
+    find: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -41,6 +42,29 @@ describe('UsersService', () => {
       expect(res?.id).toBe(mockUser.id);
       expect(res?.fullname).toBe(mockUser.fullname);
       expect(res?.description).toBe(mockUser.description);
+    });
+  });
+
+  describe('getUsers', () => {
+    it('should return the users info profile', async () => {
+      const mockUsers = [
+        {
+          id: 'toto',
+          fullname: 'Marshall FRY',
+          description: "I'm a chill guy :)",
+        },
+        {
+          id: 'tata',
+          fullname: 'Marshall FRY',
+          description: "I'm a chill guy :)",
+        },
+      ];
+
+      mockUsersRepository.find.mockResolvedValue(mockUsers);
+      const res = await service.getUsers();
+      expect(res[0]?.id).toBe(mockUsers[0].id);
+      expect(res[0]?.fullname).toBe(mockUsers[0].fullname);
+      expect(res[0]?.description).toBe(mockUsers[0].description);
     });
   });
 });
