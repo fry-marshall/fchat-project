@@ -10,6 +10,9 @@ import {
 import * as request from 'supertest';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { UsersService } from './users.service';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { Readable } from 'stream';
+import * as path from 'path';
 
 class DynamicMockJwtAuthGuard implements CanActivate {
   static allow = true;
@@ -29,6 +32,7 @@ describe('UsersController', () => {
   const mockUsersService = {
     getProfile: jest.fn(),
     getUsers: jest.fn(),
+    updateUser: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -61,7 +65,7 @@ describe('UsersController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('/users/me', () => {
+  describe('GET /users/me', () => {
     describe('failure cases', () => {
       it('should return Forbiden exception', async () => {
         DynamicMockJwtAuthGuard.allow = false;
@@ -89,7 +93,7 @@ describe('UsersController', () => {
     });
   });
 
-  describe('/users', () => {
+  describe('GET /users', () => {
     describe('failure cases', () => {
       it('should return Forbiden exception', async () => {
         DynamicMockJwtAuthGuard.allow = false;
@@ -119,6 +123,83 @@ describe('UsersController', () => {
         expect(res.body.length).toBe(mockUsers.length);
         expect(res.body[0].fullname).toBe(mockUsers[0].fullname);
         expect(res.body[0].description).toBe(mockUsers[0].description);
+        expect(res.status).toBe(200);
+      });
+    });
+  });
+
+  describe('PUT /users/ me', () => {
+    describe('failure cases', () => {
+      it('should return Forbiden exception', async () => {
+        DynamicMockJwtAuthGuard.allow = false;
+        await request(app.getHttpServer()).put('/users/me').expect(403);
+      });
+
+      describe('dto errors', () => {
+        it('should return bad request for wrong password ( less than 8 characters )', async () => {
+          DynamicMockJwtAuthGuard.allow = true;
+          DynamicMockJwtAuthGuard.user = {
+            id: 'toto',
+          };
+          const dto = {
+            password: 'ABC12',
+          };
+          await request(app.getHttpServer())
+            .put('/users/me')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return bad request for wrong password ( only numbers )', async () => {
+          DynamicMockJwtAuthGuard.allow = true;
+          DynamicMockJwtAuthGuard.user = {
+            id: 'toto',
+          };
+          const dto = {
+            password: '12345678',
+          };
+          await request(app.getHttpServer())
+            .put('/users/me')
+            .send(dto)
+            .expect(400);
+        });
+
+        it('should return bad request for wrong password ( only letters )', async () => {
+          DynamicMockJwtAuthGuard.allow = true;
+          DynamicMockJwtAuthGuard.user = {
+            id: 'toto',
+          };
+          const dto = {
+            password: 'aaaaaaaa',
+          };
+          await request(app.getHttpServer())
+            .put('/users/me')
+            .send(dto)
+            .expect(400);
+        });
+      });
+    });
+
+    describe('success cases', () => {
+      it('should return 200 for user infos updated successfully', async () => {
+        const dto = {
+          fullname: 'Marshall FRY',
+          description: "I'm a chill guy :)",
+        };
+        DynamicMockJwtAuthGuard.allow = true;
+        DynamicMockJwtAuthGuard.user = { id: 'toto' };
+        mockUsersService.updateUser.mockResolvedValue({
+          user: { ...dto },
+          message: 'User infos updated successfully',
+        });
+        const res = await request(app.getHttpServer())
+          .put('/users/me')
+          .send(dto);
+
+        console.log(res.body);
+        expect(res.body.message).toBe('User infos updated successfully');
+        expect(res.body.user.fullname).toBe(dto.fullname);
+        expect(res.body.user.description).toBe(dto.description);
         expect(res.status).toBe(200);
       });
     });
