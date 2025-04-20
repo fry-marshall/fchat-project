@@ -10,11 +10,8 @@ import {
 import * as request from 'supertest';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { Readable } from 'stream';
-import * as path from 'path';
 
-class DynamicMockJwtAuthGuard implements CanActivate {
+export class DynamicMockJwtAuthGuard implements CanActivate {
   static allow = true;
   static user = { id: 'default-user' };
 

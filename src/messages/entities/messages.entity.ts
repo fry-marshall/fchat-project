@@ -1,11 +1,5 @@
-import { Users } from 'src/users/users.entity';
-import {
-  Column,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Users } from '../../users/users.entity';
+import { Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Conversations } from './conversations.entity';
 
 export class Messages {
@@ -29,7 +23,7 @@ export class Messages {
   @JoinColumn({ name: 'receiver_id' })
   receiver: Users;
 
-  @OneToOne(() => Conversations)
+  @ManyToOne(() => Conversations, (conversation) => conversation.messages)
   @JoinColumn({ name: 'conversation_id' })
   conversation: Conversations;
 }

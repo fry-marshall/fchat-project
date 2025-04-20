@@ -23,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       where: { id: payload.id },
     });
 
-    if (!user) {
+    if (!user || !user.email_verified) {
       throw new UnauthorizedException();
     }
 
