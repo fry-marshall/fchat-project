@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { MessagesModule } from './messages/messages.module';
 
 const NODE_ENV = process.env.NODE_ENV || 'dev';
 
@@ -40,6 +41,7 @@ const NODE_ENV = process.env.NODE_ENV || 'dev';
     JwtModule.register({}),
     UsersModule,
     AuthModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
