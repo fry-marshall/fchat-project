@@ -86,18 +86,22 @@ export class AuthService {
       throw new NotFoundException('user not found');
     }
 
+    if (!user.email_verified) {
+      throw new UnauthorizedException('email is not verified');
+    }
+
     const payload = {
       id: user.id,
       email: user.email,
     };
 
     const access_token = this.jwtService.sign(payload, {
-      secret: process.env.ACCESS_TOKEN,
+      secret: process.env.ACCESS_TOKEN_SECRET,
       expiresIn: '1h',
     });
 
     const refresh_token = this.jwtService.sign(payload, {
-      secret: process.env.REFRESH_TOKEN,
+      secret: process.env.REFRESH_TOKEN_SECRET,
       expiresIn: '7d',
     });
 

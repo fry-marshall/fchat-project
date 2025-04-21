@@ -7,6 +7,9 @@ import { CommonModule } from 'src/common/common.module';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt-strategy';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Users } from 'src/users/users.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -33,6 +36,8 @@ import { JwtStrategy } from './strategies/jwt-strategy';
     }),
     CommonModule,
     PassportModule,
+    TypeOrmModule.forFeature([Users]),
+    JwtModule.register({}),
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, JwtAuthGuard],

@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { MulterExceptionFilter } from './common/interceptors/multer-exception-filter';
+import { GlobalInterceptor } from './common/interceptors/global-interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,7 +12,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  app.useGlobalFilters(new MulterExceptionFilter());
-  await app.listen(process.env.PORT ?? 3000);
+  app.useGlobalInterceptors(new GlobalInterceptor());
+  await app.listen(process.env.LOCAL_PORT ?? 3000);
 }
 bootstrap();
