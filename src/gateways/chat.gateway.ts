@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
   OnGatewayConnection,
@@ -8,6 +9,7 @@ import { Server, Socket } from 'socket.io';
 import { Message } from 'src/messages/messages.interface';
 
 @WebSocketGateway()
+@Injectable()
 export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()
   server: Server;
@@ -35,6 +37,14 @@ export class ChatGateway implements OnGatewayConnection {
 
     if (this.connectedClients.has(privateRoom)) {
       this.server.to(privateRoom).emit('new_message', message);
+    }
+  }
+
+  readMessage(userId: string, conversation: { conversation_id: string }) {
+    const privateRoom = `user-${userId}`;
+
+    if (this.connectedClients.has(privateRoom)) {
+      this.server.to(privateRoom).emit('read_message', conversation);
     }
   }
 }

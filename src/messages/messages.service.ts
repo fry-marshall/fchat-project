@@ -3,9 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Conversations } from './entities/conversations.entity';
 import { Repository } from 'typeorm';
 import { SendMessageDto } from './dto/send-message.dto';
-import { Users } from 'src/users/users.entity';
+import { Users } from '../users/users.entity';
 import { Messages } from './entities/messages.entity';
-import { ChatGateway } from 'src/gateways/chat.gateway';
+import { ChatGateway } from '../gateways/chat.gateway';
+import { ReadMessageDto } from './dto/read-message.dto';
 
 @Injectable()
 export class MessagesService {
@@ -68,10 +69,10 @@ export class MessagesService {
       where: [
         {
           user1: senderUser!,
-          user2: receiverUser!,
+          user2: receiverUser,
         },
         {
-          user1: receiverUser!,
+          user1: receiverUser,
           user2: senderUser!,
         },
       ],
@@ -90,7 +91,7 @@ export class MessagesService {
       content: sendMessageDto.content,
       date: new Date(),
       sender: senderUser!,
-      receiver: receiverUser!,
+      receiver: receiverUser,
       conversation: conversation,
     });
 
@@ -108,6 +109,47 @@ export class MessagesService {
       conversation: {
         id: conversation.id,
         message: { id: message.id, date: message.date },
+      },
+    };
+  }
+
+  async readMessage(userId: string, readMessageDto: ReadMessageDto) {
+    const conversation = await this.conversationsRepository.findOne({
+      where: [
+        {
+          id: readMessageDto.conversation_id,
+        },
+      ],
+    });
+
+    if (!conversation) {
+      throw new NotFoundException('Conversation not found');
+    }
+
+    const allMessages = await this.messagesRepository.find({
+      where: { conversation: conversation },
+    });
+
+    for (const message of allMessages) {
+      if (message.receiver.id === userId) {
+        await this.messagesRepository.update(message.id, { is_read: true });
+      }
+    }
+
+    if (conversation.user1.id !== userId) {
+      this.chatGateway.readMessage(conversation.user1.id, {
+        conversation_id: conversation.id,
+      });
+    } else if (conversation.user2.id !== userId) {
+      this.chatGateway.readMessage(conversation.user2.id, {
+        conversation_id: conversation.id,
+      });
+    }
+
+    return {
+      message: 'Message read successfully',
+      conversation: {
+        id: conversation.id,
       },
     };
   }
