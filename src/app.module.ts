@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { MessagesModule } from './messages/messages.module';
+import { GatewaysModule } from './gateways/gateways.module';
 
 const NODE_ENV = process.env.NODE_ENV || 'dev';
 
@@ -42,6 +43,7 @@ const NODE_ENV = process.env.NODE_ENV || 'dev';
     UsersModule,
     AuthModule,
     MessagesModule,
+    GatewaysModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { SendMessageDto } from './dto/send-message.dto';
 import { Users } from 'src/users/users.entity';
 import { Messages } from './entities/messages.entity';
+import { ChatGateway } from 'src/gateways/chat.gateway';
 
 @Injectable()
 export class MessagesService {
@@ -15,6 +16,7 @@ export class MessagesService {
     private readonly usersRepository: Repository<Users>,
     @InjectRepository(Messages)
     private readonly messagesRepository: Repository<Messages>,
+    private readonly chatGateway: ChatGateway,
   ) {}
 
   async getUserMessages(userId: string) {
@@ -93,6 +95,13 @@ export class MessagesService {
     });
 
     await this.messagesRepository.save(message);
+    this.chatGateway.sendMessage(receiverUser.id, {
+      id: message.id,
+      date: message.date,
+      sender_id: senderUser?.id,
+      content: message.content,
+      conversation_id: conversation.id,
+    });
 
     return {
       message: 'Message sent successfully',
