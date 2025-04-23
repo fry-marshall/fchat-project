@@ -133,7 +133,7 @@ export class AuthService {
   async refreshToken(refreshTokenDto: RefreshTokenDto) {
     try {
       await this.jwtService.verifyAsync(refreshTokenDto.refresh_token, {
-        secret: process.env.REFRESH_TOKEN,
+        secret: process.env.REFRESH_TOKEN_SECRET,
       });
 
       const user = await this.usersRepository.findOne({
@@ -152,12 +152,12 @@ export class AuthService {
       };
 
       const access_token = this.jwtService.sign(payload, {
-        secret: process.env.ACCESS_TOKEN,
+        secret: process.env.ACCESS_TOKEN_SECRET,
         expiresIn: '1h',
       });
 
       const refresh_token = this.jwtService.sign(payload, {
-        secret: process.env.REFRESH_TOKEN,
+        secret: process.env.REFRESH_TOKEN_SECRET,
         expiresIn: '7d',
       });
 

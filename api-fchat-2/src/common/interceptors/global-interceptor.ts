@@ -29,7 +29,8 @@ export class GlobalInterceptor<T> implements NestInterceptor<T, Response<T>> {
       })),
       catchError((error) => {
         let message = error.message;
-        if (error instanceof BadRequestException) {
+        const isDataError = Array.isArray(error.response?.message);
+        if (error instanceof BadRequestException && isDataError) {
           message = 'Invalid input data';
         }
 

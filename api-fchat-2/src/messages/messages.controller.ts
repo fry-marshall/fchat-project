@@ -30,7 +30,7 @@ export class MessagesController {
     return this.messagesService.sendMessage(req.user.id, sendMessageDto);
   }
 
-  @Put('/send')
+  @Put('/read')
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   readMessage(@Request() req, @Body() readMessageDto: ReadMessageDto) {

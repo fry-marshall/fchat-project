@@ -23,38 +23,33 @@ export class MessagesService {
   async getUserMessages(userId: string) {
     const conversations = await this.conversationsRepository
       .createQueryBuilder('conversation')
-      .leftJoinAndSelect('conversation.user1', 'user1')
-      .leftJoinAndSelect('conversation.user2', 'user2')
-      .leftJoinAndSelect('conversation.messages', 'messages')
+      .leftJoin('conversation.user1', 'user1')
+      .leftJoin('conversation.user2', 'user2')
+      .leftJoin('conversation.messages', 'messages')
+      .leftJoin('messages.sender', 'sender')
+      .leftJoin('messages.receiver', 'receiver')
       .where('user1.id = :userId OR user2.id = :userId', {
         userId,
       })
       .select([
         'conversation.id',
         'user1.id',
-        'user1.fullname',
-        'user1.description',
-        'user1.profile_img',
         'user2.id',
-        'user2.fullname',
-        'user2.description',
-        'user2.profile_img',
         'messages.id',
         'messages.content',
         'messages.is_read',
         'messages.date',
-        'messages.receiver_id',
-        'messages.sender_id',
+        'receiver.id',
+        'sender.id',
       ])
       .orderBy('messages.date', 'ASC')
-      .getRawMany();
-
+      .getMany();
     return { conversations };
   }
 
   async sendMessage(userId: string, sendMessageDto: SendMessageDto) {
     const receiverUser = await this.usersRepository.findOne({
-      where: { id: sendMessageDto.user_id },
+      where: { id: sendMessageDto.user_id, email_verified: true },
     });
 
     if (!receiverUser) {
@@ -115,6 +110,7 @@ export class MessagesService {
 
   async readMessage(userId: string, readMessageDto: ReadMessageDto) {
     const conversation = await this.conversationsRepository.findOne({
+      relations: ['user1', 'user2'],
       where: [
         {
           id: readMessageDto.conversation_id,
@@ -127,6 +123,7 @@ export class MessagesService {
     }
 
     const allMessages = await this.messagesRepository.find({
+      relations: ['receiver'],
       where: { conversation: conversation },
     });
 
@@ -137,11 +134,11 @@ export class MessagesService {
     }
 
     if (conversation.user1.id !== userId) {
-      this.chatGateway.readMessage(conversation.user1.id, {
+      this.chatGateway.readMessage(conversation.user1?.id, {
         conversation_id: conversation.id,
       });
     } else if (conversation.user2.id !== userId) {
-      this.chatGateway.readMessage(conversation.user2.id, {
+      this.chatGateway.readMessage(conversation.user2?.id, {
         conversation_id: conversation.id,
       });
     }
@@ -149,7 +146,7 @@ export class MessagesService {
     return {
       message: 'Message read successfully',
       conversation: {
-        id: conversation.id,
+        id: readMessageDto.conversation_id,
       },
     };
   }
