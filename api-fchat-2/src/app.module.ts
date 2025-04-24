@@ -15,7 +15,7 @@ const NODE_ENV = process.env.NODE_ENV || 'dev';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `.env${NODE_ENV}`,
+      envFilePath: `.env`,
       validationSchema: Joi.object({
         LOCAL_PORT: Joi.number().default(3000),
         DOCKER_PORT: Joi.number().default(3000),

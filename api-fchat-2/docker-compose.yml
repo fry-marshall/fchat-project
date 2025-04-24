@@ -1,20 +1,4 @@
 services:
-  api:
-    build:
-      context: .
-      target: $NODE_ENV
-    container_name: fchat_api_2
-    command: [/bin/sh, ./wait-for-db.sh]
-    volumes:
-      - .:/app
-      - /app/node_modules
-    ports:
-      - $LOCAL_PORT:$DOCKER_PORT
-    environment:
-      - NODE_ENV=${NODE_ENV}
-    networks:
-      - api-fchat-2_network
-
   db:
     image: postgres:15
     restart: always
@@ -29,9 +13,32 @@ services:
       - ./db:/var/lib/postgresql/data
     networks:
       - api-fchat-2_network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "$DB_USERNAME"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-volumes:
-  db:
+  api:
+    build:
+      context: .
+      target: $NODE_ENV
+    container_name: fchat_api_2
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - .env.${NODE_ENV}:/app/.env
+      - /app/node_modules
+    ports:
+      - $LOCAL_PORT:$DOCKER_PORT
+    environment:
+      - NODE_ENV=${NODE_ENV}
+    networks:
+      - api-fchat-2_network
+    command: ["npm", "run", "start:${NODE_ENV}"]
+
 networks:
   api-fchat-2_network:
     driver: bridge
