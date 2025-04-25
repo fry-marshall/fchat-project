@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Deploy image
-        script: |
+        run: |
           if [ "$COMPONENT" = "api" ]; then
             cd api-fchat-2
           elif [ "$COMPONENT" = "webapp" ]; then
