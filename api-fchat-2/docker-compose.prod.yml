@@ -26,9 +26,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - .:/app
       - .env.prod:/app/.env
-      - /app/node_modules
     ports:
       - $LOCAL_PORT:$DOCKER_PORT
     environment:
