@@ -37,7 +37,7 @@ services:
       - NODE_ENV=${NODE_ENV}
     networks:
       - api-fchat-2_network
-    command: ["npm", "run", "start:${NODE_ENV}"]
+    command: ["npm", "run", "start:dev"]
 
 networks:
   api-fchat-2_network:

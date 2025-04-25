@@ -7,4 +7,4 @@ prod:
 	NODE_ENV=prod docker compose --env-file .env.prod up -d
 
 deploy:
-	docker build -t fchat_api -f Dockerfile . && docker tag fchat_api frymarshall/fchat_api:latest && docker push frymarshall/fchat_api:latest
+	docker build --target=prod -t fchat_api -f Dockerfile . && docker tag fchat_api frymarshall/fchat_api:latest && docker push frymarshall/fchat_api:latest
