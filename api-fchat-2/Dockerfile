@@ -9,4 +9,4 @@ COPY . .
 FROM base AS prod
 RUN npm ci --omit=dev
 COPY . .
-RUN npm run build
+RUN npx nest build
