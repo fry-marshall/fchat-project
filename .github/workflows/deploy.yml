@@ -63,7 +63,6 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            ssh-keyscan github.com >> ~/.ssh/known_hosts
             COMPONENT=${{ needs.deploy-image.outputs.component }}
             PROJECT_DIR="/home"
             if [ "$COMPONENT" = "api" ]; then
