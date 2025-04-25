@@ -22,7 +22,6 @@ jobs:
             COMPONENT="${BASH_REMATCH[1]}"
             echo "✅ Valid tag format. Component: $COMPONENT"
             echo "component=$COMPONENT" >> "$GITHUB_OUTPUT"
-            echo "$COMPONENT"
           else
             echo "❌ Invalid tag format: $TAG"
             exit 1
@@ -39,6 +38,7 @@ jobs:
 
       - name: Deploy image
         run: |
+          COMPONENT=${{ needs.deploy-image.outputs.component }}
           if [ "$COMPONENT" = "api" ]; then
             cd api-fchat-2
           elif [ "$COMPONENT" = "webapp" ]; then
