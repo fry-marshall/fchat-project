@@ -77,9 +77,9 @@ jobs:
             fi
 
             cd "$PROJECT_DIR"
-            if [ -d "$PROJECT_DIR/$REPO" ]; then
+            if [ -d "$PROJECT_DIR/fchat-project" ]; then
               echo "Directory already exists. Updating project..."
-              cd "$PROJECT_DIR/tassa_api"
+              cd "$PROJECT_DIR/fchat-project"
               git pull origin main
             else
               echo "Directory doesn't exist. Cloning project..."
