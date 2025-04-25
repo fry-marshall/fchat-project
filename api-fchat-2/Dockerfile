@@ -8,4 +8,5 @@ COPY . .
 
 FROM base AS prod
 COPY . .
-RUN npx nest build
+RUN npm run build
+RUN ls
