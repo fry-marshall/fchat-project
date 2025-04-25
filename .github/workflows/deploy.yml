@@ -22,6 +22,7 @@ jobs:
             COMPONENT="${BASH_REMATCH[1]}"
             echo "✅ Valid tag format. Component: $COMPONENT"
             echo "component=$COMPONENT" >> "$GITHUB_OUTPUT"
+            echo "$COMPONENT"
           else
             echo "❌ Invalid tag format: $TAG"
             exit 1
