@@ -9,4 +9,5 @@ COPY . .
 FROM base AS prod
 COPY . .
 RUN npm run build
+RUN pwd
 RUN ls dist
