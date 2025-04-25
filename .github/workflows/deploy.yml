@@ -38,7 +38,7 @@ jobs:
 
       - name: Deploy image
         run: |
-          COMPONENT=${{ needs.deploy-image.outputs.component }}
+          COMPONENT=${{ steps.check_tag.outputs.component }}
           if [ "$COMPONENT" = "api" ]; then
             cd api-fchat-2
           elif [ "$COMPONENT" = "webapp" ]; then
