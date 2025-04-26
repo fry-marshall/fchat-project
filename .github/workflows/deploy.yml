@@ -2,7 +2,10 @@ name: Deploy on Release
 
 on:
   release:
-    types: [published]
+    types:
+      - published
+    tags:
+      - 'v*/*'
 
 jobs:
   extract-component:
@@ -15,13 +18,13 @@ jobs:
         run: |
           TAG="${{ github.event.release.tag_name }}"
           echo "Tag: $TAG"
-          if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+\/(api|auth|webapp)$ ]]; then
-            COMPONENT="${BASH_REMATCH[1]}"
-            echo "component=$COMPONENT" >> "$GITHUB_OUTPUT"
+          if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "✅ Valid tag format: $TAG"
           else
             echo "❌ Invalid tag format: $TAG"
             exit 1
           fi
+
 
   deploy-api:
     needs: extract-component
