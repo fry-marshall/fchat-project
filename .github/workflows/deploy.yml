@@ -27,6 +27,7 @@ on:
 jobs:
   extract-component:
     runs-on: ubuntu-latest
+    if: github.event_name == 'release'
     outputs:
       component: ${{ steps.check_tag.outputs.component }}
     steps:
