@@ -55,6 +55,15 @@ jobs:
     needs: deploy-image
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Environment Variables (API Only)
+        uses: ./.github/actions/setup-env
+        if: ${{ needs.deploy-image.outputs.component == 'api' }}
+        with:
+          env_file: .env.prod
+
       - name: Log in to VPS and deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -65,17 +74,6 @@ jobs:
           script: |
             COMPONENT=${{ needs.deploy-image.outputs.component }}
             PROJECT_DIR="/home"
-            if [ "$COMPONENT" = "api" ]; then
-              REPO="api-fchat-2"
-            elif [ "$COMPONENT" = "auth" ]; then
-              REPO="auth-fchat"
-            elif [ "$COMPONENT" = "webapp" ]; then
-              REPO="webapp-fchat"
-            else
-              echo "Unknown component"
-              exit 1
-            fi
-
             cd "$PROJECT_DIR"
             if [ -d "$PROJECT_DIR/fchat-project" ]; then
               echo "Directory already exists. Updating project..."
@@ -87,29 +85,17 @@ jobs:
               cd fchat-project
             fi
 
-            cd "$REPO"
 
-            echo "LOCAL_PORT=${{ secrets.LOCAL_PORT }}" >> .env.prod
-            echo "DOCKER_PORT=${{ secrets.DOCKER_PORT }}" >> .env.prod
-            echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> .env.prod
-            echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> .env.prod
-            echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env.prod
-            echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env.prod
-            echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env.prod
-            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env.prod
-            echo "DB_LOCAL_PORT=${{ secrets.DB_LOCAL_PORT }}" >> .env.prod
-            echo "DB_DOCKER_PORT=${{ secrets.DB_DOCKER_PORT }}" >> .env.prod
-            echo "MAIL_HOST=${{ secrets.MAIL_HOST }}" >> .env.prod
-            echo "MAIL_PORT=${{ secrets.MAIL_PORT }}" >> .env.prod
-            echo "MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}" >> .env.prod
-            echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> .env.prod
-            echo "SPACE_NAME=${{ secrets.SPACE_NAME }}" >> .env.prod
-            echo "SPACE_ACCESS_KEY=${{ secrets.SPACE_ACCESS_KEY }}" >> .env.prod
-            echo "SPACE_SECRET_KEY=${{ secrets.SPACE_SECRET_KEY }}" >> .env.prod
-            echo "SPACE_REGION=${{ secrets.SPACE_REGION }}" >> .env.prod
-            echo "SPACE_ENDPOINT=${{ secrets.SPACE_ENDPOINT }}" >> .env.prod
-
-            echo "🚀 Running docker compose"
-            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-            docker compose -f docker-compose.prod.yml --env-file .env.prod pull
-            make prod
+            if [ "$COMPONENT" = "api" ]; then
+              echo "🚀 Running docker compose for the api"
+              echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+              docker compose -f docker-compose.prod.yml --env-file .env.prod pull
+              make prod
+            elif [ "$COMPONENT" = "auth" ]; then
+              REPO="auth-fchat"
+            elif [ "$COMPONENT" = "webapp" ]; then
+              REPO="webapp-fchat"
+            else
+              echo "Unknown component"
+              exit 1
+            fi

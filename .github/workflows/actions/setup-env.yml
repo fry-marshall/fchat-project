@@ -1,0 +1,30 @@
+name: 'Setup Environment Variables'
+description: 'Sets up environment variables for API deployment'
+inputs:
+  env_file:
+    description: 'Name of the environment file'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        echo "LOCAL_PORT=${{ secrets.LOCAL_PORT }}" >> ${{ inputs.env_file }}
+        echo "DOCKER_PORT=${{ secrets.DOCKER_PORT }}" >> ${{ inputs.env_file }}
+        echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> ${{ inputs.env_file }}
+        echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> ${{ inputs.env_file }}
+        echo "DB_HOST=${{ secrets.DB_HOST }}" >> ${{ inputs.env_file }}
+        echo "DB_NAME=${{ secrets.DB_NAME }}" >> ${{ inputs.env_file }}
+        echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> ${{ inputs.env_file }}
+        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> ${{ inputs.env_file }}
+        echo "DB_LOCAL_PORT=${{ secrets.DB_LOCAL_PORT }}" >> ${{ inputs.env_file }}
+        echo "DB_DOCKER_PORT=${{ secrets.DB_DOCKER_PORT }}" >> ${{ inputs.env_file }}
+        echo "MAIL_HOST=${{ secrets.MAIL_HOST }}" >> ${{ inputs.env_file }}
+        echo "MAIL_PORT=${{ secrets.MAIL_PORT }}" >> ${{ inputs.env_file }}
+        echo "MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}" >> ${{ inputs.env_file }}
+        echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> ${{ inputs.env_file }}
+        echo "SPACE_NAME=${{ secrets.SPACE_NAME }}" >> ${{ inputs.env_file }}
+        echo "SPACE_ACCESS_KEY=${{ secrets.SPACE_ACCESS_KEY }}" >> ${{ inputs.env_file }}
+        echo "SPACE_SECRET_KEY=${{ secrets.SPACE_SECRET_KEY }}" >> ${{ inputs.env_file }}
+        echo "SPACE_REGION=${{ secrets.SPACE_REGION }}" >> ${{ inputs.env_file }}
+        echo "SPACE_ENDPOINT=${{ secrets.SPACE_ENDPOINT }}" >> ${{ inputs.env_file }}
+      shell: bash
