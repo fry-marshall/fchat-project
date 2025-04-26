@@ -1,0 +1,59 @@
+name: Api Template
+
+on:
+  workflow_call:
+    inputs:
+      folder:
+        required: true
+        type: string
+    secrets:
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
+      VPS_IP:
+        required: true
+      VPS_USERNAME:
+        required: true
+      VPS_PORT:
+        required: true
+      SSH_PRIVATE_KEY:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Environment Variables (API Only)
+        uses: ./.github/setup-env
+        with:
+          env_file: .env.prod
+
+      - name: Log in to VPS and deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          port: ${{ secrets.VPS_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            PROJECT_DIR="/home"
+            cd "$PROJECT_DIR"
+            if [ -d "$PROJECT_DIR/fchat-project" ]; then
+              echo "Directory already exists. Updating project..."
+              cd "$PROJECT_DIR/fchat-project"
+              git pull origin main
+            else
+              echo "Directory doesn't exist. Cloning project..."
+              git clone git@github.com:fry-marshall/fchat-project.git
+              cd fchat-project
+            fi
+
+            cd ${{ inputs.folder }}
+            echo "🚀 Running docker compose for the api"
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+            docker compose -f docker-compose.prod.yml --env-file .env.prod pull
+            make prod

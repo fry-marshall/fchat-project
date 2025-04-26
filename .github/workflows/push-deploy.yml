@@ -1,4 +1,4 @@
-name: Deploy on Release
+name: Push and Deploy on Release
 
 on:
   release:
@@ -8,18 +8,18 @@ on:
       - 'v*/*'
   workflow_dispatch:
     inputs:
-      deploy_api:
-        description: 'Deploy API'
+      push_api:
+        description: 'Push API'
         required: true
         type: boolean
         default: false
-      deploy_webapp:
-        description: 'Deploy Webapp'
+      push_webapp:
+        description: 'Push Webapp'
         required: true
         type: boolean
         default: false
-      deploy_auth:
-        description: 'Deploy Auth'
+      push_auth:
+        description: 'Push Auth'
         required: true
         type: boolean
         default: false
@@ -44,33 +44,54 @@ jobs:
           fi
 
 
-  deploy-api:
+  push-api:
     if: |
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_api == 'true') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_api == 'true') ||
       (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
-    uses: ./.github/workflows/deploy-template.yml
+    uses: ./.github/workflows/push-template.yml
     with:
       component: api
       folder: api-fchat-2
     secrets: inherit
 
-  deploy-webapp:
+  push-webapp:
     if: |
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_webapp == 'true') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_webapp == 'true') ||
       (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
-    uses: ./.github/workflows/deploy-template.yml
+    uses: ./.github/workflows/push-template.yml
     with:
       component: webapp
       folder: webapp-fchat
     secrets: inherit
 
-  deploy-auth:
+  push-auth:
     if: |
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_auth == 'true') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_auth == 'true') ||
       (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
-    uses: ./.github/workflows/deploy-template.yml
+    uses: ./.github/workflows/push-template.yml
     with:
       component: auth
       folder: auth-fchat
     secrets: inherit
 
+
+  deploy-api:
+    needs: push-api
+    uses: ./.github/workflows/api-template.yml
+    with:
+      folder: api-fchat-2
+    secrets: inherit
+
+  deploy-webapp:
+    needs: push-webapp
+    uses: ./.github/workflows/app-template.yml
+    with:
+      folder: webapp-fchat
+    secrets: inherit
+
+  push-auth:
+    needs: push-webapp
+    uses: ./.github/workflows/app-template.yml
+    with:
+      folder: auth-fchat
+    secrets: inherit
