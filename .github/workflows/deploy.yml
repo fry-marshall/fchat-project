@@ -6,6 +6,18 @@ on:
       - published
     tags:
       - 'v*/*'
+  workflow_dispatch:
+    inputs:
+      deploy_api:
+        description: 'Deploy API?'
+        required: true
+        type: boolean
+        default: false
+      deploy_webapp:
+        description: 'Deploy Webapp?'
+        required: true
+        type: boolean
+        default: false
 
 jobs:
   extract-component:
@@ -27,7 +39,8 @@ jobs:
 
 
   deploy-api:
-    needs: extract-component
+    needs: check_tag
+    if: ${{ github.event.inputs.deploy_api == 'true' }}
     uses: ./.github/workflows/deploy-template.yml
     with:
       component: api
@@ -35,7 +48,8 @@ jobs:
     secrets: inherit
 
   deploy-webapp:
-    needs: extract-component
+    needs: check_tag
+    if: ${{ github.event.inputs.deploy_webapp == 'true' }}
     uses: ./.github/workflows/deploy-template.yml
     with:
       component: webapp
@@ -43,7 +57,8 @@ jobs:
     secrets: inherit
 
   deploy-auth:
-    needs: extract-component
+    needs: check_tag
+    if: ${{ github.event.inputs.deploy_auth == 'true' }}
     uses: ./.github/workflows/deploy-template.yml
     with:
       component: auth
