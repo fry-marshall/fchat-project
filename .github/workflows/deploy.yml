@@ -45,8 +45,9 @@ jobs:
 
 
   deploy-api:
-    needs: extract-component
-    if: ${{ github.event.inputs.deploy_api == 'true' }}
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_api == 'true') ||
+      (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
     uses: ./.github/workflows/deploy-template.yml
     with:
       component: api
@@ -54,8 +55,9 @@ jobs:
     secrets: inherit
 
   deploy-webapp:
-    needs: extract-component
-    if: ${{ github.event.inputs.deploy_webapp == 'true' }}
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_webapp == 'true') ||
+      (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
     uses: ./.github/workflows/deploy-template.yml
     with:
       component: webapp
@@ -63,8 +65,9 @@ jobs:
     secrets: inherit
 
   deploy-auth:
-    needs: extract-component
-    if: ${{ github.event.inputs.deploy_auth == 'true' }}
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_auth == 'true') ||
+      (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
     uses: ./.github/workflows/deploy-template.yml
     with:
       component: auth
