@@ -89,8 +89,8 @@ jobs:
       folder: webapp-fchat
     secrets: inherit
 
-  push-auth:
-    needs: push-webapp
+  deploy-auth:
+    needs: push-auth
     uses: ./.github/workflows/app-template.yml
     with:
       folder: auth-fchat
