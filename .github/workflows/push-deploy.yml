@@ -51,7 +51,7 @@ jobs:
     uses: ./.github/workflows/push-template.yml
     with:
       component: api
-      folder: api-fchat-2
+      folder: api-fchat
     secrets: inherit
 
   push-webapp:
@@ -79,7 +79,7 @@ jobs:
     needs: push-api
     uses: ./.github/workflows/api-template.yml
     with:
-      folder: api-fchat-2
+      folder: api-fchat
     secrets: inherit
 
   deploy-webapp:

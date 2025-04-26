@@ -1,17 +1,10 @@
 dev:
-	docker-compose -f docker-compose.dev.yml up -d
+	@echo "Starting app in development environment..."
+	NODE_ENV=dev docker compose --env-file .env.dev up
 
-start:
-	docker pull frymarshall/fchat_api && docker compose -f docker-compose.prod.yml up -d
+prod:
+	@echo "Starting app in production environment..."
+	NODE_ENV=prod docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
 
 deploy:
-	docker build -t fchat_api -f Dockerfile . && docker tag fchat_api frymarshall/fchat_api:latest && docker push frymarshall/fchat_api:latest 
-
-compile: 
-	npx tsc
-
-migrate: 
-	npm run migrate
-
-test: 
-	npm run test
+	docker build --target=prod -t fchat_api -f Dockerfile . && docker tag fchat_api frymarshall/fchat_api:latest && docker push frymarshall/fchat_api:latest

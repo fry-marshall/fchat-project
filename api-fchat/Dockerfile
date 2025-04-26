@@ -1,11 +1,11 @@
-FROM node:alpine
-
-RUN apk update && \
-    apk add --no-cache netcat-openbsd
-
+FROM node:22-alpine AS base
 WORKDIR /app
-COPY package.json ./
-RUN npm install
+COPY package.json package-lock.json ./
+RUN npm ci
+
+FROM base AS dev
 COPY . .
-RUN chmod +x wait-for-db.sh
-RUN npx tsc
+
+FROM base AS prod
+COPY . .
+RUN npm run build

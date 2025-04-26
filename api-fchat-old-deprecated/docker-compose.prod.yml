@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mysqldb:
+    image: mysql:5.7
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE_NAME}
+    ports:
+      - "${MYSQL_LOCAL_PORT}:${MYSQL_DOCKER_PORT}"
+    volumes:
+      - ./db:/var/lib/mysql
+    networks:
+      - fchat_network
+
+  fchatapi:
+    depends_on:
+      - mysqldb
+    container_name: fchatapi
+    command: ["./wait-for-db.sh"]
+    image: frymarshall/fchat_api
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - "${NODE_LOCAL_PORT}:${NODE_DOCKER_PORT}"
+    stdin_open: true
+    tty: true
+    networks:
+      - fchat_network
+
+volumes: 
+  db:
+
+networks:
+  fchat_network:
+    driver: bridge

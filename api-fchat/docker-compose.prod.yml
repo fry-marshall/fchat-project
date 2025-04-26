@@ -1,37 +1,43 @@
-version: '3.8'
-
 services:
-  mysqldb:
-    image: mysql:5.7
-    restart: unless-stopped
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE_NAME}
-    ports:
-      - "${MYSQL_LOCAL_PORT}:${MYSQL_DOCKER_PORT}"
-    volumes:
-      - ./db:/var/lib/mysql
-    networks:
-      - fchat_network
-
-  fchatapi:
-    depends_on:
-      - mysqldb
-    container_name: fchatapi
-    command: ["./wait-for-db.sh"]
-    image: frymarshall/fchat_api
-    restart: unless-stopped
-    env_file: ./.env
-    ports:
-      - "${NODE_LOCAL_PORT}:${NODE_DOCKER_PORT}"
-    stdin_open: true
-    tty: true
-    networks:
-      - fchat_network
-
-volumes: 
   db:
+    image: postgres:15
+    restart: always
+    container_name: postgres_db_fchat
+    ports:
+      - $DB_LOCAL_PORT:$DB_DOCKER_PORT
+    environment:
+      - POSTGRES_USER=$DB_USERNAME
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_DB=$DB_NAME
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      - api-fchat_network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "$DB_USERNAME"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    image: frymarshall/fchat_api
+    container_name: fchat_api_2
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .env.prod:/app/.env
+    ports:
+      - $LOCAL_PORT:$DOCKER_PORT
+    environment:
+      - NODE_ENV=prod
+    networks:
+      - api-fchat_network
+      - nginx_network
+    command: ["npm", "run", "start:prod"]
 
 networks:
-  fchat_network:
+  nginx_network:
+    external: true
+  api-fchat_network:
     driver: bridge

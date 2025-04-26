@@ -12,7 +12,7 @@ services:
     volumes:
       - ./db:/var/lib/postgresql/data
     networks:
-      - api-fchat-2_network
+      - api-fchat_network
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "$DB_USERNAME"]
       interval: 5s
@@ -36,9 +36,9 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV}
     networks:
-      - api-fchat-2_network
+      - api-fchat_network
     command: ["npm", "run", "start:dev"]
 
 networks:
-  api-fchat-2_network:
+  api-fchat_network:
     driver: bridge

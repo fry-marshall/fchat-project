@@ -40,7 +40,7 @@ jobs:
         run: |
           COMPONENT=${{ steps.check_tag.outputs.component }}
           if [ "$COMPONENT" = "api" ]; then
-            cd api-fchat-2
+            cd api-fchat
           elif [ "$COMPONENT" = "webapp" ]; then
             cd webapp-fchat
           elif [ "$COMPONENT" = "auth" ]; then
