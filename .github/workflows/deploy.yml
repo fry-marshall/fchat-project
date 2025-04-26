@@ -46,3 +46,4 @@ jobs:
       component: auth
       folder: auth-fchat
     secrets: inherit
+
