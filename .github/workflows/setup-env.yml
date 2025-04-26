@@ -1,9 +1,12 @@
 name: 'Setup Environment Variables'
 description: 'Sets up environment variables for API deployment'
-inputs:
-  env_file:
-    description: 'Name of the environment file'
-    required: true
+
+on:
+  workflow_call:
+    inputs:
+      env_file:
+        description: 'Name of the environment file'
+        required: true
 runs:
   using: "composite"
   steps:

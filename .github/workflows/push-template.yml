@@ -1,4 +1,4 @@
-name: Deploy Template
+name: Push Template
 
 on:
   workflow_call:
