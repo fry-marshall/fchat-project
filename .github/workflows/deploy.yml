@@ -9,12 +9,17 @@ on:
   workflow_dispatch:
     inputs:
       deploy_api:
-        description: 'Deploy API?'
+        description: 'Deploy API'
         required: true
         type: boolean
         default: false
       deploy_webapp:
-        description: 'Deploy Webapp?'
+        description: 'Deploy Webapp'
+        required: true
+        type: boolean
+        default: false
+      deploy_auth:
+        description: 'Deploy Auth'
         required: true
         type: boolean
         default: false
