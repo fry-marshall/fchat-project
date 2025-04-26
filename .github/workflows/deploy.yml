@@ -39,7 +39,7 @@ jobs:
 
 
   deploy-api:
-    needs: check_tag
+    needs: extract-component
     if: ${{ github.event.inputs.deploy_api == 'true' }}
     uses: ./.github/workflows/deploy-template.yml
     with:
@@ -48,7 +48,7 @@ jobs:
     secrets: inherit
 
   deploy-webapp:
-    needs: check_tag
+    needs: extract-component
     if: ${{ github.event.inputs.deploy_webapp == 'true' }}
     uses: ./.github/workflows/deploy-template.yml
     with:
@@ -57,7 +57,7 @@ jobs:
     secrets: inherit
 
   deploy-auth:
-    needs: check_tag
+    needs: extract-component
     if: ${{ github.event.inputs.deploy_auth == 'true' }}
     uses: ./.github/workflows/deploy-template.yml
     with:
