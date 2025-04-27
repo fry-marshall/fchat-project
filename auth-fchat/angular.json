@@ -86,10 +86,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "auth-fchat:build:production"
+              "buildTarget": "auth-fchat:build:production"
             },
             "development": {
-              "browserTarget": "auth-fchat:build:development"
+              "buildTarget": "auth-fchat:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -97,7 +97,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "auth-fchat:build"
+            "buildTarget": "auth-fchat:build"
           }
         },
         "test": {
