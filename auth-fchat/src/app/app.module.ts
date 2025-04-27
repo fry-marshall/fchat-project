@@ -32,7 +32,7 @@ const routes: Routes = [
     HttpClientModule,
     StoreDevtoolsModule.instrument({
       logOnly: !environment.production
-    })
+    , connectInZone: true})
   ],
   providers: [
     CookieService,
