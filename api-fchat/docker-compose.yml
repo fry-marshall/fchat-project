@@ -23,7 +23,7 @@ services:
     build:
       context: .
       target: $NODE_ENV
-    container_name: fchat_api_2
+    container_name: fchat_api
     depends_on:
       db:
         condition: service_healthy
