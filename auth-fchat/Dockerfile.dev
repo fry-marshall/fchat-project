@@ -1,11 +1,24 @@
-FROM node:alpine
+# Prendre une base Node stable
+FROM node:20-slim
 
+# Installer Angular CLI globalement
 RUN npm install -g @angular/cli
+
 WORKDIR /app
+
+# Copier uniquement les fichiers nécessaires pour l'installation
 COPY package*.json ./
 
+# Installation PROPRE dans l'environnement Linux
 RUN npm install
+
+# Copier tout le reste du code
 COPY . .
+
+# Rebuild des modules natifs au cas où
+RUN npm rebuild
+
 EXPOSE 4200
 
+# Lancer l'app
 CMD ["npm", "start"]

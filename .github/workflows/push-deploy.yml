@@ -5,7 +5,7 @@ on:
     types:
       - published
     tags:
-      - 'v*/*'
+      - 'v*'
   workflow_dispatch:
     inputs:
       push_api:
