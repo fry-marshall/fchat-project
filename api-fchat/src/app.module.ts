@@ -10,7 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MessagesModule } from './messages/messages.module';
 import { GatewaysModule } from './gateways/gateways.module';
 
-const NODE_ENV = process.env.NODE_ENV || 'dev';
+//const NODE_ENV = process.env.NODE_ENV || 'dev';
 
 @Module({
   imports: [
@@ -37,7 +37,7 @@ const NODE_ENV = process.env.NODE_ENV || 'dev';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: NODE_ENV === 'dev',
+      synchronize: true,
     }),
     JwtModule.register({}),
     UsersModule,
