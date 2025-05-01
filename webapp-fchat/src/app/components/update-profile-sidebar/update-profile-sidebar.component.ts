@@ -11,9 +11,10 @@ import { UserFacade } from 'src/app/stores/user/user.facade';
 import { RightAction, ViewsService } from 'src/app/views/views.service';
 
 @Component({
-  selector: 'app-update-profile-sidebar',
-  templateUrl: './update-profile-sidebar.component.html',
-  styleUrls: ['./update-profile-sidebar.component.scss']
+    selector: 'app-update-profile-sidebar',
+    templateUrl: './update-profile-sidebar.component.html',
+    styleUrls: ['./update-profile-sidebar.component.scss'],
+    standalone: false
 })
 export class UpdateProfileSidebarComponent implements OnInit {
 

@@ -13,25 +13,26 @@ export interface NotificationMessage {
 }
 
 @Component({
-  selector: 'app-views',
-  templateUrl: './views.component.html',
-  styleUrls: ['./views.component.scss'],
-  animations: [
-    trigger('showSidebar', [
-      transition(':enter', [
-        style({
-          transform: 'translateX(-100%)',
-        }),
-        animate('.5s', style({ transform: 'translateX(0)' }))
-      ]),
-      transition(':leave', [
-        style({
-          transform: 'translateX(0)'
-        }),
-        animate('.5s', style({ transform: 'translateX(-100%)' }))
-      ]),
-    ])
-  ]
+    selector: 'app-views',
+    templateUrl: './views.component.html',
+    styleUrls: ['./views.component.scss'],
+    animations: [
+        trigger('showSidebar', [
+            transition(':enter', [
+                style({
+                    transform: 'translateX(-100%)',
+                }),
+                animate('.5s', style({ transform: 'translateX(0)' }))
+            ]),
+            transition(':leave', [
+                style({
+                    transform: 'translateX(0)'
+                }),
+                animate('.5s', style({ transform: 'translateX(-100%)' }))
+            ]),
+        ])
+    ],
+    standalone: false
 })
 export class ViewsComponent implements OnInit {
 

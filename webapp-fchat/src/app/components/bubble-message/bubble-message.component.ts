@@ -8,7 +8,8 @@ import { MessageService } from "src/app/stores/message/message.services";
     templateUrl: './bubble-message.component.html',
     styleUrls: [
         './bubble-message.component.scss'
-    ]
+    ],
+    standalone: false
 })
 export class BubbleMessageComponent{
 

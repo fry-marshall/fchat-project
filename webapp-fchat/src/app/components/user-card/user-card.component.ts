@@ -3,9 +3,10 @@ import { environment } from '@environments/environment';
 import { User } from '@library_v2/interfaces/user';
 
 @Component({
-  selector: 'app-user-card',
-  templateUrl: './user-card.component.html',
-  styleUrls: ['./user-card.component.scss']
+    selector: 'app-user-card',
+    templateUrl: './user-card.component.html',
+    styleUrls: ['./user-card.component.scss'],
+    standalone: false
 })
 export class UserCardComponent{
 

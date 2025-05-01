@@ -10,7 +10,8 @@ import { UserFacade } from "src/app/stores/user/user.facade";
     templateUrl: './sender-message-input.component.html',
     styleUrls: [
         './sender-message-input.component.scss'
-    ]
+    ],
+    standalone: false
 })
 export class SenderMessageInputComponent{
 

@@ -5,9 +5,10 @@ import { Conversation, Message } from 'src/app/stores/message/message.interface'
 import { MessageService } from 'src/app/stores/message/message.services';
 
 @Component({
-  selector: 'app-conversation-card',
-  templateUrl: './conversation-card.component.html',
-  styleUrls: ['./conversation-card.component.scss']
+    selector: 'app-conversation-card',
+    templateUrl: './conversation-card.component.html',
+    styleUrls: ['./conversation-card.component.scss'],
+    standalone: false
 })
 export class ConversationCardComponent implements OnInit{
 

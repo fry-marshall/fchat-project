@@ -7,9 +7,10 @@ import { UserFacade } from 'src/app/stores/user/user.facade';
 import { RightAction, ViewsService } from 'src/app/views/views.service';
 
 @Component({
-  selector: 'app-new-message-sidebar',
-  templateUrl: './new-message-sidebar.component.html',
-  styleUrls: ['./new-message-sidebar.component.scss']
+    selector: 'app-new-message-sidebar',
+    templateUrl: './new-message-sidebar.component.html',
+    styleUrls: ['./new-message-sidebar.component.scss'],
+    standalone: false
 })
 export class NewMessageSidebarComponent{
 

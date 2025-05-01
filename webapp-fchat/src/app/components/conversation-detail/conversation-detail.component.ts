@@ -11,7 +11,8 @@ import { UserFacade } from "src/app/stores/user/user.facade";
     templateUrl: './conversation-detail.component.html',
     styleUrls: [
         './conversation-detail.component.scss'
-    ]
+    ],
+    standalone: false
 })
 export class ConversationDetailComponent implements OnInit, AfterViewInit  {
 

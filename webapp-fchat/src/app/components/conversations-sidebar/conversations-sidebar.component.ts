@@ -14,9 +14,10 @@ import { UserFacade } from 'src/app/stores/user/user.facade';
 import { RightAction, ViewsService } from 'src/app/views/views.service';
 
 @Component({
-  selector: 'app-conversations-sidebar',
-  templateUrl: './conversations-sidebar.component.html',
-  styleUrls: ['./conversations-sidebar.component.scss']
+    selector: 'app-conversations-sidebar',
+    templateUrl: './conversations-sidebar.component.html',
+    styleUrls: ['./conversations-sidebar.component.scss'],
+    standalone: false
 })
 export class ConversationsSidebarComponent implements OnChanges{
 
