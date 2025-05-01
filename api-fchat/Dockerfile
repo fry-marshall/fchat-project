@@ -8,5 +8,4 @@ COPY . .
 
 FROM base AS prod
 COPY . .
-RUN npx typeorm migration:generate src/migrations/init -d src/data-source.ts
 RUN npm run build
