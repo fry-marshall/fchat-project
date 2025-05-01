@@ -3,7 +3,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { ViewsComponent } from "./views.component";
 import { ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { UiModule } from "@library_v2/ui-module";
 import { ComponentsModule } from "../components/components.module";
 import { ViewsService } from "./views.service";
@@ -19,20 +19,14 @@ const routes: Routes = [
     }
 ]
 
-@NgModule({
-    declarations: [
+@NgModule({ declarations: [
         ViewsComponent
-    ],
-    imports: [
-        UiModule,
+    ], imports: [UiModule,
         ComponentsModule,
         ReactiveFormsModule,
-        HttpClientModule,
         CommonModule,
-        RouterModule.forChild(routes)
-    ],
-    providers: [
-        ViewsService
-    ]
-})
+        RouterModule.forChild(routes)], providers: [
+        ViewsService,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class ViewsModule { }
