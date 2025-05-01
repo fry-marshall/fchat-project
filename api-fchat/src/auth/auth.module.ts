@@ -18,12 +18,16 @@ import { JwtModule } from '@nestjs/jwt';
         host: process.env.MAIL_HOST,
         port: parseInt(process.env.MAIL_PORT!),
         secure: false,
+        auth: {
+          user: process.env.MAIL_USERNAME,
+          pass: process.env.MAIL_PASSWORD,
+        },
       },
       defaults: {
-        from: '"nest-modules" <modules@nestjs.com>',
+        from: '"FChat" <marshalfry1998@gmail.com>',
       },
       template: {
-        dir: __dirname + '../templates',
+        dir: __dirname + '../../../templates',
         adapter: new HandlebarsAdapter(),
         options: {
           strict: true,

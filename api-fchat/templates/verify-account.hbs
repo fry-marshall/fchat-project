@@ -28,9 +28,9 @@
                   align='center'
                 >
                   <img
-                    src='/dist/assets/logo.png'
-                    width='74'
-                    height='24'
+                    src='https://tassa.nyc3.cdn.digitaloceanspaces.com/fchat/logo.png'
+                    width='45'
+                    height='45'
                     aria-hidden='true'
                     style='margin-bottom:16px'
                     alt='Logo'
@@ -46,7 +46,7 @@
                             <img
                               width='20'
                               height='20'
-                              src='/dist/assets/logo.png'
+                              src='https://tassa.nyc3.cdn.digitaloceanspaces.com/fchat/logo.png'
                               style='width:20px;height:20px;vertical-align:sub;border-radius:50%'
                               alt='Badge'
                             />
@@ -54,7 +54,7 @@
                           <td>
                             <a
                               style="font-family:'Google Sans',Roboto,RobotoDraft,Helvetica,Arial,sans-serif;color:rgba(0,0,0,0.87);font-size:14px;line-height:20px"
-                            >${mail}</a>
+                            >{{email}}</a>
                           </td>
                         </tr>
                       </tbody>
@@ -70,7 +70,7 @@
                     <br /><br />
                     <a
                       target='_blank'
-                      href='${url}'
+                      href='{{url}}'
                       style='display: inline-block; padding:10px 24px; background-color: #00B51D; color: #ffffff; text-align: center; text-decoration: none; border-radius: 5px;'
                     >Activer mon compte</a>
                   </div>
@@ -82,9 +82,9 @@
                     <br />
                     <a
                       target='_blank'
-                      href='${url}'
+                      href='{{url}}'
                       style='display: inline-block; padding:10px 24px; text-align: center; '
-                    >${url}</a>
+                    >{{url}}</a>
                   </div>
                 </div>
                 <div style='text-align:left'>

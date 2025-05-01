@@ -28,6 +28,7 @@ import { GatewaysModule } from './gateways/gateways.module';
         DB_LOCAL_PORT: Joi.number().default(5432),
         DB_DOCKER_PORT: Joi.number().default(5432),
       }),
+      isGlobal: true,
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',

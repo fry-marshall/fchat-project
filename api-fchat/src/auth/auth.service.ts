@@ -277,15 +277,15 @@ export class AuthService {
       email_verified_token: token,
     });
 
-    if (process.env.NODE_ENV === 'prod') {
-      const url: string = `https://fchat.mfry.io/verify/${token}`;
-      await this.mailService.sendMail(
-        user.email!,
-        'Account verification',
-        url,
-        'verify-account',
-      );
-    }
+    //if (process.env.NODE_ENV === 'prod') {
+    const url: string = `https://fchat.mfry.io/verify/${token}`;
+    await this.mailService.sendMail(
+      user.email!,
+      'Account verification',
+      url,
+      'verify-account',
+    );
+    //}
 
     return { message: 'Token generated successfully' };
   }
