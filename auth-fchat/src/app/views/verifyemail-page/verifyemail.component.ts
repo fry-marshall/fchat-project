@@ -6,9 +6,10 @@ import { VerifyEmailUserFailure, VerifyEmailUserSuccess } from "src/app/stores/u
 import { environment } from "src/environments/environment";
 
 @Component({
-  selector: 'app-verifyemail',
-  templateUrl: './verifyemail.component.html',
-  styleUrls: ['./verifyemail.component.scss']
+    selector: 'app-verifyemail',
+    templateUrl: './verifyemail.component.html',
+    styleUrls: ['./verifyemail.component.scss'],
+    standalone: false
 })
 export class VerifyEmailComponent implements OnInit {
 

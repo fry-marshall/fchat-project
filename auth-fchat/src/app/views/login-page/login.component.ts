@@ -9,9 +9,10 @@ import { UserFacade } from "src/app/stores/user/user.facade";
 import { environment } from "src/environments/environment";
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+    standalone: false
 })
 export class LoginComponent {
 

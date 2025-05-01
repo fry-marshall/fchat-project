@@ -7,9 +7,10 @@ import { ResetPasswordUserFailure, ResetPasswordUserSuccess } from "src/app/stor
 import { NotificationComponent } from "@library_v2/components/molecules/notification/notification.component";
 
 @Component({
-  selector: 'app-resetpassword',
-  templateUrl: './resetpassword.component.html',
-  styleUrls: ['./resetpassword.component.scss']
+    selector: 'app-resetpassword',
+    templateUrl: './resetpassword.component.html',
+    styleUrls: ['./resetpassword.component.scss'],
+    standalone: false
 })
 export class ResetpasswordComponent {
 

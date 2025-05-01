@@ -8,9 +8,10 @@ import { globalErrorMsg } from "@library_v2/interfaces/error";
 import { NotificationComponent } from "@library_v2/components/molecules/notification/notification.component";
 
 @Component({
-  selector: 'app-forgotpassword',
-  templateUrl: './forgotpassword.component.html',
-  styleUrls: ['./forgotpassword.component.scss']
+    selector: 'app-forgotpassword',
+    templateUrl: './forgotpassword.component.html',
+    styleUrls: ['./forgotpassword.component.scss'],
+    standalone: false
 })
 export class ForgotpasswordComponent {
 
