@@ -3,14 +3,13 @@ import { RouterModule, Routes } from "@angular/router";
 import { ViewsComponent } from "./views.component";
 import { ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
-import { HttpClientModule } from '@angular/common/http';
 import { UiModule } from "@library_v2/ui-module";
 import { WelcomePageComponent } from "./welcome-page/welcome-page.component";
-import { SignUpComponent } from "./signup-page/sign-up.component";
-import { LoginComponent } from "./login-page/login.component";
 import { ForgotpasswordComponent } from "./forgotpassword-page/forgotpassword.component";
 import { ResetpasswordComponent } from "./resetpassword-page/resetpassword.component";
 import { VerifyEmailComponent } from "./verifyemail-page/verifyemail.component";
+import { SignUpViewComponent } from "./signup-view/signup-view.component";
+import { SignInViewComponent } from "./signin-view/signin-view.component";
 
 const routes: Routes = [
     {
@@ -31,11 +30,11 @@ const routes: Routes = [
             },
             {
                 path: 'signup',
-                component: SignUpComponent
+                component: SignUpViewComponent
             },
             {
-                path: 'login',
-                component: LoginComponent
+                path: 'signin',
+                component: SignInViewComponent
             },
             {
                 path: 'forgotpassword',
@@ -57,8 +56,8 @@ const routes: Routes = [
     declarations: [
         ViewsComponent,
         WelcomePageComponent,
-        SignUpComponent,
-        LoginComponent,
+        SignUpViewComponent,
+        SignInViewComponent,
         ForgotpasswordComponent,
         ResetpasswordComponent,
         VerifyEmailComponent
@@ -66,7 +65,6 @@ const routes: Routes = [
     imports: [
         UiModule,
         ReactiveFormsModule,
-        HttpClientModule,
         CommonModule,
         RouterModule.forChild(routes),
     ],

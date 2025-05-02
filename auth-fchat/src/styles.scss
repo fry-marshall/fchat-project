@@ -44,7 +44,7 @@ app-button  {
     margin-bottom: 64px;
 }
 
-app-forgotpassword, app-login, app-resetpassword, app-sign-up, app-verifyemail, app-welcome-page{
+app-forgotpassword, app-signin, app-resetpassword, app-signup, app-verifyemail, app-welcome-page{
     height: 100%;
     width: 100%;
     display: flex;
@@ -58,7 +58,7 @@ app-forgotpassword, app-login, app-resetpassword, app-sign-up, app-verifyemail, 
 }
 
 @media screen and (max-width: 860px) {
-    app-forgotpassword, app-login, app-resetpassword, app-sign-up, app-verifyemail, app-welcome-page{
+    app-forgotpassword, app-signin, app-resetpassword, app-signup, app-verifyemail, app-welcome-page{
     
         .container{
             width: 80%;

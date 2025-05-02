@@ -10,12 +10,12 @@
         class="l-margin-bottom"
     >
     </app-notification>
-    <form [formGroup]="formLogIn" class="is-flex is-column" (ngSubmit)="logInUser()">
-        <app-input class="m-margin-bottom" formControlName="login" [ngClass]="{'invalid': login?.errors?.['novalid']}"
-            [errorMsg]="login?.errors?.['novalid']" class="no-padding limit" label="Email*">
+    <form [formGroup]="formSignIn" class="is-flex is-column" (ngSubmit)="onSubmit()">
+        <app-input class="m-margin-bottom" formControlName="email" [ngClass]="{'invalid': getControlError('email').is_error}"
+            [errorMsg]="getControlError('email').error_msg" class="no-padding limit" label="Email*">
         </app-input>
-        <app-input type="password" formControlName="password" [ngClass]="{'invalid': password?.errors?.['novalid'], 'password': true}"
-            [isPassword]="true" [errorMsg]="password?.errors?.['novalid']" label="Mot de passe*">
+        <app-input type="password" formControlName="password" [ngClass]="{'invalid': getControlError('email').is_error, 'password': true}"
+            [isPassword]="true" [errorMsg]="getControlError('password').error_msg" label="Mot de passe*">
         </app-input>
         <app-button [loading]="(isLoading | async) || false" type="submit" class="mt-20 is-100w">Se connecter</app-button>
     </form>

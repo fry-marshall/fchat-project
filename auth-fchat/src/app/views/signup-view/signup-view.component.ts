@@ -1,22 +1,21 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NotificationComponent } from '@library_v2/components/molecules/notification/notification.component';
-import { globalErrorMsg } from '@library_v2/interfaces/error';
 import { Actions } from '@ngrx/effects';
 import { plainToClass } from 'class-transformer';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { AuthFacade } from 'src/app/stores/auth/auth.facade';
-import { SignUpDto } from './sign-up.dto';
+import { SignUpDto } from './signup.dto';
 import { validate } from 'class-validator';
 import { SignUpActions } from 'src/app/stores/auth/auth.actions';
 
 @Component({
-  selector: 'app-sign-up',
-  templateUrl: './sign-up.component.html',
-  styleUrls: ['./sign-up.component.scss'],
+  selector: 'app-signup',
+  templateUrl: './signup-view.component.html',
+  styleUrls: ['./signup-view.component.scss'],
   standalone: false,
 })
-export class SignUpComponent {
+export class SignUpViewComponent {
   isLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
   error = {
     hasError: false,
