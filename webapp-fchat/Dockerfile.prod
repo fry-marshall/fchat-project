@@ -2,6 +2,7 @@ FROM node:alpine as builder
 WORKDIR /app
 
 COPY . .
+RUN git submodule update --init --recursive
 RUN npm install
 RUN npm run build
 
