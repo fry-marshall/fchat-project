@@ -1,7 +1,7 @@
 dev:
-	docker-compose -f docker-compose.dev.yml up -d
+	docker compose -f docker-compose.dev.yml up
 
-start:
+prod:
 	docker pull frymarshall/fchat_webapp && docker compose -f docker-compose.prod.yml up -d
 
 deploy:

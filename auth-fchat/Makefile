@@ -1,7 +1,7 @@
 dev:
 	docker compose -f docker-compose.dev.yml up
 
-start:
+prod:
 	docker pull frymarshall/fchat_auth && docker compose -f docker-compose.prod.yml up -d
 	
 deploy:
