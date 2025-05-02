@@ -1,12 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, firstValueFrom, take, tap } from 'rxjs';
-import { Actions, ofType } from '@ngrx/effects';
-import {
-  ForgotPasswordUserFailure,
-  ForgotPasswordUserSuccess,
-} from 'src/app/stores/user/user.actions';
-import { globalErrorMsg } from '@library_v2/interfaces/error';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { Actions } from '@ngrx/effects';
 import { NotificationComponent } from '@library_v2/components/molecules/notification/notification.component';
 import { ForgotPasswordDto } from './forgotpassword.dto';
 import { plainToClass } from 'class-transformer';

@@ -12,7 +12,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { environment } from 'src/environments/environment';
 import { reducers } from './stores/app.state';
-import { UserEffects } from './stores/user/user.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { RouterModule, Routes } from '@angular/router';
 import { LoadingService } from './loading.service';

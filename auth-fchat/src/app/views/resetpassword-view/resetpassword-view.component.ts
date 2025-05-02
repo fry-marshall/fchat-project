@@ -1,12 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, firstValueFrom, take, tap } from 'rxjs';
-import { UserFacade } from 'src/app/stores/user/user.facade';
-import { Actions, ofType } from '@ngrx/effects';
-import {
-  ResetPasswordUserFailure,
-  ResetPasswordUserSuccess,
-} from 'src/app/stores/user/user.actions';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { Actions } from '@ngrx/effects';
 import { NotificationComponent } from '@library_v2/components/molecules/notification/notification.component';
 import { ResetPasswordActions } from 'src/app/stores/auth/auth.actions';
 import { AuthFacade } from 'src/app/stores/auth/auth.facade';
