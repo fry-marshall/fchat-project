@@ -33,11 +33,8 @@ services:
       - NODE_ENV=prod
     networks:
       - api-fchat_network
-      - nginx_network
     command: ["npm", "run", "start:prod"]
 
 networks:
-  nginx_network:
-    external: true
   api-fchat_network:
     driver: bridge
