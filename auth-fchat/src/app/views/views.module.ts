@@ -5,7 +5,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { UiModule } from "@library_v2/ui-module";
 import { WelcomePageComponent } from "./welcome-page/welcome-page.component";
-import { ForgotpasswordComponent } from "./forgotpassword-page/forgotpassword.component";
+import { ForgotpasswordViewComponent } from "./forgotpassword-view/forgotpassword-view.component";
 import { ResetpasswordComponent } from "./resetpassword-page/resetpassword.component";
 import { VerifyEmailComponent } from "./verifyemail-page/verifyemail.component";
 import { SignUpViewComponent } from "./signup-view/signup-view.component";
@@ -38,7 +38,7 @@ const routes: Routes = [
             },
             {
                 path: 'forgotpassword',
-                component: ForgotpasswordComponent
+                component: ForgotpasswordViewComponent
             },
             {
                 path: 'resetpassword',
@@ -58,7 +58,7 @@ const routes: Routes = [
         WelcomePageComponent,
         SignUpViewComponent,
         SignInViewComponent,
-        ForgotpasswordComponent,
+        ForgotpasswordViewComponent,
         ResetpasswordComponent,
         VerifyEmailComponent
     ],
