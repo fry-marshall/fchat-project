@@ -40,8 +40,8 @@ export class VerifyEmailViewComponent implements OnInit {
       };
     } else if (action.type === VerifyActions.verifyFailure.type) {
       this.error.hasError = true;
-      this.error.msg.subtitle = (action as any).error.message      
+      this.error.msg.subtitle = (action as any).error.message;
     }
-    this.isLoading.next(false)
+    this.isLoading.next(false);
   }
 }

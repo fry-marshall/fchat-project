@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, signal, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NotificationComponent } from '@library_v2/components/molecules/notification/notification.component';
 import { Actions } from '@ngrx/effects';
@@ -26,20 +26,22 @@ export class SignUpViewComponent {
     msg: { title: '', subtitle: '' },
   };
   formSignUp: FormGroup = new FormGroup({
-    fullname: new FormControl('Marshall FRY', [Validators.required]),
-    email: new FormControl('marshalfry1998@gmail.com', [
+    fullname: new FormControl('', [Validators.required]),
+    email: new FormControl('', [
       Validators.required,
       Validators.email,
     ]),
-    password: new FormControl('Marshal1998', [
+    password: new FormControl('', [
       Validators.required,
       Validators.minLength(8),
     ]),
-    confirmPassword: new FormControl('Marshal1998', [
+    confirmPassword: new FormControl('', [
       Validators.required,
       Validators.minLength(8),
     ]),
   });
+
+  email_send = signal('');
 
   @ViewChild(NotificationComponent, { static: false })
   private notificationComponent!: NotificationComponent;
@@ -122,6 +124,7 @@ export class SignUpViewComponent {
         subtitle:
           "Your account has been created successfully. \n You'll receive an email to activate it.",
       };
+      this.email_send.set(this.email?.value)
       this.formSignUp.reset();
       if (this.notificationComponent) {
         this.notificationComponent.setVisibility(false);
@@ -137,5 +140,9 @@ export class SignUpViewComponent {
       }
     }
     this.isLoading.next(false)
+  }
+
+  async generateToken(){
+    await firstValueFrom(this.authFacade.generateToken(this.email_send()))
   }
 }

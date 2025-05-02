@@ -77,4 +77,11 @@
       >S'inscrire</app-button
     >
   </form>
+  @if(success.isSuccess){
+    <app-text
+      (click)="generateToken()"
+      class="mt-20 fs-14 underline is-cursor-pointer"
+      >Click here if you didn't receive email verification</app-text
+    >
+  }
 </div>
