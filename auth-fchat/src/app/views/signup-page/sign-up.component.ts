@@ -1,131 +1,138 @@
-import { Component, ViewChild } from "@angular/core";
-import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { NotificationComponent } from "@library_v2/components/molecules/notification/notification.component";
-import { globalErrorMsg } from "@library_v2/interfaces/error";
-import { User } from "@library_v2/interfaces/user";
-import { Actions, ofType } from "@ngrx/effects";
-import { BehaviorSubject, firstValueFrom, take, tap } from "rxjs";
-import { CreateUserAccountSuccess, CreateUserAccountFailure } from "src/app/stores/user/user.actions";
-import { UserFacade } from "src/app/stores/user/user.facade";
+import { Component, ViewChild } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { NotificationComponent } from '@library_v2/components/molecules/notification/notification.component';
+import { globalErrorMsg } from '@library_v2/interfaces/error';
+import { Actions } from '@ngrx/effects';
+import { plainToClass } from 'class-transformer';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { AuthFacade } from 'src/app/stores/auth/auth.facade';
+import { SignUpDto } from './sign-up.dto';
+import { validate } from 'class-validator';
+import { SignUpActions } from 'src/app/stores/auth/auth.actions';
 
 @Component({
-    selector: 'app-sign-up',
-    templateUrl: './sign-up.component.html',
-    styleUrls: ['./sign-up.component.scss'],
-    standalone: false
+  selector: 'app-sign-up',
+  templateUrl: './sign-up.component.html',
+  styleUrls: ['./sign-up.component.scss'],
+  standalone: false,
 })
 export class SignUpComponent {
+  isLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  error = {
+    hasError: false,
+    msg: { title: '', subtitle: '' },
+  };
+  success = {
+    isSuccess: false,
+    msg: { title: '', subtitle: '' },
+  };
+  formSignUp: FormGroup = new FormGroup({
+    fullname: new FormControl('Marshall FRY', [Validators.required]),
+    email: new FormControl('marshalfry1998@gmail.com', [
+      Validators.required,
+      Validators.email,
+    ]),
+    password: new FormControl('Marshal1998', [
+      Validators.required,
+      Validators.minLength(8),
+    ]),
+    confirmPassword: new FormControl('Marshal1998', [
+      Validators.required,
+      Validators.minLength(8),
+    ]),
+  });
 
-    isLoading: BehaviorSubject<boolean> = new BehaviorSubject(false)
-    error = {
-        hasError: false,
-        msg: { title: '', subtitle: '' },
+  @ViewChild(NotificationComponent, { static: false })
+  private notificationComponent!: NotificationComponent;
+
+  constructor(private authFacade: AuthFacade, private actions$: Actions) {}
+
+  get fullname() {
+    return this.formSignUp.get('fullname');
+  }
+  get email() {
+    return this.formSignUp.get('email');
+  }
+  get password() {
+    return this.formSignUp.get('password');
+  }
+  get confirmPassword() {
+    return this.formSignUp.get('confirmPassword');
+  }
+
+  async onSubmit() {
+    const formValues = this.formSignUp.value;
+
+    const signUpDto = plainToClass(SignUpDto, formValues);
+
+    const errors = await validate(signUpDto);
+
+    if (errors.length > 0) {
+      this.handleValidationErrors(errors);
+    } else {
+      if (this.confirmPassword?.value !== this.password?.value) {
+        this.formSignUp.controls['confirmPassword'].setErrors({
+          confirmPassword: 'Passwords must be equal',
+        });
+      } else {
+        this.submitForm();
+      }
     }
-    success = {
-        isSuccess: false,
-        msg: { title: '', subtitle: '' },
+  }
+
+  handleValidationErrors(errors: any[]) {
+    errors.forEach((error) => {
+      const control = this.formSignUp.get(error.property);
+      if (control) {
+        control.setErrors({
+          [error.property]:
+            error.constraints[Object.keys(error.constraints)[0]],
+        });
+      }
+    });
+  }
+
+  getControlError(property: string) {
+    const control = this.formSignUp.get(property);
+    const error = {
+      is_error: false,
+      error_msg: '',
+    };
+
+    if (typeof control?.errors?.[property] === 'string') {
+      error.is_error = true;
+      error.error_msg = control?.errors?.[property];
     }
-    formSignUp: FormGroup = new FormGroup({
-        email: new FormControl('', [Validators.required, Validators.email]),
-        password: new FormControl('', [Validators.required, Validators.minLength(8)]),
-        confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8)]),
-    })
 
-    @ViewChild(NotificationComponent, { static: false })
-    private notificationComponent!: NotificationComponent;
+    return error;
+  }
 
-    constructor(
-        private userFacade: UserFacade,
-        private actions$: Actions
-    ) { }
+  async submitForm() {
+    this.isLoading.next(true);
+    const body = {
+      fullname: this.fullname?.value,
+      email: this.email?.value,
+      password: this.password?.value,
+    };
 
-    get email() { return this.formSignUp.get('email'); }
-    get password() { return this.formSignUp.get('password'); }
-    get confirmPassword() { return this.formSignUp.get('confirmPassword'); }
-
-    async signUpUser() {
-        this.success.isSuccess = false;
-        this.error.hasError = false;
-        if (this.formSignUp.status === "INVALID") {
-
-            if (!this.email?.value || this.email.value === '') {
-                this.formSignUp.controls['email'].setErrors({
-                    novalid: 'Champ obligatoire'
-                })
-            }
-
-            if (!(/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)*(\.[a-z]{2,7})$/.test(this.email?.value))) {
-                this.formSignUp.controls['email'].setErrors({
-                    novalid: 'Adresse mail incorrecte'
-                })
-            }
-
-            if (!this.password?.value || this.password.value === '') {
-                this.formSignUp.controls['password'].setErrors({
-                    novalid: 'Champ obligatoire'
-                })
-            } else {
-                if (this.formSignUp.controls['password'].errors) {
-                    this.formSignUp.controls['password'].setErrors({
-                        novalid: 'Le mot de passe doit contenir au moins 8 caractères'
-                    })
-                }
-            }
-
-            if (!this.confirmPassword?.value || this.confirmPassword.value === '') {
-                this.formSignUp.controls['confirmPassword'].setErrors({
-                    novalid: 'Champ obligatoire'
-                })
-            } else {
-                if (this.formSignUp.controls['confirmPassword'].errors) {
-                    this.formSignUp.controls['confirmPassword'].setErrors({
-                        novalid: 'Le mot de passe doit contenir au moins 8 caractères'
-                    })
-                }
-            }
-
-        }
-        else {
-
-            if (this.confirmPassword?.value !== this.password?.value) {
-                this.formSignUp.controls['confirmPassword'].setErrors({
-                    novalid: 'Les mots de passe ne sont pas égaux'
-                })
-            } else {
-                // make request
-                this.isLoading.next(true)
-                const body: Partial<User> = {
-                    email: this.email?.value,
-                    password: this.password?.value,
-                };
-
-                this.userFacade.createUserAccount(body)
-
-                await firstValueFrom(this.actions$.pipe(
-                    ofType(CreateUserAccountSuccess, CreateUserAccountFailure),
-                    take(1),
-                    tap(action => {
-                        if (action.type === CreateUserAccountFailure.type) {
-                            this.error.hasError = true
-                            this.error.msg = globalErrorMsg(action.error)
-                            if (this.notificationComponent) {
-                                this.notificationComponent.setVisibility(true)
-                            }
-                        } else {
-                            this.success.isSuccess = true;
-                            this.success.msg = {
-                                title: 'Succès',
-                                subtitle: 'Votre compte a été crée avec succès. \n Vous recevrez un mail afin de l\'activer.'
-                            }
-                            this.formSignUp.reset()
-                            if (this.notificationComponent) {
-                                this.notificationComponent.setVisibility(false)
-                            }
-                        }
-                        this.isLoading.next(false)
-                    })
-                ))
-            }
-        }
+    const action = await firstValueFrom(this.authFacade.signUp(body));
+    if (action.type === SignUpActions.signUpSuccess.type) {
+      this.success.isSuccess = true;
+      this.success.msg = {
+        title: 'Success',
+        subtitle:
+          "Your account has been created successfully. \n You'll receive an email to activate it.",
+      };
+      this.formSignUp.reset();
+      if (this.notificationComponent) {
+        this.notificationComponent.setVisibility(false);
+      }
+    } else if (action.type === SignUpActions.signUpFailure.type) {
+      this.error.hasError = true;
+      this.error.msg = globalErrorMsg(action.errors);
+      if (this.notificationComponent) {
+        this.notificationComponent.setVisibility(true);
+      }
     }
+  }
 }
