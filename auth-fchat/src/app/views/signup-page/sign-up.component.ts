@@ -129,10 +129,14 @@ export class SignUpComponent {
       }
     } else if (action.type === SignUpActions.signUpFailure.type) {
       this.error.hasError = true;
-      this.error.msg = globalErrorMsg(action.errors);
+      this.error.msg = {
+        title: "Error",
+        subtitle: (action as any).message
+      }
       if (this.notificationComponent) {
         this.notificationComponent.setVisibility(true);
       }
     }
+    this.isLoading.next(false)
   }
 }

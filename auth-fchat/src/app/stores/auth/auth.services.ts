@@ -8,7 +8,6 @@ export class AuthService {
   constructor(private http: HttpService) {}
 
   signup(body: { fullname: string, email: string; password: string }) {
-    console.log("signup")
     return this.http.post('auth/signup', body);
   }
 

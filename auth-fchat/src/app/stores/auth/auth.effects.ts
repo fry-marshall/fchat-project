@@ -29,7 +29,9 @@ export class AuthEffects {
           map((response: any) =>
             SignUpActions.signUpSuccess({ msg: response.data.message })
           ),
-          catchError((error) => of(SignUpActions.signUpFailure(error)))
+          catchError((errors) => {
+            return of(SignUpActions.signUpFailure(errors.error))
+          })
         );
       })
     )
