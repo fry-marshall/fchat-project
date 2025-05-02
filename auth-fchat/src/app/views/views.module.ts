@@ -7,9 +7,9 @@ import { UiModule } from "@library_v2/ui-module";
 import { WelcomePageComponent } from "./welcome-page/welcome-page.component";
 import { ForgotpasswordViewComponent } from "./forgotpassword-view/forgotpassword-view.component";
 import { ResetpasswordViewComponent } from "./resetpassword-view/resetpassword-view.component";
-import { VerifyEmailComponent } from "./verifyemail-page/verifyemail.component";
 import { SignUpViewComponent } from "./signup-view/signup-view.component";
 import { SignInViewComponent } from "./signin-view/signin-view.component";
+import { VerifyEmailViewComponent } from "./verifyemail-view/verifyemail-view.component";
 
 const routes: Routes = [
     {
@@ -46,7 +46,7 @@ const routes: Routes = [
             },
             {
                 path: 'verifyemail',
-                component: VerifyEmailComponent
+                component: VerifyEmailViewComponent
             },
         ],
     }
@@ -60,7 +60,7 @@ const routes: Routes = [
         SignInViewComponent,
         ForgotpasswordViewComponent,
         ResetpasswordViewComponent,
-        VerifyEmailComponent
+        VerifyEmailViewComponent
     ],
     imports: [
         UiModule,
