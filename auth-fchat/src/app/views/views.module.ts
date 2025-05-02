@@ -6,7 +6,7 @@ import { CommonModule } from "@angular/common";
 import { UiModule } from "@library_v2/ui-module";
 import { WelcomePageComponent } from "./welcome-page/welcome-page.component";
 import { ForgotpasswordViewComponent } from "./forgotpassword-view/forgotpassword-view.component";
-import { ResetpasswordComponent } from "./resetpassword-page/resetpassword.component";
+import { ResetpasswordViewComponent } from "./resetpassword-view/resetpassword-view.component";
 import { VerifyEmailComponent } from "./verifyemail-page/verifyemail.component";
 import { SignUpViewComponent } from "./signup-view/signup-view.component";
 import { SignInViewComponent } from "./signin-view/signin-view.component";
@@ -42,7 +42,7 @@ const routes: Routes = [
             },
             {
                 path: 'resetpassword',
-                component: ResetpasswordComponent
+                component: ResetpasswordViewComponent
             },
             {
                 path: 'verifyemail',
@@ -59,7 +59,7 @@ const routes: Routes = [
         SignUpViewComponent,
         SignInViewComponent,
         ForgotpasswordViewComponent,
-        ResetpasswordComponent,
+        ResetpasswordViewComponent,
         VerifyEmailComponent
     ],
     imports: [

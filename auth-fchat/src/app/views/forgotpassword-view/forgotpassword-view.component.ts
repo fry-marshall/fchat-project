@@ -45,62 +45,6 @@ export class ForgotpasswordViewComponent {
     return this.formForgotPassword.get('email');
   }
 
-/*   async forgotUserPassword() {
-    this.success.isSuccess = false;
-    this.error.hasError = false;
-
-    if (this.formForgotPassword.status === 'INVALID') {
-      if (!this.email?.value || this.email.value === '') {
-        this.formForgotPassword.controls['email'].setErrors({
-          novalid: 'Champ obligatoire',
-        });
-      } else {
-        if (
-          !/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)*(\.[a-z]{2,7})$/.test(
-            this.email?.value
-          )
-        ) {
-          this.formForgotPassword.controls['email'].setErrors({
-            novalid: 'Adresse mail incorrecte',
-          });
-        }
-      }
-    } else {
-      // make request
-
-      this.isLoading.next(true);
-      this.userFacade.forgotPasswordUser(this.email?.value);
-
-      await firstValueFrom(
-        this.actions$.pipe(
-          ofType(ForgotPasswordUserSuccess, ForgotPasswordUserFailure),
-          take(1),
-          tap((action) => {
-            if (action.type === ForgotPasswordUserFailure.type) {
-              this.error.hasError = true;
-              this.error.msg = globalErrorMsg(action.error);
-              if (this.notificationComponent) {
-                this.notificationComponent.setVisibility(true);
-              }
-            } else {
-              this.success.isSuccess = true;
-              this.success.msg = {
-                title: 'Succès',
-                subtitle:
-                  'Un email vous a été envoyé afin de réinitialiser votre mot de passe.',
-              };
-              this.formForgotPassword.reset();
-              if (this.notificationComponent) {
-                this.notificationComponent.setVisibility(false);
-              }
-            }
-            this.isLoading.next(false);
-          })
-        )
-      );
-    }
-  } */
-
   async onSubmit() {
     const formValues = this.formForgotPassword.value;
 
