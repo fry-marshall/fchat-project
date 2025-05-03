@@ -16,7 +16,7 @@ export class MessageService {
 
 
   getMessageNotification(user_id: string): Observable<Notification>{
-    return this.socket.fromEvent(user_id)
+    return this.socket.fromEvent('new_message')
   }
 
   getallConversations() {

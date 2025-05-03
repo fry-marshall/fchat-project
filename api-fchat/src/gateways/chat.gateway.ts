@@ -23,7 +23,7 @@ export class ChatGateway implements OnGatewayConnection {
     try {
       const token = client.handshake.auth.token;
       const payload = this.jwtService.verify(token, {
-        secret: process.env.ACCESS_TOKEN,
+        secret: process.env.ACCESS_TOKEN_SECRET,
       });
 
       const privateRoom = `user-${payload.id}`;
