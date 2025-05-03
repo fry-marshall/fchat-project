@@ -20,14 +20,6 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpInterceptorService } from './http-interceptor.service';
 
-const config: SocketIoConfig = {
-  url: environment.apiUrl,
-  options: {
-    transports: ['websocket'],
-    withCredentials: true,
-  },
-};
-
 const routes: Routes = [
   {
     path: '',
@@ -47,7 +39,6 @@ const routes: Routes = [
     StoreDevtoolsModule.instrument({
       //logOnly: !environment.production
     }),
-    SocketIoModule.forRoot(config),
     BrowserAnimationsModule,
   ],
   providers: [

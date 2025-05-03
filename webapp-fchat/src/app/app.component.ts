@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
   ){}
 
   async ngOnInit() {
-    this.cookieService.set('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ1MjJmMTg0LTY3YzctNDUyZS1hZWU1LTgzOGZiYTAyMzhhZCIsImVtYWlsIjoibWFyc2hhbGZyeTE5OThAZ21haWwuY29tIiwiaWF0IjoxNzQ2Mjg0MzY4LCJleHAiOjE3NDYyODc5Njh9.vVonOCbStNfzaJvHJTpasYj7i1org4dlE48H6P0TFw0')
+    this.cookieService.set('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ1MjJmMTg0LTY3YzctNDUyZS1hZWU1LTgzOGZiYTAyMzhhZCIsImVtYWlsIjoibWFyc2hhbGZyeTE5OThAZ21haWwuY29tIiwiaWF0IjoxNzQ2Mjg4MzU3LCJleHAiOjE3NDYyOTE5NTd9.C3pMJ7EUYYPfzEdgbk4PwNWIkaKLId4zCZ3XWK3qHbI')
     this.cookieService.set('refresh_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5MTQ3NWRlLTFmNmYtNGIzYy1hM2U2LTZmOTAwMDAzNGY0ZCIsImVtYWlsIjoiamlsaTk4OTkwMEBnbWFpbC5jb20iLCJpYXQiOjE3NDYyMzg4ODUsImV4cCI6MTc0Njg0MzY4NX0.nNTg3j4M9vn0h1ltVAk_QzALmgNpWSjbQ-kr7v0pIuk')
     await firstValueFrom(this.userFacade.getAllUsersInfos())
     await firstValueFrom(this.userFacade.getUser())
