@@ -45,7 +45,7 @@ export class NewMessageSidebarComponent {
       this.messageFacade.setCurrentConversation(isConvExist);
     } else {
       const newConversation: Conversation = {
-        conversation_id: '',
+        id: '',
         messages: [
           {
             id: '',

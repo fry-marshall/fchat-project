@@ -103,7 +103,7 @@ export class ConversationsSidebarComponent implements OnChanges {
   setCurrentConversation(conversation: Conversation) {
     this.messageFacade.setCurrentConversation(conversation);
     this.messageFacade.readMessages(
-      conversation.conversation_id!,
+      conversation.id!,
       this.currentUser.id
     );
   }

@@ -31,7 +31,7 @@ export class MessageFacade {
   hasConversationSelected$ = this.store.select(hasConversationSelected);
   receiverUserInfos$ = this.store.select(getReceiverUserInfos);
 
-  getallConversations() {
+  getAllUserMessages() {
     this.store.dispatch(GetAllUserMessagesActions.getAllUserMessages());
 
     return this.actions$.pipe(

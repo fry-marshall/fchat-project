@@ -41,21 +41,21 @@ export const messageReducer = createReducer(
     SendNewMessageActions.sendNewMessageSuccess,
     (state, { conversation_id, message }) => {
       let conversation;
-      const allConversations = state.allConversations?.map((messages) => {
-        if (messages.conversation_id === '') {
+      const allConversations = state.allConversations?.map((conv) => {
+        if (conv.id === '') {
           conversation = {
             conversation_id,
             messages: [message],
           };
           return conversation;
-        } else if (messages.conversation_id === conversation_id) {
+        } else if (conv.id === conversation_id) {
           conversation = {
-            conversation_id: messages.conversation_id,
-            messages: [...messages.messages, message],
+            conversation_id: conv.id,
+            messages: [...conv.messages, message],
           };
           return conversation;
         }
-        return messages;
+        return conv;
       });
       return {
         ...state,
@@ -73,7 +73,7 @@ export const messageReducer = createReducer(
   //set current conversation
   on(SetCurrentConversation, (state, { conversation }) => {
     const hasConv = state.allConversations?.some(
-      (conv) => conv.conversation_id === conversation.conversation_id
+      (conv) => conv.id === conversation.id
     );
     if (!hasConv) {
       return {
@@ -87,12 +87,12 @@ export const messageReducer = createReducer(
   //notify new message
   on(NotifyNewMessage, (state, { notification, receiver_id }) => {
     const convExisted = state.allConversations?.some(
-      (conv) => conv.conversation_id === notification.conversation_id
+      (conv) => conv.id === notification.conversation_id
     );
     let updateMessages = state.allConversations;
     if (convExisted) {
       updateMessages = state.allConversations?.map((conv) => {
-        if (conv.conversation_id === notification.conversation_id) {
+        if (conv.id === notification.conversation_id) {
           conv = {
             ...conv,
             messages: [
@@ -112,7 +112,7 @@ export const messageReducer = createReducer(
       updateMessages = [
         ...updateMessages,
         {
-          conversation_id: notification.conversation_id,
+          id: notification.conversation_id,
           messages: [
             {
               date: notification.date,
@@ -133,7 +133,7 @@ export const messageReducer = createReducer(
     ReadMessagesActions.readMessagesSuccess,
     (state, { conversation_id, user_id }) => {
       let updateMessages = state.allConversations?.map((conv) => {
-        if (conv.conversation_id === conversation_id) {
+        if (conv.id === conversation_id) {
           conv = {
             ...conv,
             messages: [...conv.messages].map((msg) => {
@@ -158,7 +158,7 @@ export const messageReducer = createReducer(
   //notify read message
   on(NotifyReadMessage, (state, { messages, conversation_id }) => {
     let convExisted = state.allConversations!.find(
-      (conv) => conv.conversation_id === conversation_id
+      (conv) => conv.id === conversation_id
     );
     convExisted = {
       ...convExisted,
@@ -173,7 +173,7 @@ export const messageReducer = createReducer(
 
     let updateMessages = state.allConversations;
     updateMessages = state.allConversations?.map((conv) => {
-      if (conv.conversation_id === conversation_id) {
+      if (conv.id === conversation_id) {
         return convExisted;
       }
       return conv;

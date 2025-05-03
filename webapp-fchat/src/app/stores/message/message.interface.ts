@@ -12,7 +12,7 @@ export interface Message {
 }
 
 export interface Conversation {
-  conversation_id?: string;
+  id?: string;
   user1?: {
     id: string;
   };
