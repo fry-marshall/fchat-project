@@ -12,11 +12,7 @@ import { NotificationComponent } from '@library_v2/components/molecules/notifica
 import { User } from '@library_v2/interfaces/user';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
-import {
-  BehaviorSubject,
-  Observable,
-  firstValueFrom,
-} from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { UserFacade } from 'src/app/stores/user/user.facade';
 import { RightAction, ViewsService } from 'src/app/views/views.service';
 import { ProfileDto } from './profile.dto';
@@ -248,15 +244,23 @@ export class UpdateProfileSidebarComponent implements OnInit {
 
   async takePicture() {
     try {
-      const context = this.canvas.nativeElement.getContext('2d');
-      context.drawImage(this.videoElement.nativeElement, 0, 0, 640, 480);
+      const canvasEl = this.canvas.nativeElement;
+      const videoEl = this.videoElement.nativeElement;
+
+      canvasEl.width = videoEl.videoWidth;
+      canvasEl.height = videoEl.videoHeight;
+
+      const context = canvasEl.getContext('2d');
+
+      context?.drawImage(videoEl, 0, 0, canvasEl.width, canvasEl.height);
+
       const blob = await this.convertCanvasToBlob();
       this.selectedFile = new File([blob], 'profile.jpg', {
         type: 'image/png',
       });
 
-      this.videoElement.nativeElement.style.display = 'none';
-      this.canvas.nativeElement.style.display = 'block';
+      videoEl.style.display = 'none';
+      canvasEl.style.display = 'block';
     } catch (error) {
       console.error("Erreur lors du traitement de l'image:", error);
     }
@@ -290,6 +294,7 @@ export class UpdateProfileSidebarComponent implements OnInit {
   }
 
   get profileImg() {
-    return environment.assetsUrl + this.user.profile_img;
+    const img = this.user?.profile_img ?? 'default.png'
+    return environment.assetsUrl + img;
   }
 }

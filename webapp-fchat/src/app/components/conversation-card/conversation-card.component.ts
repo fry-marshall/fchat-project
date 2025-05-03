@@ -27,10 +27,10 @@ export class ConversationCardComponent implements OnInit {
   ngOnInit() {
     const lastIndex = this.conversation?.messages.length ?? 1;
     this.lastMessage = this.conversation?.messages[lastIndex - 1]!;
-    this.showReadMessage = this.lastMessage.sender_id === this.currentUser.id;
+    this.showReadMessage = this.lastMessage.sender.id === this.currentUser.id;
     this.nbMessageRead =
       this.conversation?.messages.filter(
-        (msg) => msg.receiver_id !== this.receiverUserInfos?.id && !msg.is_read
+        (msg) => msg.receiver.id !== this.receiverUserInfos?.id && !msg.is_read
       ).length ?? 0;
   }
 
@@ -39,7 +39,8 @@ export class ConversationCardComponent implements OnInit {
   }
 
   get profileImg() {
-    return environment.apiUrl + 'assets/' + this.receiverUserInfos?.profile_img;
+    const img = this.receiverUserInfos?.profile_img ?? 'default.png'
+    return environment.assetsUrl + img;
   }
 
   get date() {

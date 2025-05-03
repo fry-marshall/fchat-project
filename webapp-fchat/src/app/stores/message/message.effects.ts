@@ -1,51 +1,74 @@
-import { Injectable } from "@angular/core";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { MessageService } from "./message.services";
-import * as messagesActions from './message.actions';
-import { catchError, map, of, switchMap } from "rxjs";
+import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { MessageService } from './message.services';
+import { catchError, map, of, switchMap } from 'rxjs';
+import {
+  GetAllUserMessagesActions,
+  ReadMessagesActions,
+  SendNewMessageActions,
+} from './message.actions';
 
 @Injectable()
 export class MessageEffects {
+  constructor(
+    private actions$: Actions,
+    private messageService: MessageService
+  ) {}
 
-    constructor(
-        private actions$: Actions,
-        private messageService: MessageService,
-    ) { }
+  getallConversations = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GetAllUserMessagesActions.getAllUserMessages),
+      switchMap(() => {
+        return this.messageService.getallConversations().pipe(
+          map(({ data }) => {
+            return GetAllUserMessagesActions.getAllUserMessagesSuccess({
+              messages: data.conversations,
+            });
+          }),
+          catchError((error) =>
+            of(GetAllUserMessagesActions.getAllUserMessagesFailure(error))
+          )
+        );
+      })
+    )
+  );
 
-    getAllMessages = createEffect(() => this.actions$.pipe(
-        ofType(messagesActions.GetAllUserMessages),
-        switchMap(() => {
-            return this.messageService.getAllMessages().pipe(
-                map(({data}) => {
-                    if(data.message && data.message.length === 0){
-                        return messagesActions.GetAllUserMessagesSuccess({allMessages: []})
-                    }
-                    else{
-                        return messagesActions.GetAllUserMessagesSuccess({allMessages: data})
-                    }
-                }),
-                catchError((error) =>of(messagesActions.GetAllUserMessagesFailure(error)))
-            )
-        })
-    ))
+  sendNewMessage = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SendNewMessageActions.sendNewMessage),
+      switchMap(({ content, user_id, sender_id }) => {
+        return this.messageService.sendNewMessage({ content, user_id }).pipe(
+          map(({ data }) =>
+            SendNewMessageActions.sendNewMessageSuccess({
+              conversation_id: data.conversation_id,
+              message: {
+                content,
+                receiver: {id: user_id},
+                sender: {id: sender_id},
+                id: data.conversation.message.id,
+                date: data.conversation.message.date,
+              },
+            })
+          ),
+          catchError((error) =>
+            of(SendNewMessageActions.sendNewMessageFailure(error))
+          )
+        );
+      })
+    )
+  );
 
-    sendNewMessage = createEffect(() => this.actions$.pipe(
-        ofType(messagesActions.SendNewMessage),
-        switchMap(({ content, receiver_id, sender_id }) => {
-            return this.messageService.sendNewMessage({content, receiver_id}).pipe(
-                map(({data}) => messagesActions.SendNewMessageSuccess({content, sender_id, message_id: data.message_id, conversation_id: data.conversation_id, receiver_id, date: data.date})),
-                catchError((error) =>of(messagesActions.SendNewMessageFailure(error)))
-            )
-        })
-    ))
-
-    readMessages = createEffect(() => this.actions$.pipe(
-        ofType(messagesActions.ReadMessages),
-        switchMap(({ conversation_id, user_id }) => {
-            return this.messageService.readMessage(conversation_id).pipe(
-                map(() => messagesActions.ReadMessagesSuccess({conversation_id, user_id})),
-                catchError((error) =>of(messagesActions.ReadMessagesFailure(error)))
-            )
-        })
-    ))
+  readMessages = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ReadMessagesActions.readMessages),
+      switchMap(({ conversation_id, user_id }) => {
+        return this.messageService.readMessage(conversation_id).pipe(
+          map(() =>
+            ReadMessagesActions.readMessagesSuccess({ conversation_id, user_id })
+          ),
+          catchError((error) => of(ReadMessagesActions.readMessagesFailure(error)))
+        );
+      })
+    )
+  );
 }

@@ -9,3 +9,9 @@ services:
       - ./src:/app
     ports: 
       - 4201:80
+    networks:
+      - nginx_network
+
+networks:
+  nginx_network:
+    external: true

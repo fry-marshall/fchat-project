@@ -8,7 +8,10 @@ import {
 import { Server, Socket } from 'socket.io';
 import { Message } from 'src/messages/messages.interface';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  origin: '*',
+  credentials: true,
+})
 @Injectable()
 export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()

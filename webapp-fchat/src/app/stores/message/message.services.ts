@@ -19,22 +19,22 @@ export class MessageService {
     return this.socket.fromEvent(user_id)
   }
 
-  getAllMessages() {
-    return this.http.get('message') as Observable<any>
+  getallConversations() {
+    return this.http.get('messages/me') as Observable<any>
   }
 
-  sendNewMessage(body: Partial<Message>) {
-    return this.http.post('message/send', body) as Observable<any>
+  sendNewMessage(body: {content: string, user_id: string}) {
+    return this.http.post('messages/send', body) as Observable<any>
   }
 
   readMessage(conversation_id: string) {
-    return this.http.put('message/read', {conversation_id}) as Observable<any>
+    return this.http.put('messages/read', {conversation_id}) as Observable<any>
   }
 
-  getDate(date: string){
-    const date_ = new Date(date);
-    const hours = date_.getHours().toString()
-    const minutes = date_.getMinutes().toString()
+  getDate(date_: string){
+    const date = new Date(date_);
+    const hours = date.getHours().toString()
+    const minutes = date.getMinutes().toString()
     return this.getRealDateValue(hours)+':'+this.getRealDateValue(minutes)
   }
 
@@ -46,16 +46,16 @@ export class MessageService {
     return this.getRealDateValue(day)+'/'+this.getRealDateValue(month)+'/'+this.getRealDateValue(year)
   }
 
-  isToday(date: string){
+  isToday(date_: string){
     const today = new Date()
-    const date_ = new Date(date)
-    return today.getDate() === date_.getDate() && today.getMonth() === date_.getMonth() && today.getFullYear() === date_.getFullYear()
+    const date = new Date(date_)
+    return today.getDate() === date.getDate() && today.getMonth() === date.getMonth() && today.getFullYear() === date.getFullYear()
   }
 
-  isYesterday(date: string){
+  isYesterday(date_: string){
     const today = new Date()
-    const date_ = new Date(date)
-    return today.getDate() === (date_.getDate() + 1) && today.getMonth() === date_.getMonth() && today.getFullYear() === date_.getFullYear()
+    const date = new Date(date_)
+    return today.getDate() === (date.getDate() + 1) && today.getMonth() === date.getMonth() && today.getFullYear() === date.getFullYear()
   }
 
   getRealDateValue(value: string){

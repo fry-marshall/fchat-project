@@ -88,11 +88,8 @@ export class ConversationsSidebarComponent implements OnChanges {
   }
 
   get profileImg() {
-    const url =
-      this.currentUser.profile_img !== null
-        ? environment.assetsUrl + this.currentUser.profile_img
-        : 'assets/default.png';
-    return url;
+    const img = this.currentUser?.profile_img ?? 'default.png'
+    return environment.assetsUrl + img;
   }
 
   showNewMessage() {

@@ -43,14 +43,11 @@ export class ConversationDetailComponent implements OnInit, AfterViewInit {
   }
 
   isSender(user: Partial<User>, message: Message) {
-    return user.id === message.sender_id;
+    return user.id === message.sender.id;
   }
 
   profileImg(user: Partial<User>) {
-    const url =
-      user.profile_img !== null
-        ? environment.apiUrl + 'assets/' + user.profile_img
-        : 'assets/default.png';
-    return url;
+    const img = user?.profile_img ?? 'default.png'
+    return environment.assetsUrl + img;
   }
 }

@@ -84,7 +84,7 @@ export class UserEffects {
       ofType(UpdateUserActions.updateUser),
       switchMap(({ user }) => {
         return this.userService.updateUser(user).pipe(
-          map((value) => UpdateUserActions.updateUserSuccess({ user: {...value, ...user} })),
+          map(({data}) => UpdateUserActions.updateUserSuccess({ user: {...user, ...data.user} })),
           catchError((error) => of(UpdateUserActions.updateUserFailure(error)))
         );
       })

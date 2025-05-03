@@ -30,7 +30,6 @@ export class UserService {
     const formData = new FormData();
     const keys = Object.keys(body)
     for(const key of keys){
-      console.log(key)
       formData.append(key, body[key]);
     }
     return this.http.put('users/me', formData) as Observable<any>;

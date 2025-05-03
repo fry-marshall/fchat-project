@@ -12,10 +12,7 @@ export class UserProfilePictureComponent {
   @Input() user: Partial<User>;
 
   get profileImg() {
-    const url =
-      this.user.profile_img !== null
-        ? environment.assetsUrl + this.user.profile_img
-        : 'assets/default.png';
-    return url;
+    const img = this.user?.profile_img ?? 'default.png'
+    return environment.assetsUrl + img;
   }
 }

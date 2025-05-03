@@ -1,142 +1,184 @@
-import { createReducer, on } from "@ngrx/store";
-import * as messageActions from "./message.actions";
-import { initialMessageState } from "./message.state";
-import { Conversation } from "./message.interface";
+import { createReducer, on } from '@ngrx/store';
+import { initialMessageState } from './message.state';
+import { Conversation } from './message.interface';
+import {
+  GetAllUserMessagesActions,
+  NotifyNewMessage,
+  NotifyReadMessage,
+  ReadMessagesActions,
+  SendNewMessageActions,
+  SetCurrentConversation,
+} from './message.actions';
 
 export const messageReducer = createReducer(
-    initialMessageState,
+  initialMessageState,
 
-    // get all messages
-    on(messageActions.GetAllUserMessages, (state, { }) => {
-        return { ...state, isLoading: true }
-    }),
+  // get all messages
+  on(GetAllUserMessagesActions.getAllUserMessages, (state, {}) => {
+    return { ...state, isLoading: true };
+  }),
 
-    on(messageActions.GetAllUserMessagesSuccess, (state, { allMessages }) => {
-        return { ...state, allMessages, isLoading: false }
-    }),
+  on(
+    GetAllUserMessagesActions.getAllUserMessagesSuccess,
+    (state, { messages }) => {
+      return { ...state, allConversations: messages, isLoading: false };
+    }
+  ),
 
-    on(messageActions.GetAllUserMessagesFailure, (state, { error }) => {
-        return { ...state, isLoading: false, error }
-    }),
+  on(
+    GetAllUserMessagesActions.getAllUserMessagesFailure,
+    (state, { errors }) => {
+      return { ...state, isLoading: false, errors };
+    }
+  ),
 
+  // send new message
+  on(SendNewMessageActions.sendNewMessage, (state, {}) => {
+    return { ...state, isLoading: true };
+  }),
 
-    // send new message
-    on(messageActions.SendNewMessage, (state, { }) => {
-        return { ...state, isLoading: true }
-    }),
-
-    on(messageActions.SendNewMessageSuccess, (state, { content, conversation_id, receiver_id, message_id, sender_id, date  }) => {
-        let conversation;
-        const allMessages = state.allMessages?.map(messages => {
-            if(messages.conversation_id === ''){
-                conversation = {
-                    conversation_id,
-                    messages: [
-                        {id: message_id, receiver_id, content, sender_id, date}
-                    ]
-                }
-                return conversation
-            }
-            else if(messages.conversation_id === conversation_id){
-                conversation = {
-                    conversation_id: messages.conversation_id,
-                    messages: [
-                        ...messages.messages,
-                        {id: message_id, receiver_id, content, sender_id, date}
-                    ]
-                }
-                return conversation
-            }
-            return messages
-        })
-        return { ...state, allMessages, isLoading: false, currentConversation: conversation }
-    }),
-
-    on(messageActions.SendNewMessageFailure, (state, { error }) => {
-        return { ...state, isLoading: false, error }
-    }),
-
-
-    //set current conversation
-    on(messageActions.SetCurrentConversation, (state, {conversation}) => {
-        const hasConv = state.allMessages?.some(conv => conv.conversation_id === conversation.conversation_id)
-        if(!hasConv){
-            return {...state, allMessages: [{...conversation}], currentConversation: conversation}
+  on(
+    SendNewMessageActions.sendNewMessageSuccess,
+    (state, { conversation_id, message }) => {
+      let conversation;
+      const allConversations = state.allConversations?.map((messages) => {
+        if (messages.conversation_id === '') {
+          conversation = {
+            conversation_id,
+            messages: [message],
+          };
+          return conversation;
+        } else if (messages.conversation_id === conversation_id) {
+          conversation = {
+            conversation_id: messages.conversation_id,
+            messages: [...messages.messages, message],
+          };
+          return conversation;
         }
-        return {...state, currentConversation: conversation}
+        return messages;
+      });
+      return {
+        ...state,
+        allConversations,
+        isLoading: false,
+        currentConversation: conversation,
+      };
+    }
+  ),
 
-    }),
+  on(SendNewMessageActions.sendNewMessageFailure, (state, { errors }) => {
+    return { ...state, isLoading: false, errors };
+  }),
 
+  //set current conversation
+  on(SetCurrentConversation, (state, { conversation }) => {
+    const hasConv = state.allConversations?.some(
+      (conv) => conv.conversation_id === conversation.conversation_id
+    );
+    if (!hasConv) {
+      return {
+        ...state,
+        currentConversation: conversation,
+      };
+    }
+    return { ...state, currentConversation: conversation };
+  }),
 
-     //notify new message
-     on(messageActions.NotifyNewMessage, (state, {message}) => {
-        const convExisted = state.allMessages?.some(conv => conv.conversation_id === message.conversation_id)
-        let updateMessages = state.allMessages
-        if(convExisted){
-            updateMessages = state.allMessages?.map(conv => {
-                if(conv.conversation_id === message.conversation_id){
-                    conv = {
-                        ...conv,
-                        messages: [...conv.messages, message]
-                    }
-                }
-                return conv
-            })
-        }else{
-            updateMessages = [...updateMessages, {conversation_id: message.conversation_id, messages: [message]}]
+  //notify new message
+  on(NotifyNewMessage, (state, { notification, receiver_id }) => {
+    const convExisted = state.allConversations?.some(
+      (conv) => conv.conversation_id === notification.conversation_id
+    );
+    let updateMessages = state.allConversations;
+    if (convExisted) {
+      updateMessages = state.allConversations?.map((conv) => {
+        if (conv.conversation_id === notification.conversation_id) {
+          conv = {
+            ...conv,
+            messages: [
+              ...conv.messages,
+              {
+                date: notification.date,
+                sender: { id: notification.sender_id },
+                receiver: { id: receiver_id },
+                content: notification.content,
+              },
+            ],
+          };
         }
-        
-        return {...state, allMessages: updateMessages}
-    }),
+        return conv;
+      });
+    } else {
+      updateMessages = [
+        ...updateMessages,
+        {
+          conversation_id: notification.conversation_id,
+          messages: [
+            {
+              date: notification.date,
+              sender: { id: notification.sender_id },
+              receiver: { id: receiver_id },
+              content: notification.content,
+            },
+          ],
+        },
+      ];
+    }
 
+    return { ...state, allConversations: updateMessages };
+  }),
 
-     //read messages
-     on(messageActions.ReadMessagesSuccess, (state, {conversation_id, user_id}) => {
-        let updateMessages = state.allMessages?.map(conv => {
-            if(conv.conversation_id === conversation_id){
-                conv = {
-                    ...conv,
-                    messages: [...conv.messages].map(msg => {
-                        if(msg.receiver_id === user_id){
-                            return {
-                                ...msg,
-                                is_read: true
-                            }
-                        }
-                        return msg
-                    })
-                }
-                return conv
-            }
-            return conv
-        })
-        
-        return {...state, allMessages: updateMessages}
-    }),
-
-    //notify read message
-    on(messageActions.NotifyReadMessage, (state, {messages, conversation_id}) => {
-        let convExisted: Conversation = state.allMessages!.filter(conv => conv.conversation_id === conversation_id)[0]
-        convExisted = {
-            ...convExisted,
-            messages: convExisted?.messages.map(msg => {
-                const msgExisted = messages.find(m => m.id === msg.id)
-                if(msgExisted){
-                    return msgExisted
-                }
-                return msg
-            })
+  //read messages
+  on(
+    ReadMessagesActions.readMessagesSuccess,
+    (state, { conversation_id, user_id }) => {
+      let updateMessages = state.allConversations?.map((conv) => {
+        if (conv.conversation_id === conversation_id) {
+          conv = {
+            ...conv,
+            messages: [...conv.messages].map((msg) => {
+              if (msg.receiver.id === user_id) {
+                return {
+                  ...msg,
+                  is_read: true,
+                };
+              }
+              return msg;
+            }),
+          };
+          return conv;
         }
+        return conv;
+      });
 
-        let updateMessages = state.allMessages
-        updateMessages = state.allMessages?.map(conv => {
-            if(conv.conversation_id === conversation_id){
-                return convExisted
-            }
-            return conv
-        })
-        
-        return {...state, allMessages: updateMessages}
-    }),
+      return { ...state, allConversations: updateMessages };
+    }
+  ),
 
-)
+  //notify read message
+  on(NotifyReadMessage, (state, { messages, conversation_id }) => {
+    let convExisted = state.allConversations!.find(
+      (conv) => conv.conversation_id === conversation_id
+    );
+    convExisted = {
+      ...convExisted,
+      messages: convExisted?.messages.map((msg) => {
+        const msgExisted = messages.find((m) => m.id === msg.id);
+        if (msgExisted) {
+          return msgExisted;
+        }
+        return msg;
+      }),
+    };
+
+    let updateMessages = state.allConversations;
+    updateMessages = state.allConversations?.map((conv) => {
+      if (conv.conversation_id === conversation_id) {
+        return convExisted;
+      }
+      return conv;
+    });
+
+    return { ...state, allConversations: updateMessages };
+  })
+);

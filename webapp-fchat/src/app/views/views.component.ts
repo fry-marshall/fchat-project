@@ -61,7 +61,7 @@ export class ViewsComponent implements OnInit {
     this.messageService.getMessageNotification(currentUser?.id!).subscribe((notification: NotificationMessage) => {
       switch (notification.type) {
         case 'new_message':
-          this.messageFacade.notifyNewMessage(notification.data)
+          this.messageFacade.notifyNewMessage(notification.data, currentUser.id)
           this.playAudio()
           document.getElementsByClassName('messages')[0].scrollTo({
             top: document.getElementsByClassName('messages')[0].scrollHeight,

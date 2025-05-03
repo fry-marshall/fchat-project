@@ -1,65 +1,52 @@
-import { User } from "@library_v2/interfaces/user"
-import { createAction, props } from "@ngrx/store"
-import { Conversation, Message } from "./message.interface"
+import {
+  createAction,
+  createActionGroup,
+  emptyProps,
+  props,
+} from '@ngrx/store';
+import { Conversation, Message, Notification } from './message.interface';
 
+export const GetAllUserMessagesActions = createActionGroup({
+  source: 'GetAllUserMessages',
+  events: {
+    'Get All User Messages': emptyProps(),
+    'Get All User Messages Success': props<{ messages: any }>(),
+    'Get All User Messages Failure': props<{ errors: any }>(),
+  },
+});
 
-export const GetAllUserMessages = createAction(
-    "[Message] get all user messages",
-) 
+export const SendNewMessageActions = createActionGroup({
+  source: 'SendNewMessage',
+  events: {
+    'Send New Message': props<{ user_id: string; content: string, sender_id: string }>(),
+    'Send New Message Success': props<{ conversation_id: string, message: Partial<Message> }>(),
+    'Send New Message Failure': props<{ errors: any }>(),
+  },
+});
 
-export const GetAllUserMessagesSuccess = createAction(
-    "[Message] get all user messages success",
-    props<{allMessages: {conversation_id: string, messages: Message[]}[]}>()
-) 
-
-export const GetAllUserMessagesFailure = createAction(
-    "[Message] get all user messages failure",
-    props<{error: any}>()
-)
-
-
-export const SendNewMessage = createAction(
-    "[Message] send new message",
-    props<{content: string, receiver_id: string, sender_id: string}>()
-) 
-
-export const SendNewMessageSuccess = createAction(
-    "[Message] send new message success",
-    props<{conversation_id: string, message_id: string, receiver_id: string, content: string, sender_id: string, date: string}>()
-) 
-
-export const SendNewMessageFailure = createAction(
-    "[Message] send new message failure",
-    props<{error: any}>()
-)
-
+export const ReadMessagesActions = createActionGroup({
+  source: 'ReadMessages',
+  events: {
+    'ReadMessages': props<{ conversation_id: string; user_id: string}>(),
+    'ReadMessages Success': props<{
+      conversation_id: string;
+      user_id: string
+    }>(),
+    'ReadMessages Failure': props<{ errors: any }>(),
+  },
+});
 
 export const SetCurrentConversation = createAction(
-    "[Message] set current conversation",
-    props<{conversation: Conversation}>()
-)
+  '[Message] set current conversation',
+  props<{ conversation: Conversation }>()
+);
 
 export const NotifyNewMessage = createAction(
-    "[Message] notify new message",
-    props<{message: Message}>()
-)
-
-export const ReadMessages = createAction(
-    "[Message] read messages",
-    props<{conversation_id: string, user_id: string}>()
-) 
-
-export const ReadMessagesSuccess = createAction(
-    "[Message] read messages success",
-    props<{conversation_id: string, user_id: string}>()
-) 
-
-export const ReadMessagesFailure = createAction(
-    "[Message] read messages failure",
-    props<{error: any}>()
-)
+  '[Message] notify new message',
+  props<{ notification: Notification, receiver_id: string }>()
+);
 
 export const NotifyReadMessage = createAction(
-    "[Message] notify read message",
-    props<{messages: Message[], conversation_id: string}>()
-)
+  '[Message] notify read message',
+  props<{ messages: Message[]; conversation_id: string }>()
+);

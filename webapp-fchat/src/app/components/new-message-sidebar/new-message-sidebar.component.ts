@@ -33,13 +33,13 @@ export class NewMessageSidebarComponent {
     const currentUser = await firstValueFrom(
       this.userFacade.currentUser$.pipe(filter((user) => !!user))
     );
-    const allMessages = await firstValueFrom(
+    const allConversations = await firstValueFrom(
       this.messageFacade.messages$.pipe(filter((msg) => !!msg))
     );
-    const isConvExist = allMessages.find(
+    const isConvExist = allConversations.find(
       (msg) =>
-        msg.messages[0].sender_id === user?.id ||
-        msg.messages[0].receiver_id === user?.id
+        msg.messages[0].sender.id === user?.id ||
+        msg.messages[0].receiver.id === user?.id
     );
     if (isConvExist) {
       this.messageFacade.setCurrentConversation(isConvExist);
@@ -50,8 +50,8 @@ export class NewMessageSidebarComponent {
           {
             id: '',
             content: '',
-            sender_id: currentUser?.id,
-            receiver_id: user.id,
+            sender: {id: currentUser?.id},
+            receiver: {id: user.id},
           },
         ],
       };
