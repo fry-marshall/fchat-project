@@ -118,7 +118,12 @@ export const messageReducer = createReducer(
       ]
     }
 
-    return { ...state, allConversations: updateConversations };
+    let currentConversation = state.currentConversation
+    if(!!currentConversation){
+      currentConversation = updateConversations.find(conv => conv.id === currentConversation.id)
+    }
+
+    return { ...state, allConversations: updateConversations, currentConversation };
   }),
 
   //read messages
