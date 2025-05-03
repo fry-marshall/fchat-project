@@ -1,94 +1,166 @@
 <div class="top sidebar-padding is-flex is-space-between is-align-center">
-    <div class="profile_img is-flex is-justify-center is-cursor-pointer">
-        <img [src]="profileImg" alt="" (click)="showUpdateProfile()">
-    </div>
-    <div class="icons is-flex">
-        <app-icon (click)="showNewMessage()" class="l-margin-right is-cursor-pointer" name="add_circle"></app-icon>
-        <app-option (action)="optionSelected($event)" [options]="options" [color]="'#D9D9D9'"></app-option>
-    </div>
+  <div class="profile_img is-flex is-justify-center is-cursor-pointer">
+    <img [src]="profileImg" alt="" (click)="showUpdateProfile()" />
+  </div>
+  <div class="icons is-flex">
+    <app-icon
+      (click)="showNewMessage()"
+      class="l-margin-right is-cursor-pointer"
+      name="add_circle"
+    ></app-icon>
+    <app-option
+      (action)="optionSelected($event)"
+      [options]="options"
+      [color]="'#D9D9D9'"
+    ></app-option>
+  </div>
 </div>
 <div class="searchbar sidebar-padding">
-    <app-input placeholder="Rechercher" [(ngModel)]="filterUserName" (ngModelChange)="filterConversation()" prefixIcon="search"></app-input>
+  <app-input
+    placeholder="Rechercher"
+    [(ngModel)]="filterUserName"
+    (ngModelChange)="filterConversation()"
+    prefixIcon="search"
+  ></app-input>
 </div>
 
 <div class="separator"></div>
 
 <div class="convs">
-    <ng-container *ngFor="let conversation of conversationFiltered">
-        <app-conversation-card (click)="setCurrentConversation(conversation)" [currentUser]="currentUser" [receiverUserInfos]="getUserInfos(conversation)" [conversation]="conversation" class="is-100w"></app-conversation-card>
-    </ng-container>
+  <ng-container *ngFor="let conversation of conversationFiltered">
+    <app-conversation-card
+      (click)="setCurrentConversation(conversation)"
+      [currentUser]="currentUser"
+      [receiverUserInfos]="getUserInfos(conversation)"
+      [conversation]="conversation"
+      class="is-100w"
+    ></app-conversation-card>
+  </ng-container>
 </div>
 
-
 <!-- Modal change password -->
-<app-modal *ngIf="displayChangePasswordModal" [open]="displayChangePasswordModal">
-    <ng-container header>
-        <div class="is-flex is-column">
-            <app-notification *ngIf="success.isSuccess" type="info"
-                [title]="success.msg.title"
-                [subtitle]="success.msg.subtitle"
-                class="l-margin-bottom"
-            >
-            </app-notification>
-            <app-notification *ngIf="error.hasError" type="error"
-                [title]="error.msg.title"
-                [subtitle]="error.msg.subtitle"
-                class="l-margin-bottom"
-            >
-            </app-notification>
-            <app-text>Changer le mot de passe</app-text>
-        </div>
-    </ng-container>
-    <ng-container body>
-        <form [formGroup]="formChangePassword" class="is-flex is-column l-margin-top is-100w">
-            <app-input type="password" formControlName="old_password" [ngClass]="{'invalid': oldPassword?.errors?.['novalid']}"
-                [isPassword]="true" [errorMsg]="oldPassword?.errors?.['novalid']" label="Mot de passe actuel*">
-            </app-input>
-            <app-input type="password" formControlName="new_password" [ngClass]="{'invalid': newPassword?.errors?.['novalid']}"
-                [isPassword]="true" [errorMsg]="newPassword?.errors?.['novalid']" label="Nouveau mot de passe*">
-            </app-input>
-            <app-input type="password" formControlName="confirm_new_password" [ngClass]="{'invalid': confirmNewPassword?.errors?.['novalid']}"
-                [isPassword]="true" [errorMsg]="confirmNewPassword?.errors?.['novalid']" label="Confirmer le mot de passe*">
-            </app-input>
-        </form>
-    </ng-container>
-    <ng-container footer class="is-align-center">
-        <app-text (click)="displayChangePasswordModal = false" class="close fs-14 is-cursor-pointer" color="#00A3FF">Fermer</app-text>
-        <app-button class="m-margin-left" [loading]="(isLoading | async) || false" (click)="changePassword()">Modifier</app-button>
-    </ng-container>
+<app-modal
+  *ngIf="displayChangePasswordModal"
+  [open]="displayChangePasswordModal"
+>
+  <ng-container header>
+    <div class="is-flex is-column" [ngStyle]="{ width: '100%' }">
+      <app-notification
+        *ngIf="success.isSuccess"
+        type="info"
+        [title]="success.msg.title"
+        [subtitle]="success.msg.subtitle"
+        class="l-margin-bottom"
+      >
+      </app-notification>
+      <app-notification
+        *ngIf="error.hasError"
+        type="error"
+        [title]="error.msg.title"
+        [subtitle]="error.msg.subtitle"
+        class="l-margin-bottom"
+      >
+      </app-notification>
+      <app-text>Changer le mot de passe</app-text>
+    </div>
+  </ng-container>
+  <ng-container body>
+    <form
+      [formGroup]="formChangePassword"
+      class="is-flex is-column l-margin-top is-100w"
+    >
+      <app-input
+        type="password"
+        formControlName="new_password"
+        [ngClass]="{ invalid: getControlError('new_password').is_error }"
+        [isPassword]="true"
+        [errorMsg]="getControlError('new_password').error_msg"
+        label="Nouveau mot de passe*"
+      >
+      </app-input>
+      <app-input
+        type="password"
+        formControlName="confirm_new_password"
+        [ngClass]="{
+          invalid: getControlError('confirm_new_password').is_error
+        }"
+        [isPassword]="true"
+        [errorMsg]="getControlError('confirm_new_password').error_msg"
+        label="Confirmer le mot de passe*"
+      >
+      </app-input>
+    </form>
+  </ng-container>
+  <ng-container footer class="is-align-center">
+    <app-text
+      (click)="closeModal()"
+      class="close fs-14 is-cursor-pointer"
+      color="#00A3FF"
+      >Fermer</app-text
+    >
+    <app-button
+      class="m-margin-left"
+      [loading]="(isLoading | async) || false"
+      (click)="changePassword()"
+      >Modifier</app-button
+    >
+  </ng-container>
 </app-modal>
 
 <!-- Modal delete account -->
-<app-dialog class="small space-between" *ngIf="displayDeleteAccountModal" [open]="displayDeleteAccountModal">
-    <div class="header">
-        <app-text class="text-center">Voulez vous supprimer votre compte ?</app-text>
-    </div>
-    <div class="body is-justify-center">
-        <app-icon class="red is-40" name="person_off"></app-icon>
-    </div>
-    <div class="footer is-space-around">
-        <app-button [loading]="(isLoading | async) || false" (click)="deleteAccount()">Oui</app-button>
-        <app-button (click)="displayDeleteAccountModal = false" class="text">Non</app-button>
-    </div>
+<app-dialog
+  class="small space-between"
+  *ngIf="displayDeleteAccountModal"
+  [open]="displayDeleteAccountModal"
+>
+  <div class="header">
+    <app-text class="text-center"
+      >Voulez vous supprimer votre compte ?</app-text
+    >
+  </div>
+  <div class="body is-justify-center">
+    <app-icon class="red is-40" name="person_off"></app-icon>
+  </div>
+  <div class="footer is-space-around">
+    <app-button
+      [loading]="(isLoading | async) || false"
+      (click)="deleteAccount()"
+      >Oui</app-button
+    >
+    <app-button (click)="displayDeleteAccountModal = false" class="text"
+      >Non</app-button
+    >
+  </div>
 </app-dialog>
 
-
 <!-- Modal logout account -->
-<app-dialog class="small space-between" *ngIf="displayLogOutModal" [open]="displayLogOutModal">
-    <div class="header">
-        <app-notification *ngIf="error.hasError" type="error"
-            [title]="error.msg.title"
-            [subtitle]="error.msg.subtitle"
-            class="l-margin-bottom"
-        >
-        </app-notification>
-        <app-text class="text-center">Voulez vous déconnecter votre compte ?</app-text>
-    </div>
-    <div class="body is-justify-center">
-        <app-icon class="red is-40" name="logout"></app-icon>
-    </div>
-    <div class="footer is-space-around">
-        <app-button [loading]="(isLoading | async) || false" (click)="logOutUser()">Oui</app-button>
-        <app-button (click)="displayLogOutModal = false" class="text">Non</app-button>
-    </div>
+<app-dialog
+  class="small space-between"
+  *ngIf="displayLogOutModal"
+  [open]="displayLogOutModal"
+>
+  <div class="header">
+    <app-notification
+      *ngIf="error.hasError"
+      type="error"
+      [title]="error.msg.title"
+      [subtitle]="error.msg.subtitle"
+      class="l-margin-bottom"
+    >
+    </app-notification>
+    <app-text class="text-center"
+      >Voulez vous déconnecter votre compte ?</app-text
+    >
+  </div>
+  <div class="body is-justify-center">
+    <app-icon class="red is-40" name="logout"></app-icon>
+  </div>
+  <div class="footer is-space-around">
+    <app-button [loading]="(isLoading | async) || false" (click)="logOutUser()"
+      >Oui</app-button
+    >
+    <app-button (click)="displayLogOutModal = false" class="text"
+      >Non</app-button
+    >
+  </div>
 </app-dialog>

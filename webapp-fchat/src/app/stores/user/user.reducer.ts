@@ -1,132 +1,76 @@
 import { createReducer, on } from "@ngrx/store";
 import { initialUserState } from "./user.state";
-import * as userActions from "./user.actions";
+import { DeleteUserActions, GetAllUsersActions, GetUserActions, LogOutActions, UpdateUserActions } from "./user.actions";
 
 export const userReducer = createReducer(
     initialUserState,
 
     // get all users
-    on(userActions.GetAllUsersAccount, (state, { }) => {
+    on(GetAllUsersActions.getAllUsers, (state, { }) => {
         return { ...state, isLoading: true }
     }),
 
-    on(userActions.GetAllUsersAccountSuccess, (state, { allUsers }) => {
-        const user = allUsers.users.find(user => user?.id === allUsers.currentUserId) ?? null
-        const users = allUsers.users ?? null
-        return { ...state, allUsers: users, user, isLoading: false }
+    on(GetAllUsersActions.getAllUsersSuccess, (state, { users }) => {
+        return { ...state, allUsers: users, isLoading: false }
     }),
 
-    on(userActions.GetAllUsersAccountFailure, (state, { error }) => {
-        return { ...state, isLoading: false, error }
+    on(GetAllUsersActions.getAllUsersFailure, (state, { errors }) => {
+        return { ...state, isLoading: false, errors }
     }),
 
-
-    // create user account
-    on(userActions.CreateUserAccount, (state, { }) => {
+    // get user
+    on(GetUserActions.getUser, (state, { }) => {
         return { ...state, isLoading: true }
     }),
 
-    on(userActions.CreateUserAccountSuccess, (state, { }) => {
-        return { ...state, isLoading: false }
+    on(GetUserActions.getUserSuccess, (state, { user }) => {
+        return { ...state, user, isLoading: false }
     }),
 
-    on(userActions.CreateUserAccountFailure, (state, { error }) => {
-        return { ...state, isLoading: false, error }
-    }),
-
-
-    // log in user
-    on(userActions.LogInUser, (state, { }) => {
-        return { ...state, isLoading: true }
-    }),
-
-    on(userActions.LogInUserSuccess, (state, { }) => {
-        return { ...state, isLoading: false }
-    }),
-
-    on(userActions.LogInUserFailure, (state, { error }) => {
-        return { ...state, isLoading: false, error }
+    on(GetUserActions.getUserFailure, (state, { errors }) => {
+        return { ...state, isLoading: false, errors }
     }),
 
 
     // logout user
-    on(userActions.LogOutUser, (state, { }) => {
+    on(LogOutActions.logOut, (state, { }) => {
         return { ...state, isLoading: true }
     }),
 
-    on(userActions.LogOutUserSuccess, (state, { }) => {
+    on(LogOutActions.logOutSuccess, (state, { }) => {
         return { ...state, isLoading: false }
     }),
 
-    on(userActions.LogOutUserFailure, (state, { error }) => {
-        return { ...state, isLoading: false, error }
-    }),
-
-    
-    // forgot password
-    on(userActions.ForgotPasswordUser, (state, { }) => {
-        return { ...state, isLoading: true }
-    }),
-
-    on(userActions.ForgotPasswordUserSuccess, (state, { }) => {
-        return { ...state, isLoading: false }
-    }),
-
-    on(userActions.ForgotPasswordUserFailure, (state, { error }) => {
-        return { ...state, isLoading: false, error }
+    on(LogOutActions.logOutFailure, (state, { errors }) => {
+        return { ...state, isLoading: false, errors }
     }),
 
 
     // delete user account
-    on(userActions.DeleteUser, (state, { }) => {
+    on(DeleteUserActions.deleteUser, (state, { }) => {
         return { ...state, isLoading: true }
     }),
 
-    on(userActions.DeleteUserSuccess, (state, { }) => {
+    on(DeleteUserActions.deleteUserSuccess, (state, { }) => {
         return { ...state, isLoading: false }
     }),
 
-    on(userActions.DeleteUserFailure, (state, { error }) => {
-        return { ...state, isLoading: false, error }
-    }),
-
-
-    // reset password user
-    on(userActions.ResetPasswordUser, (state, { }) => {
-        return { ...state, isLoading: true }
-    }),
-
-    on(userActions.ResetPasswordUserSuccess, (state, { }) => {
-        return { ...state, isLoading: false }
-    }),
-
-    on(userActions.ResetPasswordUserFailure, (state, { error }) => {
-        return { ...state, isLoading: false, error }
+    on(DeleteUserActions.deleteUserFailure, (state, { errors }) => {
+        return { ...state, isLoading: false, errors }
     }),
 
 
     // update user account
-    on(userActions.UpdateUserAccount, (state, { }) => {
+    on(UpdateUserActions.updateUser, (state, { }) => {
         return { ...state, isLoading: true }
     }),
 
-    on(userActions.UpdateUserAccountSuccess, (state, { user }) => {
+    on(UpdateUserActions.updateUserSuccess, (state, { user }) => {
         return { ...state, user: {...state.user, ...user}, isLoading: true }
     }),
 
-    on(userActions.UpdateUserAccountFailure, (state, { error }) => {
-        return { ...state, isLoading: false, error }
-    }),
-
-
-    on(userActions.UpdateUserProfilImgSuccess, (state, { img }) => {
-        const user = {...state.user, profile_img: img}
-        return { ...state , user}
-    }),
-    
-    // verfy user email account
-    on(userActions.VerifyEmailUserFailure, (state, { error }) => {
-        return { ...state, isLoading: false, error }
+    on(UpdateUserActions.updateUserFailure, (state, { errors }) => {
+        return { ...state, isLoading: false, errors }
     }),
 
 )

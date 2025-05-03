@@ -7,50 +7,62 @@ import { UserFacade } from 'src/app/stores/user/user.facade';
 import { RightAction, ViewsService } from 'src/app/views/views.service';
 
 @Component({
-    selector: 'app-new-message-sidebar',
-    templateUrl: './new-message-sidebar.component.html',
-    styleUrls: ['./new-message-sidebar.component.scss'],
-    standalone: false
+  selector: 'app-new-message-sidebar',
+  templateUrl: './new-message-sidebar.component.html',
+  styleUrls: ['./new-message-sidebar.component.scss'],
+  standalone: false,
 })
-export class NewMessageSidebarComponent{
+export class NewMessageSidebarComponent {
+  @Input() users: Partial<User>[] = [];
 
-  @Input() users: User[] = [];
-
-  usersFiltered: User[] = this.users
+  usersFiltered: Partial<User>[] = this.users;
 
   constructor(
     private viewsService: ViewsService,
     private messageFacade: MessageFacade,
     private userFacade: UserFacade
-  ){}
+  ) {}
 
   filterUserName: string = '';
 
-  showConvList(){
-    this.viewsService.updateShowRightComponent(RightAction.show_conversations)
+  showConvList() {
+    this.viewsService.updateShowRightComponent(RightAction.show_conversations);
   }
 
-  async addNewConversation(user: User){
-    const currentUser = await firstValueFrom(this.userFacade.currentUser$.pipe(filter(user => !!user)))
-    const allMessages = await firstValueFrom(this.messageFacade.messages$.pipe(filter(msg => !!msg)))
-    const isConvExist = allMessages.find(msg => msg.messages[0].sender_id === user?.id || msg.messages[0].receiver_id === user?.id)
-    if(isConvExist){
-      this.messageFacade.setCurrentConversation(isConvExist)
-    }else{
+  async addNewConversation(user: Partial<User>) {
+    const currentUser = await firstValueFrom(
+      this.userFacade.currentUser$.pipe(filter((user) => !!user))
+    );
+    const allMessages = await firstValueFrom(
+      this.messageFacade.messages$.pipe(filter((msg) => !!msg))
+    );
+    const isConvExist = allMessages.find(
+      (msg) =>
+        msg.messages[0].sender_id === user?.id ||
+        msg.messages[0].receiver_id === user?.id
+    );
+    if (isConvExist) {
+      this.messageFacade.setCurrentConversation(isConvExist);
+    } else {
       const newConversation: Conversation = {
         conversation_id: '',
-        messages: [{
-          id: '',
-          content: '',
-          sender_id: currentUser?.id,
-          receiver_id: user.id
-        }]
-      }
-      this.messageFacade.setCurrentConversation(newConversation)
+        messages: [
+          {
+            id: '',
+            content: '',
+            sender_id: currentUser?.id,
+            receiver_id: user.id,
+          },
+        ],
+      };
+      this.messageFacade.setCurrentConversation(newConversation);
     }
   }
 
-  filterUser(){
-    this.usersFiltered = this.users.filter(user => user.fullname?.includes(this.filterUserName) || user.fullname === null)
+  filterUser() {
+    this.usersFiltered = this.users.filter(
+      (user) =>
+        user.fullname?.includes(this.filterUserName) || user.fullname === null
+    );
   }
 }

@@ -1,55 +1,70 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { environment } from '@environments/environment';
 import { NotificationComponent } from '@library_v2/components/molecules/notification/notification.component';
-import { globalErrorMsg } from '@library_v2/interfaces/error';
 import { User } from '@library_v2/interfaces/user';
-import { Actions, ofType } from '@ngrx/effects';
 import { CookieService } from 'ngx-cookie-service';
-import { BehaviorSubject, firstValueFrom, take, tap } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { MessageFacade } from 'src/app/stores/message/message.facade';
 import { Conversation } from 'src/app/stores/message/message.interface';
-import { DeleteUserFailure, DeleteUserSuccess, LogOutUserFailure, LogOutUserSuccess, UpdateUserAccountFailure, UpdateUserAccountSuccess } from 'src/app/stores/user/user.actions';
 import { UserFacade } from 'src/app/stores/user/user.facade';
 import { RightAction, ViewsService } from 'src/app/views/views.service';
+import { ChangePasswordDto } from './dto/changepassword.dto';
+import {
+  DeleteUserActions,
+  LogOutActions,
+  UpdateUserActions,
+} from 'src/app/stores/user/user.actions';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
 
 @Component({
-    selector: 'app-conversations-sidebar',
-    templateUrl: './conversations-sidebar.component.html',
-    styleUrls: ['./conversations-sidebar.component.scss'],
-    standalone: false
+  selector: 'app-conversations-sidebar',
+  templateUrl: './conversations-sidebar.component.html',
+  styleUrls: ['./conversations-sidebar.component.scss'],
+  standalone: false,
 })
-export class ConversationsSidebarComponent implements OnChanges{
-
+export class ConversationsSidebarComponent implements OnChanges {
   @Input() conversations: Conversation[] = [];
-  @Input() currentUser: User;
-  @Input() allUsers: User[];
+  @Input() currentUser: Partial<User>;
+  @Input() allUsers: Partial<User>[];
 
-  isLoading: BehaviorSubject<boolean> = new BehaviorSubject(false)
+  isLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
   conversationFiltered: Conversation[] = this.conversations;
-  filterUserName: string
+  filterUserName: string;
   options = [
-    "Changer le mot de passe",
-    "Se déconnecter",
-    "Supprimer mon compte"
-  ]
+    'Changer le mot de passe',
+    'Se déconnecter',
+    'Supprimer mon compte',
+  ];
   displayChangePasswordModal = false;
   displayLogOutModal = false;
   displayDeleteAccountModal = false;
   error = {
     hasError: false,
-    msg: { title: 'Une erreur s\'est produite', subtitle: '' },
-  }
+    msg: { title: "Une erreur s'est produite", subtitle: '' },
+  };
   success = {
     isSuccess: false,
     msg: { title: '', subtitle: '' },
-  }
+  };
 
   formChangePassword: FormGroup = new FormGroup({
-    old_password: new FormControl('', [Validators.required, Validators.minLength(8)]),
-    new_password: new FormControl('', [Validators.required, Validators.minLength(8)]),
-    confirm_new_password: new FormControl('', [Validators.required, Validators.minLength(8)]),
-  })
+    new_password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(8),
+    ]),
+    confirm_new_password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(8),
+    ]),
+  });
 
   @ViewChild(NotificationComponent, { static: false })
   private notificationComponent!: NotificationComponent;
@@ -58,47 +73,64 @@ export class ConversationsSidebarComponent implements OnChanges{
     private viewsService: ViewsService,
     private messageFacade: MessageFacade,
     private userFacade: UserFacade,
-    private actions$: Actions,
     private cookieService: CookieService
-  ) { }
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.conversationFiltered = this.conversations
+    this.conversationFiltered = this.conversations;
   }
 
-  get oldPassword() { return this.formChangePassword.get('old_password'); }
-  get newPassword() { return this.formChangePassword.get('new_password'); }
-  get confirmNewPassword() { return this.formChangePassword.get('confirm_new_password'); }
+  get newPassword() {
+    return this.formChangePassword.get('new_password');
+  }
+  get confirmNewPassword() {
+    return this.formChangePassword.get('confirm_new_password');
+  }
 
   get profileImg() {
-    const url = (this.currentUser.profile_img !== null) ? environment.apiUrl + 'assets/'+this.currentUser.profile_img : 'assets/default.png'
-    return url
+    const url =
+      this.currentUser.profile_img !== null
+        ? environment.assetsUrl + this.currentUser.profile_img
+        : 'assets/default.png';
+    return url;
   }
 
   showNewMessage() {
-    this.viewsService.updateShowRightComponent(RightAction.new_message)
+    this.viewsService.updateShowRightComponent(RightAction.new_message);
   }
 
-  showUpdateProfile(){
-    this.viewsService.updateShowRightComponent(RightAction.update_profile)
+  showUpdateProfile() {
+    this.viewsService.updateShowRightComponent(RightAction.update_profile);
   }
 
   setCurrentConversation(conversation: Conversation) {
-    this.messageFacade.setCurrentConversation(conversation)
-    this.messageFacade.readMessages(conversation.conversation_id!, this.currentUser.id)
+    this.messageFacade.setCurrentConversation(conversation);
+    this.messageFacade.readMessages(
+      conversation.conversation_id!,
+      this.currentUser.id
+    );
   }
 
   getUserInfos(conversation: Conversation) {
-    return this.messageFacade.getUserInfos(conversation, this.currentUser, this.allUsers)
+    return this.messageFacade.getUserInfos(
+      conversation,
+      this.currentUser,
+      this.allUsers
+    );
   }
 
   filterConversation() {
-    if(this.filterUserName !== undefined){
-      this.conversationFiltered = this.conversations.filter(conv => {
-        return this.getUserInfos(conv)?.fullname === null || this.getUserInfos(conv)?.fullname.toLocaleLowerCase().includes(this.filterUserName.toLocaleLowerCase())
-      } )
-    } else{
-      this.conversationFiltered = this.conversations
+    if (this.filterUserName !== undefined) {
+      this.conversationFiltered = this.conversations.filter((conv) => {
+        return (
+          this.getUserInfos(conv)?.fullname === null ||
+          this.getUserInfos(conv)
+            ?.fullname.toLocaleLowerCase()
+            .includes(this.filterUserName.toLocaleLowerCase())
+        );
+      });
+    } else {
+      this.conversationFiltered = this.conversations;
     }
   }
 
@@ -124,141 +156,134 @@ export class ConversationsSidebarComponent implements OnChanges{
     }
   }
 
-  async changePassword() {
-    if (this.formChangePassword.status === "INVALID") {
-
-      if (!this.oldPassword?.value || this.oldPassword.value === '') {
-        this.formChangePassword.controls['old_password'].setErrors({
-          novalid: 'Champ obligatoire'
-        })
-      } else {
-        if (this.formChangePassword.controls['old_password'].errors) {
-          this.formChangePassword.controls['old_password'].setErrors({
-            novalid: 'Le mot de passe doit contenir au moins 8 caractères'
-          })
-        }
+  handleValidationErrors(errors: any[], form: FormGroup) {
+    errors.forEach((error) => {
+      const control = form.get(error.property);
+      if (control) {
+        control.setErrors({
+          [error.property]:
+            error.constraints[Object.keys(error.constraints)[0]],
+        });
       }
+    });
+  }
 
-      if (!this.newPassword?.value || this.newPassword.value === '') {
-        this.formChangePassword.controls['new_password'].setErrors({
-          novalid: 'Champ obligatoire'
-        })
-      } else {
-        if (this.formChangePassword.controls['new_password'].errors) {
-          this.formChangePassword.controls['new_password'].setErrors({
-            novalid: 'Le mot de passe doit contenir au moins 8 caractères'
-          })
-        }
-      }
+  getControlError(property: string) {
+    const control = this.formChangePassword.get(property);
+    const error = {
+      is_error: false,
+      error_msg: '',
+    };
 
-      if (!this.confirmNewPassword?.value || this.confirmNewPassword.value === '') {
-        this.formChangePassword.controls['confirm_new_password'].setErrors({
-          novalid: 'Champ obligatoire'
-        })
-      } else {
-        if (this.formChangePassword.controls['confirm_new_password'].errors) {
-          this.formChangePassword.controls['confirm_new_password'].setErrors({
-            novalid: 'Le mot de passe doit contenir au moins 8 caractères'
-          })
-        }
-      }
+    if (typeof control?.errors?.[property] === 'string') {
+      error.is_error = true;
+      error.error_msg = control?.errors?.[property];
     }
-    else {
-      if (this.newPassword?.value !== this.confirmNewPassword?.value) {
+
+    return error;
+  }
+
+  closeModal() {
+    if (this.notificationComponent) {
+      this.notificationComponent.setVisibility(false);
+    }
+    this.displayChangePasswordModal = false;
+  }
+
+  async changePassword() {
+    const formValues = this.formChangePassword.value;
+
+    const changePasswordDto = plainToClass(ChangePasswordDto, formValues);
+
+    const errors = await validate(changePasswordDto);
+
+    if (errors.length > 0) {
+      this.handleValidationErrors(errors, this.formChangePassword);
+    } else {
+      if (this.confirmNewPassword?.value !== this.newPassword?.value) {
         this.formChangePassword.controls['confirm_new_password'].setErrors({
-          novalid: 'Les mots de passe ne sont pas égaux'
-        })
+          confirm_new_password: 'Passwords must be equal',
+        });
       } else {
-        // make request
-        this.isLoading.next(true)
+        this.isLoading.next(true);
         const body = {
-          current_password: this.oldPassword?.value,
           password: this.newPassword?.value,
-          confirm_password: this.confirmNewPassword?.value
         };
 
-        this.userFacade.updateUserAccount(body)
+        const action = await firstValueFrom(
+          this.userFacade.updateUserAccount(body)
+        );
 
-        await firstValueFrom(this.actions$.pipe(
-          ofType(UpdateUserAccountFailure, UpdateUserAccountSuccess),
-          take(1),
-          tap(action => {
-            if (action.type === UpdateUserAccountFailure.type) {
-              this.error.hasError = true
-              this.error.msg = globalErrorMsg(action.error)
-              if (this.notificationComponent) {
-                this.notificationComponent.setVisibility(true)
-              }
-            } else {
-              this.success.isSuccess = true;
-              this.success.msg = {
-                title: 'Succès',
-                subtitle: 'Votre mot de passe a été modifié avec succès.'
-              }
-              this.formChangePassword.reset()
-              if (this.notificationComponent) {
-                this.notificationComponent.setVisibility(false)
-              }
-            }
-            this.isLoading.next(false)
-          })
-        ))
+        if (action.type === UpdateUserActions.updateUserSuccess.type) {
+          this.success.isSuccess = true;
+          this.success.msg = {
+            title: 'Success',
+            subtitle: 'Password changed successfully.',
+          };
+          this.formChangePassword.reset();
+          if (this.notificationComponent) {
+            this.notificationComponent.setVisibility(false);
+          }
+        } else if (action.type === UpdateUserActions.updateUserFailure.type) {
+          this.error.hasError = true;
+          this.error.msg = {
+            title: 'Error',
+            subtitle: (action as any).message,
+          };
+          if (this.notificationComponent) {
+            this.notificationComponent.setVisibility(true);
+          }
+        }
+        this.isLoading.next(false);
       }
-
     }
   }
 
   async deleteAccount() {
-    this.isLoading.next(true)
-    this.userFacade.deleteUser()
+    this.isLoading.next(true);
+    const action = await firstValueFrom(this.userFacade.deleteUser());
 
-    await firstValueFrom(this.actions$.pipe(
-      ofType(DeleteUserFailure, DeleteUserSuccess),
-      take(1),
-      tap(action => {
-        if (action.type === DeleteUserFailure.type) {
-          this.error.msg = globalErrorMsg(action.error)
+    if (action.type === DeleteUserActions.deleteUserFailure.type) {
+      this.error.hasError = true;
+      this.error.msg = {
+        title: 'Error',
+        subtitle: (action as any).message,
+      };
 
-          if (this.notificationComponent) {
-            this.notificationComponent.setVisibility(true)
-          }
-        } else {
-          if (this.notificationComponent) {
-            this.notificationComponent.setVisibility(false)
-          }
-          this.cookieService.delete('access_token')
-          this.cookieService.delete('refresh_token')
-          window.location.href = environment.authUrl
-        }
-        this.isLoading.next(false)
-      })
-    ))
+      if (this.notificationComponent) {
+        this.notificationComponent.setVisibility(true);
+      }
+    } else if (action.type === DeleteUserActions.deleteUserSuccess.type) {
+      if (this.notificationComponent) {
+        this.notificationComponent.setVisibility(false);
+      }
+      this.cookieService.delete('access_token');
+      this.cookieService.delete('refresh_token');
+      window.location.href = environment.authUrl;
+    }
   }
 
   async logOutUser() {
-    this.isLoading.next(true)
-    this.userFacade.logOutUser()
+    this.isLoading.next(true);
+    const action = await firstValueFrom(this.userFacade.logOutUser());
 
-    await firstValueFrom(this.actions$.pipe(
-      ofType(LogOutUserSuccess, LogOutUserFailure),
-      take(1),
-      tap(action => {
-        if (action.type === LogOutUserFailure.type) {
-          this.error.msg = globalErrorMsg(action.error)
+    if (action.type === LogOutActions.logOutSuccess.type) {
+      if (this.notificationComponent) {
+        this.notificationComponent.setVisibility(false);
+      }
+      this.cookieService.delete('access_token');
+      this.cookieService.delete('refresh_token');
+      window.location.href = environment.authUrl;
+    } else if (action.type === LogOutActions.logOutFailure.type) {
+      this.error.hasError = true;
+      this.error.msg = {
+        title: 'Error',
+        subtitle: (action as any).message,
+      };
 
-          if (this.notificationComponent) {
-            this.notificationComponent.setVisibility(true)
-          }
-        } else {
-          if (this.notificationComponent) {
-            this.notificationComponent.setVisibility(false)
-          }
-          this.cookieService.delete('access_token')
-          this.cookieService.delete('refresh_token')
-          window.location.href = environment.authUrl
-        }
-        this.isLoading.next(false)
-      })
-    ))
+      if (this.notificationComponent) {
+        this.notificationComponent.setVisibility(true);
+      }
+    }
   }
 }

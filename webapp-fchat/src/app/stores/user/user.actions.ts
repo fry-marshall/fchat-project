@@ -1,151 +1,52 @@
-import { User } from "@library_v2/interfaces/user"
-import { createAction, props } from "@ngrx/store"
+import { User } from '@library_v2/interfaces/user';
+import {
+  createAction,
+  createActionGroup,
+  emptyProps,
+  props,
+} from '@ngrx/store';
 
+export const GetAllUsersActions = createActionGroup({
+  source: 'GetAllUsers',
+  events: {
+    'Get All Users': emptyProps(),
+    'Get All Users Success': props<{ users: Partial<User>[] }>(),
+    'Get All Users Failure': props<{ errors: any }>(),
+  },
+});
 
-export const GetAllUsersAccount = createAction(
-    "[User] get all users account",
-) 
+export const GetUserActions = createActionGroup({
+  source: 'GetUser',
+  events: {
+    'Get User': emptyProps(),
+    'Get User Success': props<{ user: Partial<User> }>(),
+    'Get User Failure': props<{ errors: any }>(),
+  },
+});
 
-export const GetAllUsersAccountSuccess = createAction(
-    "[User] get all users account success",
-    props<{allUsers: {users: User[], currentUserId: string}}>()
-) 
+export const LogOutActions = createActionGroup({
+  source: 'LogOut',
+  events: {
+    'Log Out': props<{ refresh_token: string }>(),
+    'Log Out Success': emptyProps(),
+    'Log Out Failure': props<{ errors: any }>(),
+  },
+});
 
-export const GetAllUsersAccountFailure = createAction(
-    "[User] get all users account failure",
-    props<{error: any}>()
-)
+export const DeleteUserActions = createActionGroup({
+  source: 'DeleteUser',
+  events: {
+    'Delete User': emptyProps(),
+    'Delete User Success': emptyProps(),
+    'Delete User Failure': props<{ errors: any }>(),
+  },
+});
 
-
-export const CreateUserAccount = createAction(
-    "[User] create user account",
-    props<{user: Partial<User>}>()
-) 
-
-export const CreateUserAccountSuccess = createAction(
-    "[User] create user account success",
-) 
-
-export const CreateUserAccountFailure = createAction(
-    "[User] create user account failure",
-    props<{error: any}>()
-)
-
-
-export const LogInUser = createAction(
-    "[User] log in user",
-    props<{login: string, password: string}>()
-) 
-
-export const LogInUserSuccess = createAction(
-    "[User] log in success",
-) 
-
-export const LogInUserFailure = createAction(
-    "[User] log in failure",
-    props<{error: any}>()
-)
-
-
-export const LogOutUser = createAction(
-    "[User] log out user",
-) 
-
-export const LogOutUserSuccess = createAction(
-    "[User] log out success",
-) 
-
-export const LogOutUserFailure = createAction(
-    "[User] log out failure",
-    props<{error: any}>()
-)
-
-
-export const ForgotPasswordUser = createAction(
-    "[User] forgot password user",
-    props<{email: string}>()
-) 
-
-export const ForgotPasswordUserSuccess = createAction(
-    "[User] forgot password success",
-) 
-
-export const ForgotPasswordUserFailure = createAction(
-    "[User] forgot password failure",
-    props<{error: any}>()
-)
-
-
-export const ResetPasswordUser = createAction(
-    "[User] reset password user",
-    props<{password: string, confirm_password: string}>()
-) 
-
-export const ResetPasswordUserSuccess = createAction(
-    "[User] reset password success",
-) 
-
-export const ResetPasswordUserFailure = createAction(
-    "[User] reset password failure",
-    props<{error: any}>()
-)
-
-
-export const VerifyEmailUser = createAction(
-    "[User] verify email user",
-) 
-
-export const VerifyEmailUserSuccess = createAction(
-    "[User] verify email success",
-) 
-
-export const VerifyEmailUserFailure = createAction(
-    "[User] verify email failure",
-    props<{error: any}>()
-)
-
-
-export const DeleteUser = createAction(
-    "[User] delete user",
-) 
-
-export const DeleteUserSuccess = createAction(
-    "[User] delete user success",
-) 
-
-export const DeleteUserFailure = createAction(
-    "[User] delete user failure",
-    props<{error: any}>()
-)
-
-
-export const UpdateUserAccount = createAction(
-    "[User] update user account",
-    props<{user: any}>()
-) 
-
-export const UpdateUserAccountSuccess = createAction(
-    "[User] update user account success",
-    props<{user: any}>()
-) 
-
-export const UpdateUserAccountFailure = createAction(
-    "[User] update user account failure",
-    props<{error: any}>()
-)
-
-
-export const UpdateUserProfilImg = createAction(
-    "[User] update user profile img",
-    props<{profile_img: any}>()
-) 
-
-export const UpdateUserProfilImgSuccess = createAction(
-    "[User] update user profile img success",
-    props<{img: string}>()
-) 
-
-export const UpdateUserProfilImgFailure = createAction(
-    "[User] update user profile img failure",
-    props<{error: any}>()
-)
+export const UpdateUserActions = createActionGroup({
+  source: 'UpdateUser',
+  events: {
+    'Update User': props<{ user: any }>(),
+    'Update User Success': props<{ user: Partial<User> }>(),
+    'Update User Failure': props<{ errors: any }>(),
+  },
+});

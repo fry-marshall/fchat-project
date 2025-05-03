@@ -13,7 +13,7 @@ export class HttpInterceptorService implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-          window.location.href = environment.authUrl
+          //window.location.href = environment.authUrl
         }
         return throwError(error);
       })

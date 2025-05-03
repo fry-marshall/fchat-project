@@ -1,115 +1,102 @@
-import { Store } from "@ngrx/store";
-import { Actions, ofType } from "@ngrx/effects";
-import { Injectable } from "@angular/core";
-import { take } from "rxjs";
-import { AppState } from "../app.state";
-import * as userActions from "./user.actions";
-import { User } from "@library_v2/interfaces/user";
-import { getCurrentUser, getUsers, getUsersToSendMessages } from "./user.selector";
+import { Store } from '@ngrx/store';
+import { Actions, ofType } from '@ngrx/effects';
+import { Injectable } from '@angular/core';
+import { take } from 'rxjs';
+import { AppState } from '../app.state';
+import {
+  getCurrentUser,
+  getUsers,
+  getUsersToSendMessages,
+} from './user.selector';
+import {
+  DeleteUserActions,
+  GetAllUsersActions,
+  GetUserActions,
+  LogOutActions,
+  UpdateUserActions,
+} from './user.actions';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
-export class UserFacade{
+export class UserFacade {
+  constructor(
+    protected store: Store<AppState>,
+    protected actions$: Actions,
+    private cookieService: CookieService
+  ) {}
 
-    constructor(
-        protected store: Store<AppState>,
-        protected actions$: Actions
-    ){
-    }
+  users$ = this.store.select(getUsers);
+  usersToSendMessages$ = this.store.select(getUsersToSendMessages);
+  currentUser$ = this.store.select(getCurrentUser);
 
-    users$ = this.store.select(getUsers)
-    usersToSendMessages$ = this.store.select(getUsersToSendMessages)
-    currentUser$ = this.store.select(getCurrentUser)
+  getAllUsersInfos() {
+    this.store.dispatch(GetAllUsersActions.getAllUsers());
 
-    getAllUsers(){
-        this.store.dispatch(userActions.GetAllUsersAccount())
+    return this.actions$.pipe(
+      ofType(
+        GetAllUsersActions.getAllUsersSuccess,
+        GetAllUsersActions.getAllUsersFailure
+      ),
+      take(1)
+    );
+  }
 
-        return this.actions$.pipe(
-            ofType(userActions.GetAllUsersAccountSuccess),
-            take(1)
-        )
-    }
-    
-    createUserAccount(user: Partial<User>){
-        this.store.dispatch(userActions.CreateUserAccount({user}))
+  getUser() {
+    this.store.dispatch(GetUserActions.getUser());
 
-        return this.actions$.pipe(
-            ofType(userActions.CreateUserAccountSuccess),
-            take(1)
-        )
-    }
+    return this.actions$.pipe(
+      ofType(GetUserActions.getUserSuccess, GetUserActions.getUserFailure),
+      take(1)
+    );
+  }
 
-    logInUser(login: string, password: string){
-        this.store.dispatch(userActions.LogInUser({login, password}))
+  logOutUser() {
+    const refresh_token = this.cookieService.get('refresh_token');
+    this.store.dispatch(LogOutActions.logOut({ refresh_token }));
 
-        return this.actions$.pipe(
-            ofType(userActions.LogInUserSuccess),
-            take(1)
-        )
-    }
+    return this.actions$.pipe(
+      ofType(LogOutActions.logOutSuccess, LogOutActions.logOutFailure),
+      take(1)
+    );
+  }
 
-    logOutUser(){
-        this.store.dispatch(userActions.LogOutUser())
+  deleteUser() {
+    this.store.dispatch(DeleteUserActions.deleteUser());
 
-        return this.actions$.pipe(
-            ofType(userActions.LogOutUserSuccess),
-            take(1)
-        )
-    }
+    return this.actions$.pipe(
+      ofType(
+        DeleteUserActions.deleteUserFailure,
+        DeleteUserActions.deleteUserSuccess
+      ),
+      take(1)
+    );
+  }
 
-    forgotPasswordUser(email: string){
-        this.store.dispatch(userActions.ForgotPasswordUser({email}))
+  updateUserAccount(user: any) {
+    this.store.dispatch(UpdateUserActions.updateUser({ user }));
 
-        return this.actions$.pipe(
-            ofType(userActions.ForgotPasswordUserSuccess),
-            take(1)
-        )
-    }
+    return this.actions$.pipe(
+      ofType(
+        UpdateUserActions.updateUserSuccess,
+        UpdateUserActions.updateUserFailure
+      ),
+      take(1)
+    );
+  }
 
-    resetPasswordUser(password: string, confirm_password: string){
-        this.store.dispatch(userActions.ResetPasswordUser({password, confirm_password}))
+  updateUserProfileImg(profile_img: any) {
+    this.store.dispatch(
+      UpdateUserActions.updateUser({ user: { profile_img } })
+    );
 
-        return this.actions$.pipe(
-            ofType(userActions.ResetPasswordUserSuccess),
-            take(1)
-        )
-    }
-
-    verifyEmailUser(){
-        this.store.dispatch(userActions.VerifyEmailUser())
-
-        return this.actions$.pipe(
-            ofType(userActions.VerifyEmailUserFailure),
-            take(1)
-        )
-    }
-
-    deleteUser(){
-        this.store.dispatch(userActions.DeleteUser())
-
-        return this.actions$.pipe(
-            ofType(userActions.DeleteUserFailure),
-            take(1)
-        )
-    }
-
-    updateUserAccount(user: any){
-        this.store.dispatch(userActions.UpdateUserAccount({user}))
-
-        return this.actions$.pipe(
-            ofType(userActions.UpdateUserAccountSuccess),
-            take(1)
-        )
-    }
-
-    updateUserProfileImg(profile_img: any){
-        this.store.dispatch(userActions.UpdateUserProfilImg({profile_img}))
-
-        return this.actions$.pipe(
-            ofType(userActions.UpdateUserProfilImgSuccess),
-            take(1)
-        )
-    }
-
+    return this.actions$.pipe(
+      ofType(
+        UpdateUserActions.updateUserSuccess,
+        UpdateUserActions.updateUserFailure
+      ),
+      take(1)
+    );
+  }
 }

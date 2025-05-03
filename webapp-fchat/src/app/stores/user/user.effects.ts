@@ -1,126 +1,109 @@
-import { Injectable } from "@angular/core";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { UserService } from "./user.services";
-import * as userActions from './user.actions';
-import { catchError, map, of, switchMap } from "rxjs";
-import { CookieService } from "ngx-cookie-service";
-import { environment } from "@environments/environment";
+import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { UserService } from './user.services';
+import { catchError, map, of, switchMap } from 'rxjs';
+import { CookieService } from 'ngx-cookie-service';
+import { environment } from '@environments/environment';
+import { DeleteUserActions, GetAllUsersActions, GetUserActions, LogOutActions, UpdateUserActions } from './user.actions';
 
 @Injectable()
 export class UserEffects {
+  constructor(
+    private actions$: Actions,
+    private userService: UserService,
+    private cookieService: CookieService
+  ) {}
 
-    constructor(
-        private actions$: Actions,
-        private userService: UserService,
-        private cookieService: CookieService
-    ) { }
+  getAllUsers = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GetAllUsersActions.getAllUsers),
+      switchMap(() => {
+        return this.userService.getAllUsers().pipe(
+          map(({ data }) =>
+            GetAllUsersActions.getAllUsersSuccess({
+              users: data,
+            })
+          ),
+          catchError((error) =>
+            of(GetAllUsersActions.getAllUsersFailure(error))
+          )
+        );
+      })
+    )
+  );
 
-    getAllUsers = createEffect(() => this.actions$.pipe(
-        ofType(userActions.GetAllUsersAccount),
-        switchMap(() => {
-            return this.userService.getAllUsers().pipe(
-                map(({data}) => userActions.GetAllUsersAccountSuccess({allUsers: {users: data.users, currentUserId: data.currentUserId}})),
-                catchError((error) =>of(userActions.GetAllUsersAccountFailure(error)))
-            )
-        })
-    ))
+  getUser = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GetUserActions.getUser),
+      switchMap(() => {
+        return this.userService.getUser().pipe(
+          map(({ data }) =>
+            GetUserActions.getUserSuccess({
+              user: data,
+            })
+          ),
+          catchError((error) =>
+            of(GetUserActions.getUserFailure(error))
+          )
+        );
+      })
+    )
+  );
 
-    signUpUser = createEffect(() => this.actions$.pipe(
-        ofType(userActions.CreateUserAccount),
-        switchMap(({ user }) => {
-            return this.userService.signUpUser(user).pipe(
-                map((data) => userActions.CreateUserAccountSuccess()),
-                catchError((error) =>of(userActions.CreateUserAccountFailure(error)))
-            )
-        })
-    ))
+  logOutUser = createEffect(() =>
+    this.actions$.pipe(
+      ofType(LogOutActions.logOut),
+      switchMap(({refresh_token}) => {
+        return this.userService.logOutUser(refresh_token).pipe(
+          map(() => {
+            this.cookieService.delete('access_token');
+            this.cookieService.delete('refresh_token');
+            window.location.href = environment.authUrl;
+            return LogOutActions.logOutSuccess();
+          }),
+          catchError((error) => of(LogOutActions.logOutFailure(error)))
+        );
+      })
+    )
+  );
 
-    logInUser = createEffect(() => this.actions$.pipe(
-        ofType(userActions.LogInUser),
-        switchMap(({ login, password }) => {
-            return this.userService.logInUser({login, password}).pipe(
-                map((value: any) => {
-                    this.cookieService.set('access_token', value.data.access_token)
-                    this.cookieService.set('refresh_token', value.data.refresh_token)
-                    return userActions.LogInUserSuccess()
-                }),
-                catchError((error) => of(userActions.LogInUserFailure(error)))
-            )
-        })
-    ))
+  deleteUser = createEffect(() =>
+    this.actions$.pipe(
+      ofType(DeleteUserActions.deleteUser),
+      switchMap(() => {
+        return this.userService.deleteUser().pipe(
+          map(() => DeleteUserActions.deleteUserSuccess()),
+          catchError((error) => of(DeleteUserActions.deleteUserFailure(error)))
+        );
+      })
+    )
+  );
 
-    logOutUser = createEffect(() => this.actions$.pipe(
-        ofType(userActions.LogOutUser),
-        switchMap(() => {
-            return this.userService.logOutUser().pipe(
-                map(() => {
-                    this.cookieService.delete('access_token')
-                    this.cookieService.delete('refresh_token')
-                    window.location.href = environment.authUrl
-                    return userActions.LogOutUserSuccess()
-                }),
-                catchError((error) => of(userActions.LogOutUserFailure(error)))
-            )
-        })
-    ))
+  updateUser = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UpdateUserActions.updateUser),
+      switchMap(({ user }) => {
+        return this.userService.updateUser(user).pipe(
+          map((value) => UpdateUserActions.updateUserSuccess({ user: {...value, ...user} })),
+          catchError((error) => of(UpdateUserActions.updateUserFailure(error)))
+        );
+      })
+    )
+  );
 
-    forgotPassword = createEffect(() => this.actions$.pipe(
-        ofType(userActions.ForgotPasswordUser),
-        switchMap(({ email }) => {
-            return this.userService.forgotPassword(email).pipe(
-                map((value) => userActions.ForgotPasswordUserSuccess()),
-                catchError((error) => of(userActions.ForgotPasswordUserFailure(error)))
-            )
-        })
-    ))
-
-    resetPassword = createEffect(() => this.actions$.pipe(
-        ofType(userActions.ResetPasswordUser),
-        switchMap(({ password, confirm_password }) => {
-            return this.userService.resetPassword(password, confirm_password).pipe(
-                map((value) => userActions.ResetPasswordUserSuccess()),
-                catchError((error) => of(userActions.ResetPasswordUserFailure(error)))
-            )
-        })
-    ))
-
-    verifyEmail = createEffect(() => this.actions$.pipe(
-        ofType(userActions.VerifyEmailUser),
-        switchMap(() => {
-            return this.userService.verifyEmail().pipe(
-                map((value) => userActions.VerifyEmailUserSuccess()),
-                catchError((error) => of(userActions.VerifyEmailUserFailure(error)))
-            )
-        })
-    ))
-
-    deleteUser = createEffect(() => this.actions$.pipe(
-        ofType(userActions.DeleteUser),
-        switchMap(() => {
-            return this.userService.deleteUser().pipe(
-                map(() => userActions.DeleteUserSuccess()),
-                catchError((error) => of(userActions.DeleteUserFailure(error)))
-            )
-        })
-    ))
-
-    updateUser = createEffect(() => this.actions$.pipe(
-        ofType(userActions.UpdateUserAccount),
-        switchMap(({ user }) => {
-            return this.userService.updateUser(user).pipe(
-                map((value) => userActions.UpdateUserAccountSuccess({user})),
-                catchError((error) => of(userActions.UpdateUserAccountFailure(error)))
-            )
-        })
-    ))
-
-    updateUserProfile = createEffect(() => this.actions$.pipe(
-        ofType(userActions.UpdateUserProfilImg),
-        switchMap(({ profile_img }) => {
-            return this.userService.updateUserProfileImg(profile_img).pipe(
-                map((response: any) => userActions.UpdateUserProfilImgSuccess({img: response.data.img})),
-                catchError((error) => of(userActions.UpdateUserProfilImgFailure(error)))
-            )
-        })
-    ))
+  /* updateUserProfile = createEffect(() =>
+    this.actions$.pipe(
+      ofType(userActions.UpdateUserProfilImg),
+      switchMap(({ profile_img }) => {
+        return this.userService.updateUserProfileImg(profile_img).pipe(
+          map((response: any) =>
+            userActions.UpdateUserProfilImgSuccess({ img: response.data.img })
+          ),
+          catchError((error) =>
+            of(userActions.UpdateUserProfilImgFailure(error))
+          )
+        );
+      })
+    )
+  ); */
 }

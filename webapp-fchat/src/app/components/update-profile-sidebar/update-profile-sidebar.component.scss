@@ -1,107 +1,111 @@
 :host {
+  .container {
+    height: 100%;
+    position: relative;
 
-    .container {
-        height: 100%;
-        position: relative;
+    app-button {
+      position: absolute;
+      bottom: 5px;
+      left: 15px;
+      right: 15px;
+      width: 92%;
+    }
+  }
 
-        app-button {
-            position: absolute;
-            bottom: 5px;
-            left: 20px;
-            right: 20px;
-        }
+  .form {
+    margin-top: 25px;
+    height: 91%;
+  }
+
+  .profile_img {
+    align-self: center;
+  }
+
+  .profile_img {
+    width: 195px;
+    height: 195px;
+    border-radius: 100%;
+    overflow: hidden;
+    border: 1px solid #767676;
+    position: relative;
+
+    img {
+      width: 200px;
+      height: 200px;
     }
 
-    .form {
-        margin-top: 25px;
-        height: 91%;
-    }
+    .update-picture {
+      display: none;
+      position: absolute;
+      inset: 0;
 
-    .profile_img {
-        align-self: center;
-    }
-
-    .profile_img {
-        width: 195px;
-        height: 195px;
-        border-radius: 100%;
-        overflow: hidden;
-        border: 1px solid #767676;
-        position: relative;
-
-        img {
-            width: 200px;
-            height: 200px;
-        }
-
-        .update-picture {
-            display: none;
-            position: absolute;
-            inset: 0;
-
-            app-text,
-            app-icon {
-                color: white;
-            }
-        }
-
-        .options {
-            display: none;
-            min-width: 210px;
-            background: #FFFFFF;
-            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-            border-radius: 6px;
-            position: absolute;
-            z-index: 2;
-
-            .option {
-                padding: 14px;
-                text-align: start;
-                color: #747474;
-            }
-
-            .option:hover {
-                background: #ededed;
-            }
-        }
-    }
-
-    .profile_img:hover {
-
-        .update-picture {
-            display: flex;
-            background-color: rgba(0, 0, 0, .6);
-        }
-
-        .options {
-            display: block;
-        }
-    }
-
-    .photo_uploaded {
-        width: 73%;
-        height: 62%;
-        object-fit: contain;
+      app-text,
+      app-icon {
+        color: white;
+      }
     }
 
     .options {
-        min-width: 210px;
-        background: #FFFFFF;
-        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-        border-radius: 6px;
-        position: absolute;
-        top: 200px;
-        right: -90px;
-        z-index: 2;
+      display: none;
+      min-width: 210px;
+      background: #ffffff;
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      border-radius: 6px;
+      position: absolute;
+      z-index: 2;
 
-        .option {
-            padding: 14px;
-            text-align: start;
-            color: #747474;
-        }
+      .option {
+        padding: 14px;
+        text-align: start;
+        color: #747474;
+      }
 
-        .option:hover {
-            background: #ededed;
-        }
+      .option:hover {
+        background: #ededed;
+      }
     }
+  }
+
+  .profile_img:hover {
+    .update-picture {
+      display: flex;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .options {
+      display: block;
+    }
+  }
+
+  .photo_uploaded {
+    width: 100%;
+    height: 85%;
+    object-fit: contain;
+    margin-top: 20px;
+  }
+
+  .photo-icon{
+    align-self: center;
+  }
+
+  .options {
+    min-width: 210px;
+    background: #ffffff;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+    position: absolute;
+    top: 200px;
+    right: -90px;
+    z-index: 2;
+
+    .option {
+      padding: 14px;
+      text-align: start;
+      color: #747474;
+    }
+
+    .option:hover {
+      background: #ededed;
+    }
+  }
 }

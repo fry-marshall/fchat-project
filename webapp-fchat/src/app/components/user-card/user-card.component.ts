@@ -3,25 +3,27 @@ import { environment } from '@environments/environment';
 import { User } from '@library_v2/interfaces/user';
 
 @Component({
-    selector: 'app-user-card',
-    templateUrl: './user-card.component.html',
-    styleUrls: ['./user-card.component.scss'],
-    standalone: false
+  selector: 'app-user-card',
+  templateUrl: './user-card.component.html',
+  styleUrls: ['./user-card.component.scss'],
+  standalone: false,
 })
-export class UserCardComponent{
+export class UserCardComponent {
+  @Input() user: Partial<User>;
 
-  @Input() user: User;
-
-  getFullName(fullname: string){
-    return fullname ?? 'Unknown fullname'
+  getFullName(fullname: string) {
+    return fullname ?? 'Unknown fullname';
   }
 
-  getDescription(description: string){
-    return description ?? 'No description'
+  getDescription(description: string) {
+    return description ?? 'No description';
   }
 
   get profileImg() {
-    const url = (this.user.profile_img !== null) ? environment.apiUrl + 'assets/'+this.user.profile_img : 'assets/default.png'
-    return url
+    const url =
+      this.user.profile_img !== null
+        ? environment.apiUrl + 'assets/' + this.user.profile_img
+        : 'assets/default.png';
+    return url;
   }
 }
