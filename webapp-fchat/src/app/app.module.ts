@@ -3,7 +3,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { StoreModule } from '@ngrx/store';
 import { reducers } from './stores/app.state';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { UserEffects } from './stores/user/user.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -16,34 +20,45 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpInterceptorService } from './http-interceptor.service';
 
-const config: SocketIoConfig = { url: environment.apiUrl, options: {} };
+const config: SocketIoConfig = {
+  url: environment.apiUrl,
+  options: {
+    transports: ['websocket'],
+    withCredentials: true,
+  },
+};
 
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./views/views.module').then(m => m.ViewsModule)
-  }
-]
+    loadChildren: () =>
+      import('./views/views.module').then((m) => m.ViewsModule),
+  },
+];
 
-@NgModule({ declarations: [
-        AppComponent
-    ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        StoreModule.forRoot(reducers),
-        EffectsModule.forRoot([UserEffects, MessageEffects]),
-        RouterModule.forRoot(routes),
-        StoreDevtoolsModule.instrument({
-        //logOnly: !environment.production
-        }),
-        SocketIoModule.forRoot(config),
-        BrowserAnimationsModule], providers: [
-        CookieService,
-        HttpService,
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: HttpInterceptorService,
-            multi: true
-        },
-        provideHttpClient(withInterceptorsFromDi())
-    ] })
-export class AppModule { }
+@NgModule({
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    StoreModule.forRoot(reducers),
+    EffectsModule.forRoot([UserEffects, MessageEffects]),
+    RouterModule.forRoot(routes),
+    StoreDevtoolsModule.instrument({
+      //logOnly: !environment.production
+    }),
+    SocketIoModule.forRoot(config),
+    BrowserAnimationsModule,
+  ],
+  providers: [
+    CookieService,
+    HttpService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true,
+    },
+    provideHttpClient(withInterceptorsFromDi()),
+  ],
+})
+export class AppModule {}
