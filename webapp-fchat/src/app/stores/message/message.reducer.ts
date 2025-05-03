@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { initialMessageState } from './message.state';
-import { Conversation } from './message.interface';
+import { Conversation, Message } from './message.interface';
 import {
   GetAllUserMessagesActions,
   NotifyNewMessage,
@@ -40,22 +40,22 @@ export const messageReducer = createReducer(
   on(
     SendNewMessageActions.sendNewMessageSuccess,
     (state, { conversation_id, message }) => {
-      let conversation;
+      let conversation: Conversation;
       const allConversations = state.allConversations?.map((conv) => {
         if (conv.id === '') {
           conversation = {
-            conversation_id,
+            id: conv.id,
             messages: [message],
           };
           return conversation;
         } else if (conv.id === conversation_id) {
           conversation = {
-            conversation_id: conv.id,
+            id: conv.id,
             messages: [...conv.messages, message],
           };
           return conversation;
         }
-        return conv;
+        return conv
       });
       return {
         ...state,
@@ -86,31 +86,24 @@ export const messageReducer = createReducer(
 
   //notify new message
   on(NotifyNewMessage, (state, { notification, receiver_id }) => {
-    const convExisted = state.allConversations?.some(
-      (conv) => conv.id === notification.conversation_id
-    );
-    let updateMessages = state.allConversations;
-    if (convExisted) {
-      updateMessages = state.allConversations?.map((conv) => {
-        if (conv.id === notification.conversation_id) {
-          conv = {
-            ...conv,
-            messages: [
-              ...conv.messages,
-              {
-                date: notification.date,
-                sender: { id: notification.sender_id },
-                receiver: { id: receiver_id },
-                content: notification.content,
-              },
-            ],
-          };
+
+    let updateConversations = state.allConversations.map(conv => {
+      if(conv.id === notification.conversation_id){
+        const message: Message = {
+          id: notification.id,
+          content: notification.content,
+          date: notification.date,
+          sender: {id: notification.sender_id},
+          receiver: {id: receiver_id},
         }
-        return conv;
-      });
-    } else {
-      updateMessages = [
-        ...updateMessages,
+        return {...conv, messages: [...conv.messages, message]}
+      }
+      return conv
+    });
+
+    if(!updateConversations.find(conv => conv.id === notification.conversation_id)){
+      updateConversations = [
+        ...updateConversations,
         {
           id: notification.conversation_id,
           messages: [
@@ -121,11 +114,11 @@ export const messageReducer = createReducer(
               content: notification.content,
             },
           ],
-        },
-      ];
+        }
+      ]
     }
 
-    return { ...state, allConversations: updateMessages };
+    return { ...state, allConversations: updateConversations };
   }),
 
   //read messages
@@ -156,29 +149,19 @@ export const messageReducer = createReducer(
   ),
 
   //notify read message
-  on(NotifyReadMessage, (state, { messages, conversation_id }) => {
-    let convExisted = state.allConversations!.find(
-      (conv) => conv.id === conversation_id
-    );
-    convExisted = {
-      ...convExisted,
-      messages: convExisted?.messages.map((msg) => {
-        const msgExisted = messages.find((m) => m.id === msg.id);
-        if (msgExisted) {
-          return msgExisted;
-        }
-        return msg;
-      }),
-    };
-
-    let updateMessages = state.allConversations;
-    updateMessages = state.allConversations?.map((conv) => {
-      if (conv.id === conversation_id) {
-        return convExisted;
+  on(NotifyReadMessage, (state, { user_id, conversation_id }) => {
+    let updateConversations = state.allConversations.map(conv => {
+      if(conv.id === conversation_id){
+        return {...conv, messages: conv.messages.map((message) => {
+          if(message.sender.id === user_id){
+            return {...message, is_read: true}
+          }
+          return message
+        })}
       }
-      return conv;
-    });
+      return conv
+    })
 
-    return { ...state, allConversations: updateMessages };
+    return { ...state, allConversations: updateConversations };
   })
 );

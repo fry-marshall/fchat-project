@@ -79,11 +79,11 @@ export class MessageFacade {
     );
   }
 
-  notifyReadMessage(body: { messages: Message[]; conversation_id: string }) {
+  notifyReadMessage(conversation_id: string, user_id: string) {
     this.store.dispatch(
       NotifyReadMessage({
-        messages: body.messages,
-        conversation_id: body.conversation_id,
+        conversation_id,
+        user_id
       })
     );
   }

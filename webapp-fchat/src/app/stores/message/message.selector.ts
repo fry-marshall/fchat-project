@@ -28,9 +28,9 @@ export const getReceiverUserInfos = createSelector(
 
     const message = messages.currentConversation?.messages[0];
     if (message?.receiver.id === currentUser?.id) {
-      userId = message!.sender.id;
+      userId = message?.sender.id;
     } else {
-      userId = message!.receiver.id;
+      userId = message?.receiver.id;
     }
 
     return users.find((user) => user.id === userId);

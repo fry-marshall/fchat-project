@@ -48,5 +48,5 @@ export const NotifyNewMessage = createAction(
 
 export const NotifyReadMessage = createAction(
   '[Message] notify read message',
-  props<{ messages: Message[]; conversation_id: string }>()
+  props<{ user_id: string; conversation_id: string }>()
 );

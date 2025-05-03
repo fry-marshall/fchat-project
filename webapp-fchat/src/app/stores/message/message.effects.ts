@@ -40,11 +40,11 @@ export class MessageEffects {
         return this.messageService.sendNewMessage({ content, user_id }).pipe(
           map(({ data }) =>
             SendNewMessageActions.sendNewMessageSuccess({
-              conversation_id: data.conversation_id,
+              conversation_id: data.conversation.id,
               message: {
                 content,
-                receiver: {id: user_id},
-                sender: {id: sender_id},
+                receiver: { id: user_id },
+                sender: { id: sender_id },
                 id: data.conversation.message.id,
                 date: data.conversation.message.date,
               },
@@ -64,9 +64,14 @@ export class MessageEffects {
       switchMap(({ conversation_id, user_id }) => {
         return this.messageService.readMessage(conversation_id).pipe(
           map(() =>
-            ReadMessagesActions.readMessagesSuccess({ conversation_id, user_id })
+            ReadMessagesActions.readMessagesSuccess({
+              conversation_id,
+              user_id,
+            })
           ),
-          catchError((error) => of(ReadMessagesActions.readMessagesFailure(error)))
+          catchError((error) =>
+            of(ReadMessagesActions.readMessagesFailure(error))
+          )
         );
       })
     )

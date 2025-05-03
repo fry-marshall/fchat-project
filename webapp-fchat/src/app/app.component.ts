@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MessageFacade } from './stores/message/message.facade';
 import { UserFacade } from './stores/user/user.facade';
 import { firstValueFrom } from 'rxjs';
-import { CookieService } from 'ngx-cookie-service';
 
 @Component({
     selector: 'app-root',
@@ -15,7 +14,6 @@ export class AppComponent implements OnInit {
    constructor(
     private userFacade: UserFacade,
     private messageFacade: MessageFacade,
-    private cookieService: CookieService
   ){}
 
   async ngOnInit() {

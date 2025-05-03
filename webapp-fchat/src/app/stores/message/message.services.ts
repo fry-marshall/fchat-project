@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpService } from '@library_v2/services/http.service';
 import { Observable } from 'rxjs';
 import { SocketService } from 'src/app/socket.service';
+import { Notification } from './message.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,8 @@ export class MessageService {
   ) { }
 
 
-  getMessageNotification(user_id: string): Observable<Notification>{
-    return this.socketService.listen<Notification>('new_message')
+  getMessageNotification(channel: string): Observable<any>{
+    return this.socketService.listen(channel)
   }
 
   getallConversations() {
