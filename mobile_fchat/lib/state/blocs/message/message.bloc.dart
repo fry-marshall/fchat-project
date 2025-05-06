@@ -55,12 +55,14 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
       final response = await messageRepository.sendMessage(body);
 
       var conversationResponse = response.data["data"]["conversation"];
+      print(conversationResponse);
 
       Conversation? conversationExisted = state.allConversations?.firstWhere(
         (conv) => conv.id == conversationResponse["id"],
+        orElse: () => Conversation()
       );
 
-      if (conversationExisted == null) {
+      if (conversationExisted?.id == null) {
         Conversation conversation = Conversation(
           id: conversationResponse["id"],
           user1_id: event.user_id,
@@ -78,6 +80,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
         );
         List<Conversation> allConversations = state.allConversations ?? [];
         allConversations.add(conversation);
+        print(allConversations);
         emit(
           state.copyWith(
             status: Status.success,
@@ -94,11 +97,11 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
           sender_id: event.sender_id,
           is_read: false,
         );
-        conversationExisted.messages?.add(message);
+        conversationExisted?.messages?.add(message);
         List<Conversation>? allConversations =
             state.allConversations?.map((conv) {
-              if (conv.id == conversationExisted.id) {
-                return conversationExisted;
+              if (conv.id == conversationExisted?.id) {
+                return conversationExisted!;
               }
               return conv;
             }).toList();
