@@ -8,6 +8,8 @@ import 'package:mobile_fchat/common/widgets/common-widgets.dart';
 import 'package:mobile_fchat/state/blocs/auth/auth.bloc.dart';
 import 'package:mobile_fchat/state/blocs/auth/auth.event.dart';
 import 'package:mobile_fchat/state/blocs/auth/auth.state.dart';
+import 'package:mobile_fchat/state/blocs/message/message.bloc.dart';
+import 'package:mobile_fchat/state/blocs/message/message.event.dart';
 import 'package:mobile_fchat/state/blocs/user/user.bloc.dart';
 import 'package:mobile_fchat/state/blocs/user/user.event.dart';
 import 'package:mobile_fchat/views/authentication/forgotpassword.dart';
@@ -21,7 +23,7 @@ class SignInPage extends StatefulWidget {
 class SignInPageState extends State<SignInPage> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController controllerEmail = TextEditingController(text: "jili989900@gmail.com");
-  TextEditingController controllerPassword = TextEditingController(text: "Marshal1998@@");
+  TextEditingController controllerPassword = TextEditingController(text: "Marshal1998");
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +43,9 @@ class SignInPageState extends State<SignInPage> {
             },
           );
         } else if (state.status == AuthStatus.success) {
-          //TODO add requests
           context.read<UserBloc>().add(GetUserInfosRequested());
           context.read<UserBloc>().add(GetAllUsersInfosRequested());
+          context.read<MessageBloc>().add(GetAllUserMessagesRequested());
           Utils.pusherRemove(context, ConversationsPage());
         }
       },

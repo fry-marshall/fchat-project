@@ -50,7 +50,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           response.data["data"]
               .map<User>((user) => User.fromJson(user))
               .toList();
-      print(users);
       emit(state.copyWith(status: Status.success, allUsers: users));
     } catch (e) {
       print(e);
