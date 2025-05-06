@@ -81,8 +81,6 @@ class HttpService {
     if(token != null){
       headers['Authorization'] = 'Bearer $token';
     }
-    print(url);
-    print(body);
     return dio.put(
       url,
       options: Options(
@@ -95,6 +93,7 @@ class HttpService {
   putFormData(String link, dynamic body) async{
     var dio = Dio();
     var url = Utils.getImgUrl() + link;
+    print(url);
     var token = await Utils.getValue(key: 'access_token');
     if(token != null){
       headers['Authorization'] = 'Bearer $token';

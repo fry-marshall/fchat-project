@@ -21,12 +21,15 @@ class Utils {
 
   static pusherRemove(BuildContext context, Widget destination) {
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => destination), (route) => false);
+      MaterialPageRoute(builder: (context) => destination),
+      (route) => false,
+    );
   }
 
   static pusher(BuildContext context, Widget destination) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => destination));
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => destination));
   }
 
   static String? DefaultValidator(String? value) {
@@ -56,31 +59,27 @@ class Utils {
     }
   }
 
-  static String? EmailValidator(String? value){
+  static String? EmailValidator(String? value) {
     final RegExp emailRegExp = RegExp(
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
     );
     if (value == null || value.isEmpty || value.trim().isEmpty) {
       return "Required field";
-    }
-    else if(!emailRegExp.hasMatch(value)){
+    } else if (!emailRegExp.hasMatch(value)) {
       return "Email incorrecte";
     }
     return null;
   }
 
   static String? PasswordValidator(String? value) {
-    final RegExp passwordRegExp = RegExp(
-      r'^(?=.*[A-Za-z])(?=.*\d).+$',
-    );
-    if (value == null || value.isEmpty|| value.trim().isEmpty) {
+    final RegExp passwordRegExp = RegExp(r'^(?=.*[A-Za-z])(?=.*\d).+$');
+    if (value == null || value.isEmpty || value.trim().isEmpty) {
       return "Required field";
     } else if (!passwordRegExp.hasMatch(value)) {
       return "Should contain at least with one letter and one number";
     } else if (value.length < 8) {
       return "Should have at least 8 characters";
-    }
-    else {
+    } else {
       return null;
     }
   }
@@ -90,7 +89,7 @@ class Utils {
     /* if(kReleaseMode){
       return Uri.https(dotenv.env['API_URL']!, path );
     }*/
-// Uri.http(dotenv.env['API_URL']!, path ); 
+    // Uri.http(dotenv.env['API_URL']!, path );
   }
 
   static getUrl(String path) {
@@ -98,10 +97,11 @@ class Utils {
   }
 
   static getImgUrl() {
-    if (kReleaseMode) {
-      return 'https://${dotenv.env['API_URL']!}';
+    return 'https://${dotenv.env['API_URL']!}';
+
+    /* if (kReleaseMode) {
     }
-    return 'http://${dotenv.env['API_URL']!}';
+    return 'http://${dotenv.env['API_URL']!}'; */
   }
 
   static storeValue({required String key, required String value}) async {
@@ -120,17 +120,19 @@ class Utils {
     return "${value[0].toUpperCase()}${value.substring(1).toLowerCase()}";
   }
 
-  static String convertDatetoBackendFormat({required String dateStr}){
-     DateTime dateTime = DateTime.parse(dateStr).toLocal();
-     var formatter = DateFormat('dd/MM/yyyy');
+  static String convertDatetoBackendFormat({required String dateStr}) {
+    DateTime dateTime = DateTime.parse(dateStr).toLocal();
+    var formatter = DateFormat('dd/MM/yyyy');
     String dateString = formatter.format(dateTime);
     DateTime date = formatter.parse(dateString);
 
     return '${date.day}/${date.month}/${date.year}';
   }
 
-
-  static String convertDateToLiteral({required String dateStr, bool wholeDay = false}) {
+  static String convertDateToLiteral({
+    required String dateStr,
+    bool wholeDay = false,
+  }) {
     DateTime dateTime = DateTime.parse(dateStr).toLocal();
     // Date format for parsing DD/MM/YYYY
     var formatter = DateFormat('dd/MM/yyyy');
@@ -157,8 +159,7 @@ class Utils {
       var weekdayFormatter = DateFormat('EEEE', 'fr_FR');
       var weekday = weekdayFormatter.format(date);
 
-
-      if(wholeDay == true){
+      if (wholeDay == true) {
         return '${capitalize(weekday.substring(0, weekday.length))} ${dayFormatter.format(date)}';
       }
 
@@ -166,7 +167,7 @@ class Utils {
     }
   }
 
-static String convertDateToLiteralComplete({required String dateStr}) {
+  static String convertDateToLiteralComplete({required String dateStr}) {
     DateTime dateTime = DateTime.parse(dateStr).toLocal();
     // Date format for parsing DD/MM/YYYY
     var formatter = DateFormat('dd/MM/yyyy');
@@ -192,5 +193,4 @@ static String convertDateToLiteralComplete({required String dateStr}) {
       return capitalize(dateFormat.format(date));
     }
   }
-
 }

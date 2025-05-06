@@ -27,10 +27,6 @@ class ForgotPasswordRequested extends AuthEvent {
   ForgotPasswordRequested(this.email);
 }
 
-class DeleteUserRequested extends AuthEvent {
-  DeleteUserRequested();
-}
-
 class RefreshTokenRequested extends AuthEvent {
   RefreshTokenRequested();
 }

@@ -101,7 +101,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(state.copyWith(status: AuthStatus.loading));
-      String refreshToken = Utils.getValue(key: 'refresh_token');
+      String refreshToken = await Utils.getValue(key: 'refresh_token');
       await authRepository.logOut(refreshToken: refreshToken);
       await Utils.deleteValue(key: 'access_token');
       await Utils.deleteValue(key: 'refresh_token');
