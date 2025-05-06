@@ -130,7 +130,7 @@ class Utils {
   }
 
   static String formatDate(String date_) {
-    DateTime date = DateTime.parse(date_);
+    DateTime date = DateTime.parse(date_).toLocal();
     DateTime now = DateTime.now();
     DateTime yesterday = now.subtract(Duration(days: 1));
 

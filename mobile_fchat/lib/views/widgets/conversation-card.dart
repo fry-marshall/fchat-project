@@ -36,7 +36,7 @@ Widget conversationCard(
                 ),
                 Row(
                   children: [
-                    (lastMessage.receiver_id == currentUser.id)
+                    (lastMessage.sender_id == currentUser.id)
                         ? lastMessage.is_read == true
                             ? Stack(
                               alignment: Alignment.center,

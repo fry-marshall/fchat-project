@@ -14,6 +14,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     on<GetAllUserMessagesRequested>(_onGetAllUserMessagesRequested);
     on<SendMessageRequested>(_onSendMessageRequested);
     on<ReadMessageRequested>(_onReadMessageRequested);
+    on<SetCurrentConversationRequested>(_onSetCurrentConversationRequested);
   }
 
   Future<void> _onGetAllUserMessagesRequested(
@@ -65,10 +66,10 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
           messages: [
             Message(
               id: conversationResponse["message"]["id"],
-              content: conversationResponse["message"]["content"],
+              content: event.content,
               date: conversationResponse["message"]["date"],
               receiver_id: event.user_id,
-              sender_id: event.user_id,
+              sender_id: event.sender_id,
               is_read: false,
             ),
           ],
@@ -85,10 +86,10 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
       } else {
         Message message = Message(
           id: conversationResponse["message"]["id"],
-          content: conversationResponse["message"]["content"],
+          content: event.content,
           date: conversationResponse["message"]["date"],
           receiver_id: event.user_id,
-          sender_id: event.user_id,
+          sender_id: event.sender_id,
           is_read: false,
         );
         conversationExisted.messages?.add(message);
@@ -175,4 +176,12 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
       );
     }
   }
+
+  Future<void> _onSetCurrentConversationRequested(
+    SetCurrentConversationRequested event,
+    Emitter<MessageState> emit,
+  ) async {
+    emit(state.copyWith(currentConversation: event.conversation));
+  }
+
 }

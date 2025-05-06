@@ -3,11 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_fchat/common/helpers/utils.dart';
 import 'package:mobile_fchat/common/inputs/search-field.dart';
 import 'package:mobile_fchat/state/blocs/message/message.bloc.dart';
+import 'package:mobile_fchat/state/blocs/message/message.event.dart';
 import 'package:mobile_fchat/state/blocs/message/message.state.dart';
 import 'package:mobile_fchat/state/blocs/user/user.bloc.dart';
 import 'package:mobile_fchat/state/blocs/user/user.state.dart';
 import 'package:mobile_fchat/state/models/conversation.dart';
 import 'package:mobile_fchat/state/models/user.dart';
+import 'package:mobile_fchat/views/conversations/conversation-detail.dart';
 import 'package:mobile_fchat/views/settings/settings.dart';
 import 'package:mobile_fchat/views/widgets/conversation-card.dart';
 
@@ -77,11 +79,34 @@ class ConversationsPageState extends State<ConversationsPage> {
                           Conversation? conversation =
                               messageState.allConversations?[index];
                           String otherUserId =
-                              conversation!.user1_id != userState.currentUser?.id
+                              conversation!.user1_id !=
+                                      userState.currentUser?.id
                                   ? conversation.user1_id!
                                   : conversation.user2_id!;
-                          User otherUser = userState.allUsers?.firstWhere((user) => user.id == otherUserId) ?? User();
-                          return conversationCard(conversation, userState.currentUser!, otherUser);
+                          User otherUser =
+                              userState.allUsers?.firstWhere(
+                                (user) => user.id == otherUserId,
+                              ) ??
+                              User();
+                          return InkWell(
+                            onTap: () {
+                              context.read<MessageBloc>().add(
+                                SetCurrentConversationRequested(conversation),
+                              );
+                              Utils.pusher(
+                                context,
+                                ConversationDetailPage(
+                                  currentUser: userState.currentUser!,
+                                  otherUser: otherUser,
+                                ),
+                              );
+                            },
+                            child: conversationCard(
+                              conversation,
+                              userState.currentUser!,
+                              otherUser,
+                            ),
+                          );
                         },
                       ),
                     ),
