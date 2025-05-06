@@ -1,7 +1,7 @@
 export const environment = {
     production: false,
-    authUrl: 'http://auth-fchat.mfry.io/',
-    apiUrl: 'http://api-fchat.mfry.io/',
-    appUrl: 'http://webapp-fchat.mfry.io/',
+    authUrl: 'https://auth-fchat.mfry.io/',
+    apiUrl: 'https://api-fchat.mfry.io/',
+    appUrl: 'https://webapp-fchat.mfry.io/',
     cookieDomain: '.local.com',
 };
