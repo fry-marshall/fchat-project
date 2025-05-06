@@ -66,7 +66,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       String message = "";
       if (exception.response!.statusCode == 404) {
         message = "Email or password incorrect.";
-      } else if (exception.response!.statusCode == 400) {
+      } else if (exception.response!.statusCode == 401) {
         message = "Email not verified";
       } else {
         message = "An error is occured, try again later.";
