@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_fchat/common/button.dart';
 import 'package:mobile_fchat/common/helpers/utils.dart';
 import 'package:mobile_fchat/common/inputs/custom-text-field.dart';
+import 'package:mobile_fchat/common/inputs/password-field.dart';
 import 'package:mobile_fchat/common/widgets/common-widgets.dart';
 import 'package:mobile_fchat/state/blocs/auth/auth.bloc.dart';
 import 'package:mobile_fchat/state/blocs/auth/auth.event.dart';
@@ -93,7 +94,7 @@ class SignUpPageState extends State<SignUpPage> {
                     validator: Utils.EmailValidator,
                   ),
                   const SizedBox(height: 20),
-                  CustomTextField(
+                  PasswordField(
                     controller: controllerPassword,
                     hint: "Password",
                     validator: Utils.PasswordValidator,

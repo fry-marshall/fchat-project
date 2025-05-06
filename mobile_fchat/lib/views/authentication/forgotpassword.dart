@@ -3,30 +3,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_fchat/common/button.dart';
 import 'package:mobile_fchat/common/helpers/utils.dart';
 import 'package:mobile_fchat/common/inputs/custom-text-field.dart';
-import 'package:mobile_fchat/common/inputs/password-field.dart';
 import 'package:mobile_fchat/common/widgets/common-widgets.dart';
 import 'package:mobile_fchat/state/blocs/auth/auth.bloc.dart';
 import 'package:mobile_fchat/state/blocs/auth/auth.event.dart';
 import 'package:mobile_fchat/state/blocs/auth/auth.state.dart';
-import 'package:mobile_fchat/views/authentication/forgotpassword.dart';
-import 'package:mobile_fchat/views/conversations/conversations.dart';
+import 'package:mobile_fchat/views/authentication/authentication.dart';
 
-class SignInPage extends StatefulWidget {
+class ForgotPasswordPage extends StatefulWidget {
   @override
-  State<SignInPage> createState() => SignInPageState();
+  State<ForgotPasswordPage> createState() => ForgotPasswordPageState();
 }
 
-class SignInPageState extends State<SignInPage> {
+class ForgotPasswordPageState extends State<ForgotPasswordPage> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController controllerFullname = TextEditingController();
   TextEditingController controllerEmail = TextEditingController();
-  TextEditingController controllerPassword = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (!ModalRoute.of(context)!.isCurrent) return;
         if (state.status == AuthStatus.failure) {
           showDialog(
             context: context,
@@ -40,8 +35,22 @@ class SignInPageState extends State<SignInPage> {
             },
           );
         } else if (state.status == AuthStatus.success) {
-          //TODO add requests
-          Utils.pusherRemove(context, ConversationsPage());
+          _formKey.currentState!.reset();
+          controllerEmail.clear();
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return CommonWidgets.simpleDialog(
+                title: "Success !",
+                content: "You\'ve received an email to reset your password.",
+                textButton: "Ok",
+                context: context,
+                action: (){
+                  Utils.pusherRemove(context, AuthenticationPage());
+                }
+              );
+            },
+          );
         }
       },
       builder: (context, state) {
@@ -50,7 +59,7 @@ class SignInPageState extends State<SignInPage> {
             backgroundColor: null,
             centerTitle: false,
             title: Text(
-              "Sign in",
+              "Forgot password",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -68,38 +77,15 @@ class SignInPageState extends State<SignInPage> {
                     hint: "Email",
                     validator: Utils.EmailValidator,
                   ),
-                  const SizedBox(height: 20),
-                  PasswordField(
-                    controller: controllerPassword,
-                    hint: "Password",
-                    validator: Utils.PasswordValidator,
-                  ),
-                  const SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: InkWell(
-                      onTap: () {
-                        Utils.pusher(context, ForgotPasswordPage());
-                      },
-                      child: Text(
-                        "Password forgotten ? renew here.",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: const Color.fromARGB(255, 97, 97, 97),
-                        ),
-                      ),
-                    ),
-                  ),
                   const Spacer(),
                   CustomButton(
-                    title: "Sign in",
+                    title: "Reset password",
                     isLoading: state.status == AuthStatus.loading,
                     action: () {
                       if (_formKey.currentState!.validate()) {
                         context.read<AuthBloc>().add(
-                          SignInRequested(
+                          ForgotPasswordRequested(
                             controllerEmail.text,
-                            controllerPassword.text,
                           ),
                         );
                       }
