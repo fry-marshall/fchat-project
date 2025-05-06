@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tassa/common/services/http-service.dart';
-import 'package:tassa/main.dart';
-import 'package:tassa/state/blocs/user/user_bloc.dart';
-import 'package:tassa/state/blocs/user/user_event.dart';
+import 'package:mobile_fchat/state/blocs/auth/auth.bloc.dart';
+
+import '../../state/blocs/auth/auth.event.dart';
+import 'http-service.dart';
 
 class AuthInterceptor extends Interceptor {
   final HttpService httpService;
@@ -21,10 +21,10 @@ class AuthInterceptor extends Interceptor {
 
       isRefreshing = true; // Bloque d'autres tentatives
 
-      final userBloc = navigatorKey.currentContext?.read<UserBloc>();
+      /* final userBloc = navigatorKey.currentContext?.read<AuthBloc>();
       if (userBloc != null) {
         userBloc.add(RefreshTokenRequested());
-      }
+      } */
 
       await Future.delayed(const Duration(seconds: 2)); // Attendre que le token soit rafraîchi
 

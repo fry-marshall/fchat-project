@@ -1,8 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:mobile_fchat/common/services/http-service.dart';
+import 'package:mobile_fchat/state/blocs/auth/auth.bloc.dart';
+import 'package:mobile_fchat/state/repositories/auth.repository.dart';
 import 'package:mobile_fchat/views/home.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); //Needed for Flutter
+  await initializeDateFormatting('fr_FR', null);
+  await dotenv.load(fileName: ".env.production");
+  final httpService = HttpService();
+  final authRepository = AuthRepository(httpService: httpService);
+  runApp(
+    MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(create: (context) => authRepository)
+      ], 
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => AuthBloc(authRepository: authRepository))
+        ], 
+        child: MyApp()
+      )
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {

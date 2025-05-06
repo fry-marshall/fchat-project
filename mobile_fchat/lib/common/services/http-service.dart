@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:tassa/common/services/auth-interceptor.dart';
 import '../helpers/utils.dart';
+import 'auth-interceptor.dart';
 
 class HttpService {
   static dynamic headers = {'Content-Type': 'application/json'};

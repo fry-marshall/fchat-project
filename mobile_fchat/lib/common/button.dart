@@ -30,10 +30,7 @@ class CustomButton extends StatelessWidget {
             : color ?? Theme.of(context).colorScheme.primary;
 
     return InkWell(
-      onTap:
-          isLoading
-              ? null
-              : action,
+      onTap: isLoading ? null : action,
       borderRadius: BorderRadius.circular(radius),
       child: Container(
         width: double.infinity,
@@ -51,7 +48,7 @@ class CustomButton extends StatelessWidget {
                     height: 15,
                     child: CircularProgressIndicator(
                       strokeWidth: 2.5,
-                      color: Colors.grey,
+                      color: Colors.white,
                     ),
                   )
                   : Text(
