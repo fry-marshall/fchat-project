@@ -129,68 +129,27 @@ class Utils {
     return '${date.day}/${date.month}/${date.year}';
   }
 
-  static String convertDateToLiteral({
-    required String dateStr,
-    bool wholeDay = false,
-  }) {
-    DateTime dateTime = DateTime.parse(dateStr).toLocal();
-    // Date format for parsing DD/MM/YYYY
-    var formatter = DateFormat('dd/MM/yyyy');
-    String dateString = formatter.format(dateTime);
-    DateTime date = formatter.parse(dateString);
+  static String formatDate(String date_) {
+    DateTime date = DateTime.parse(date_);
+    DateTime now = DateTime.now();
+    DateTime yesterday = now.subtract(Duration(days: 1));
 
-    // Current date
-    var now = DateTime.now();
+    if (isSameDay(now, date)) {
+      return DateFormat('HH:mm').format(date);
+    }
 
-    // Day of the month formatter
-    var dayFormatter = DateFormat('dd');
+    else if (isSameDay(yesterday, date)) {
+      return "Yesterday";
+    }
 
-    // Date comparisons
-    if (date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day) {
-      return 'Auj.${dayFormatter.format(date)}';
-    } else if (date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day + 1) {
-      return 'Dem.${dayFormatter.format(date)}';
-    } else {
-      // Get day of the week in English (abbreviated)
-      var weekdayFormatter = DateFormat('EEEE', 'fr_FR');
-      var weekday = weekdayFormatter.format(date);
-
-      if (wholeDay == true) {
-        return '${capitalize(weekday.substring(0, weekday.length))} ${dayFormatter.format(date)}';
-      }
-
-      return '${capitalize(weekday.substring(0, 3))}.${dayFormatter.format(date)}';
+    else {
+      return DateFormat('dd/MM/yyyy').format(date);
     }
   }
 
-  static String convertDateToLiteralComplete({required String dateStr}) {
-    DateTime dateTime = DateTime.parse(dateStr).toLocal();
-    // Date format for parsing DD/MM/YYYY
-    var formatter = DateFormat('dd/MM/yyyy');
-    String dateString = formatter.format(dateTime);
-    DateTime date = formatter.parse(dateString);
-
-    // Current date
-    var now = DateTime.now();
-
-    // Date comparisons
-    if (date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day) {
-      return 'Aujourd\'hui';
-    } else if (date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day + 1) {
-      return 'Demain';
-    } else {
-      // Get day of the week in English (abbreviated)
-      var dateFormat = DateFormat('EEEE dd MMMM yyyy', 'fr_FR');
-
-      return capitalize(dateFormat.format(date));
-    }
+  static bool isSameDay(DateTime day1, DateTime day2) {
+    return day1.year == day2.year &&
+        day1.month == day2.month &&
+        day1.day == day2.day;
   }
 }

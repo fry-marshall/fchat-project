@@ -7,6 +7,7 @@ import 'package:mobile_fchat/state/blocs/message/message.state.dart';
 import 'package:mobile_fchat/state/blocs/user/user.bloc.dart';
 import 'package:mobile_fchat/state/blocs/user/user.state.dart';
 import 'package:mobile_fchat/state/models/conversation.dart';
+import 'package:mobile_fchat/state/models/user.dart';
 import 'package:mobile_fchat/views/settings/settings.dart';
 import 'package:mobile_fchat/views/widgets/conversation-card.dart';
 
@@ -68,12 +69,19 @@ class ConversationsPageState extends State<ConversationsPage> {
                   children: [
                     const SizedBox(height: 20),
                     searchField(context: context, controller: searchController),
+                    const SizedBox(height: 40),
                     Expanded(
                       child: ListView.builder(
                         itemCount: messageState.allConversations?.length,
                         itemBuilder: (context, index) {
-                          Conversation? conversation = messageState.allConversations?[index];
-                          return conversationCard(conversation!);
+                          Conversation? conversation =
+                              messageState.allConversations?[index];
+                          String otherUserId =
+                              conversation!.user1_id != userState.currentUser?.id
+                                  ? conversation.user1_id!
+                                  : conversation.user2_id!;
+                          User otherUser = userState.allUsers?.firstWhere((user) => user.id == otherUserId) ?? User();
+                          return conversationCard(conversation, userState.currentUser!, otherUser);
                         },
                       ),
                     ),
