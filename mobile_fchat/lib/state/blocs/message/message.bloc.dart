@@ -63,6 +63,8 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
       if (conversationExisted == null) {
         Conversation conversation = Conversation(
           id: conversationResponse["id"],
+          user1_id: event.user_id,
+          user2_id: event.sender_id,
           messages: [
             Message(
               id: conversationResponse["message"]["id"],

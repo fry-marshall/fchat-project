@@ -9,7 +9,7 @@ import {
   getReceiverUserInfos,
   hasConversationSelected,
 } from './message.selector';
-import { Conversation, Message, Notification } from './message.interface';
+import { Conversation, Notification } from './message.interface';
 import { User } from '@library_v2/interfaces/user';
 import {
   GetAllUserMessagesActions,

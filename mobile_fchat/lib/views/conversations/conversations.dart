@@ -11,6 +11,7 @@ import 'package:mobile_fchat/state/models/conversation.dart';
 import 'package:mobile_fchat/state/models/user.dart';
 import 'package:mobile_fchat/views/conversations/conversation-detail.dart';
 import 'package:mobile_fchat/views/settings/settings.dart';
+import 'package:mobile_fchat/views/users.dart';
 import 'package:mobile_fchat/views/widgets/conversation-card.dart';
 
 class ConversationsPage extends StatefulWidget {
@@ -41,7 +42,9 @@ class ConversationsPageState extends State<ConversationsPage> {
                 centerTitle: false,
                 actions: [
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Utils.pusher(context, UsersPage());
+                    },
                     icon: CircleAvatar(
                       radius: 10,
                       backgroundColor: Theme.of(context).colorScheme.primary,
