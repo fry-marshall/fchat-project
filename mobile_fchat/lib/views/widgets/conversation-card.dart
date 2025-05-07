@@ -12,6 +12,13 @@ Widget conversationCard(
 ) {
   Message? lastMessage =
       conversation.messages?[conversation.messages!.length - 1];
+
+  int messagesToRead =
+      conversation.messages
+          ?.where((msg) => msg.is_read == false)
+          .toList()
+          .length ??
+      0;
   return Container(
     margin: EdgeInsets.only(bottom: 10),
     child: Row(
@@ -71,12 +78,34 @@ Widget conversationCard(
             ),
           ],
         ),
-        Text(
-          Utils.formatDate(lastMessage?.date ?? ''),
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            color: const Color.fromARGB(255, 83, 83, 83),
-          ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              Utils.formatDate(lastMessage?.date ?? ''),
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: const Color.fromARGB(255, 83, 83, 83),
+              ),
+            ),
+            SizedBox(height: 5,),
+            (messagesToRead > 0)
+                ? Container(
+                  height: 15,
+                  width: 15,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: Center(
+                    child: Text(
+                      messagesToRead.toString(),
+                      style: TextStyle(fontSize: 8, color: Colors.white),
+                    ),
+                  ),
+                )
+                : SizedBox(),
+          ],
         ),
       ],
     ),
