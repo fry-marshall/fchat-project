@@ -28,8 +28,8 @@ export class UsersController {
 
   @Get('')
   @UseGuards(JwtAuthGuard)
-  async getUsers() {
-    return this.usersService.getUsers();
+  async getUsers(@Request() req) {
+    return this.usersService.getUsers(req.user.id);
   }
 
   @Put('/me')

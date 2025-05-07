@@ -6,11 +6,11 @@ import 'package:mobile_fchat/state/blocs/message/message.bloc.dart';
 import 'package:mobile_fchat/state/blocs/message/message.event.dart';
 import 'package:mobile_fchat/state/blocs/message/message.state.dart';
 import 'package:mobile_fchat/state/blocs/user/user.bloc.dart';
+import 'package:mobile_fchat/state/blocs/user/user.event.dart';
 import 'package:mobile_fchat/state/blocs/user/user.state.dart';
 import 'package:mobile_fchat/state/models/conversation.dart';
 import 'package:mobile_fchat/state/models/user.dart';
 import 'package:mobile_fchat/views/conversations/conversation-detail.dart';
-import 'package:mobile_fchat/views/settings/settings.dart';
 import 'package:mobile_fchat/views/widgets/user-card.dart';
 
 class UsersPage extends StatefulWidget {
@@ -29,14 +29,8 @@ class UsersPageState extends State<UsersPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, userState) {
-        print(userState.allUsers![0].id);
-        print(userState.allUsers![1].id);
         return BlocBuilder<MessageBloc, MessageState>(
           builder: (context, messageState) {
-            List<User>? allUsers =
-                userState.allUsers
-                    ?.where((user) => user.id != userState.currentUser?.id)
-                    .toList();
             return Scaffold(
               appBar: AppBar(
                 backgroundColor: Theme.of(context).colorScheme.primary,
@@ -53,14 +47,15 @@ class UsersPageState extends State<UsersPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 20),
-                    searchField(context: context, controller: searchController),
+                    searchField(context: context, controller: searchController, onChange: (value){
+                      context.read<UserBloc>().add(FilterUserRequested(value ?? ''));
+                    }),
                     const SizedBox(height: 40),
                     Expanded(
                       child: ListView.builder(
-                        itemCount: allUsers?.length,
+                        itemCount: userState.allUsersFiltered?.length,
                         itemBuilder: (context, index) {
-                          User? user = allUsers?[index];
-                          print(user!.id);
+                          User? user = userState.allUsersFiltered?[index];
 
                           return InkWell(
                             onTap: () {
@@ -72,7 +67,6 @@ class UsersPageState extends State<UsersPage> {
                                         conv.user2_id == user.id,
                                         orElse: () => Conversation(),
                                   );
-                              print(conversationExisted?.id);
                               if(conversationExisted?.id == null){
                                 conversationExisted = Conversation(
                                   id: '',
@@ -81,7 +75,6 @@ class UsersPageState extends State<UsersPage> {
                                   messages: [],
                                 );
                               }
-                              print(conversationExisted?.id);
                               
                               context.read<MessageBloc>().add(
                                 SetCurrentConversationRequested(
@@ -96,7 +89,7 @@ class UsersPageState extends State<UsersPage> {
                                 ),
                               );
                             },
-                            child: userCard(user),
+                            child: userCard(user!),
                           );
                         },
                       ),

@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
   ){}
 
   async ngOnInit() {
-    this.cookieService.set('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5MTQ3NWRlLTFmNmYtNGIzYy1hM2U2LTZmOTAwMDAzNGY0ZCIsImVtYWlsIjoiamlsaTk4OTkwMEBnbWFpbC5jb20iLCJpYXQiOjE3NDYzMTA3MjUsImV4cCI6MTc0NjMxNDMyNX0.OAcNAM6FB0l11VfHMNtwVrYOSF7Xpw9AEKUeX-7v_UY')
+    this.cookieService.set('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY1YTdiNWY5LTFlMTItNDhlMi1hODk2LWNlZDhiYTcwZmQ3ZCIsImVtYWlsIjoiZXhhbXBsZUBnbWFpbC5jb20iLCJpYXQiOjE3NDY1Nzg3NDAsImV4cCI6MTc0NjU4MjM0MH0.je930yevneRI3lhSM0WOkkkPZfPYmPuccS3s8DeQ4DE')
     await firstValueFrom(this.userFacade.getAllUsersInfos())
     await firstValueFrom(this.userFacade.getUser())
     await firstValueFrom(this.messageFacade.getAllUserMessages())

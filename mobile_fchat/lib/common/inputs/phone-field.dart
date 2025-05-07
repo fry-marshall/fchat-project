@@ -55,7 +55,6 @@ class PhoneFieldState extends State<PhoneField> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     prefixText = (widget.isRequired) ? ' *' : '';
   }

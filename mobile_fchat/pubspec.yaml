@@ -40,6 +40,8 @@ dependencies:
   intl: ^0.20.2
   flutter_bloc: ^9.1.1
   image_picker: ^1.1.2
+  socket_io_client: ^3.1.2
+  audioplayers: ^6.4.0
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +69,7 @@ flutter:
   assets:
     - assets/logo.png
     - .env.production
+    - assets/sound.mp3
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

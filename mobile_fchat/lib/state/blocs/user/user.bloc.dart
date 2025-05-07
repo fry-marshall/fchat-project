@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_fchat/common/helpers/utils.dart';
 import 'package:mobile_fchat/state/blocs/user/user.event.dart';
 import 'package:mobile_fchat/state/blocs/user/user.state.dart';
 import 'package:mobile_fchat/state/models/user.dart';
@@ -13,6 +14,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<GetAllUsersInfosRequested>(_onGetAllUsersInfosRequested);
     on<DeleteUserRequested>(_onDeleteUserRequested);
     on<UpdateUserRequested>(_onUpdateUserRequested);
+    on<FilterUserRequested>(_onFilterUserRequested);
   }
 
   Future<void> _onGetUserInfosRequested(
@@ -22,7 +24,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     try {
       emit(state.copyWith(status: Status.loading));
       final response = await userRepository.getUserInfos();
-      print(response.data);
 
       User user = User.fromJson(response.data["data"]);
 
@@ -49,8 +50,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       List<User> users =
           response.data["data"]
               .map<User>((user) => User.fromJson(user))
+              .where((user) => user.id != state.currentUser?.id)
               .toList();
-      emit(state.copyWith(status: Status.success, allUsers: users));
+      emit(state.copyWith(status: Status.success, allUsers: users, allUsersFiltered: users));
     } catch (e) {
       print(e);
       emit(
@@ -99,7 +101,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     try {
       emit(state.copyWith(status: Status.loading));
       await userRepository.deleteUser();
-      // TODO add removing storage variable and redirect to authentication
+      await Utils.getValue(key: 'access_token');
+      await Utils.getValue(key: 'refresh_token');
 
       emit(
         state.copyWith(status: Status.success, allUsers: [], currentUser: null),
@@ -113,5 +116,20 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         ),
       );
     }
+  }
+
+  Future<void> _onFilterUserRequested(
+    FilterUserRequested event,
+    Emitter<UserState> emit,
+  ) async {
+    List<User>? allUsersFiltered =
+        state.allUsers?.where((user) => user.fullname?.toLowerCase().contains(event.value.toLowerCase()) ?? false).toList();
+
+    emit(
+      state.copyWith(
+        status: Status.success,
+        allUsersFiltered: allUsersFiltered,
+      ),
+    );
   }
 }

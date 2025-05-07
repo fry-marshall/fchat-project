@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from './users.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcryptjs';
 import { S3Service } from '../common/s3.service';
@@ -23,10 +23,11 @@ export class UsersService {
     });
   }
 
-  async getUsers() {
+  async getUsers(id: string) {
     return await this.usersRepository.find({
       where: {
         email_verified: true,
+        id: Not(id),
       },
       select: ['id', 'fullname', 'description', 'email', 'profile_img'],
     });

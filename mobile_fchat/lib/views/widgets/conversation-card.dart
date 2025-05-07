@@ -10,8 +10,8 @@ Widget conversationCard(
   User currentUser,
   User otherUser,
 ) {
-  Message lastMessage =
-      conversation.messages![conversation.messages!.length - 1];
+  Message? lastMessage =
+      conversation.messages?[conversation.messages!.length - 1];
   return Container(
     margin: EdgeInsets.only(bottom: 10),
     child: Row(
@@ -31,13 +31,13 @@ Widget conversationCard(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  otherUser.fullname!,
+                  otherUser.fullname ?? '',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Row(
                   children: [
-                    (lastMessage.sender_id == currentUser.id)
-                        ? lastMessage.is_read == true
+                    (lastMessage?.sender_id == currentUser.id)
+                        ? lastMessage?.is_read == true
                             ? Stack(
                               alignment: Alignment.center,
                               children: [
@@ -62,7 +62,7 @@ Widget conversationCard(
                             )
                         : SizedBox(),
                     Text(
-                      lastMessage.content ?? '',
+                      lastMessage?.content ?? '',
                       style: TextStyle(fontSize: 12),
                     ),
                   ],
@@ -72,7 +72,7 @@ Widget conversationCard(
           ],
         ),
         Text(
-          Utils.formatDate(lastMessage.date ?? ''),
+          Utils.formatDate(lastMessage?.date ?? ''),
           style: TextStyle(
             fontWeight: FontWeight.w500,
             color: const Color.fromARGB(255, 83, 83, 83),

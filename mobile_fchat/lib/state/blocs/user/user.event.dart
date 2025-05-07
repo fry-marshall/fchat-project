@@ -18,3 +18,8 @@ class UpdateUserRequested extends UserEvent {
 class DeleteUserRequested extends UserEvent {
   DeleteUserRequested();
 }
+
+class FilterUserRequested extends UserEvent {
+  String value;
+  FilterUserRequested(this.value);
+}

@@ -11,11 +11,13 @@ export class SocketService {
 
   constructor(private cookieService: CookieService) {
     const token = this.cookieService.get('access_token');
+    console.log(environment.apiUrl)
     this.socket = io(environment.apiUrl, {
       transports: ['websocket'],
       auth: {
         token,
       },
+      secure: true,
     });
   }
 

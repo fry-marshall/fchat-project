@@ -5,6 +5,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:mobile_fchat/common/services/http-service.dart';
 import 'package:mobile_fchat/state/blocs/auth/auth.bloc.dart';
 import 'package:mobile_fchat/state/blocs/message/message.bloc.dart';
+import 'package:mobile_fchat/state/blocs/socket/socket.cubit.dart';
 import 'package:mobile_fchat/state/blocs/user/user.bloc.dart';
 import 'package:mobile_fchat/state/repositories/auth.repository.dart';
 import 'package:mobile_fchat/state/repositories/message.repository.dart';
@@ -31,6 +32,11 @@ void main() async {
           BlocProvider(create: (_) => AuthBloc(authRepository: authRepository)),
           BlocProvider(create: (_) => UserBloc(userRepository: userRepository)),
           BlocProvider(create: (_) => MessageBloc(messageRepository: messageRepository)),
+          BlocProvider(create: (_){
+            var cubit = SocketCubit();
+            cubit.initSocket();
+            return cubit;
+          })
         ], 
         child: MyApp()
       )

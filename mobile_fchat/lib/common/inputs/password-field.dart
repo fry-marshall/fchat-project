@@ -41,7 +41,6 @@ class PasswordFieldState extends State<PasswordField>{
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     prefixText = (widget.isRequired) ? ' *' : '';
   }
