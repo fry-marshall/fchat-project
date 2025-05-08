@@ -12,9 +12,15 @@ import 'package:mobile_fchat/state/repositories/message.repository.dart';
 import 'package:mobile_fchat/state/repositories/user.repository.dart';
 import 'package:mobile_fchat/views/authentication/authentication.dart';
 import 'package:mobile_fchat/views/home.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //Needed for Flutter
+
+await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
   await initializeDateFormatting('fr_FR', null);
   await dotenv.load(fileName: ".env.production");
   final httpService = HttpService();

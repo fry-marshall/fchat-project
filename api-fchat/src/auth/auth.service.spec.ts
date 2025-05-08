@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Users } from '../users/users.entity';
+import { Users } from '../users/entities/users.entity';
 import { MailService } from '../common/mail.service';
 import {
   BadRequestException,

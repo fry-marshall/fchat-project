@@ -1,4 +1,4 @@
-import { Users } from '../../users/users.entity';
+import { Users } from '../../users/entities/users.entity';
 import {
   Entity,
   JoinColumn,

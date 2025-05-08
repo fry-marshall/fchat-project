@@ -1,16 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Users } from './users.entity';
+import { Users } from './entities/users.entity';
 import { Not, Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcryptjs';
 import { S3Service } from '../common/s3.service';
+import { DeviceTokenDto } from './dto/device-token.dto';
+import { Devicetokens } from './entities/devicetokens.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(Users)
     private readonly usersRepository: Repository<Users>,
+    @InjectRepository(Devicetokens)
+    private readonly devicetokensRepository: Repository<Devicetokens>,
     private s3Service: S3Service,
   ) {}
 
@@ -72,5 +76,16 @@ export class UsersService {
     await this.usersRepository.delete(userId);
 
     return { message: 'User deleted successfully' };
+  }
+
+  async addDeviceToken(userId: string, deviceTokenDto: DeviceTokenDto) {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+
+    const deviceToken = this.devicetokensRepository.create({
+      token: deviceTokenDto.device_token,
+      user: user!,
+    });
+    await this.devicetokensRepository.save(deviceToken);
+    return { message: 'Device token setted' };
   }
 }

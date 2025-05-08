@@ -15,6 +15,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<DeleteUserRequested>(_onDeleteUserRequested);
     on<UpdateUserRequested>(_onUpdateUserRequested);
     on<FilterUserRequested>(_onFilterUserRequested);
+    on<DeviceTokenRequested>(_onDeviceTokenRequested);
   }
 
   Future<void> _onGetUserInfosRequested(
@@ -106,6 +107,31 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       emit(
         state.copyWith(status: Status.success, allUsers: [], currentUser: null),
+      );
+    } catch (e) {
+      print(e);
+      emit(
+        state.copyWith(
+          status: Status.failure,
+          errors: "An error is occured, try again later.",
+        ),
+      );
+    }
+  }
+
+  Future<void> _onDeviceTokenRequested(
+    DeviceTokenRequested event,
+    Emitter<UserState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: Status.loading));
+      var body = {
+        "device_token": event.token
+      };
+      await userRepository.addDeviceToken(body);
+
+      emit(
+        state.copyWith(status: Status.success),
       );
     } catch (e) {
       print(e);

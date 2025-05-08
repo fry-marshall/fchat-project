@@ -4,3 +4,4 @@ db
 .env.dev
 .env.prod
 .env
+firebase-sdk.json

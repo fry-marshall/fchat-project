@@ -23,3 +23,8 @@ class FilterUserRequested extends UserEvent {
   String value;
   FilterUserRequested(this.value);
 }
+
+class DeviceTokenRequested extends UserEvent {
+  String token;
+  DeviceTokenRequested(this.token);
+}

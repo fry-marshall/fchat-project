@@ -3,10 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Conversations } from './entities/conversations.entity';
 import { Repository } from 'typeorm';
 import { SendMessageDto } from './dto/send-message.dto';
-import { Users } from '../users/users.entity';
+import { Users } from '../users/entities/users.entity';
 import { Messages } from './entities/messages.entity';
 import { ChatGateway } from '../gateways/chat.gateway';
 import { ReadMessageDto } from './dto/read-message.dto';
+import { FirebaseService } from 'src/common/firebase.service';
+import { Devicetokens } from 'src/users/entities/devicetokens.entity';
 
 @Injectable()
 export class MessagesService {
@@ -17,7 +19,10 @@ export class MessagesService {
     private readonly usersRepository: Repository<Users>,
     @InjectRepository(Messages)
     private readonly messagesRepository: Repository<Messages>,
+    @InjectRepository(Devicetokens)
+    private readonly deviceTokensRepository: Repository<Devicetokens>,
     private readonly chatGateway: ChatGateway,
+    private readonly firebaseService: FirebaseService,
   ) {}
 
   async getUserMessages(userId: string) {
@@ -98,6 +103,21 @@ export class MessagesService {
       content: message.content,
       conversation_id: conversation.id,
     });
+
+    const userToken = await this.deviceTokensRepository.findOne({
+      where: { user: receiverUser },
+    });
+
+    if (userToken) {
+      const messageNotification = {
+        title: 'New message',
+        body: message.content ?? '',
+      };
+      await this.firebaseService.sendNotification(
+        userToken?.token!,
+        messageNotification,
+      );
+    }
 
     return {
       message: 'Message sent successfully',

@@ -16,6 +16,10 @@ class UserRepository {
     return await httpService.delete('users/me', {});
   }
 
+  Future<dynamic> addDeviceToken(Map<String, dynamic> body) async {
+    return await httpService.post('users/devicetoken', body);
+  }
+
   Future<dynamic> updateUser(Map<String, dynamic> body) async {
     return await httpService.putFormData('/users/me', body);
   }

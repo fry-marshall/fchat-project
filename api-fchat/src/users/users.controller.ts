@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  Post,
   Put,
   Request,
   UploadedFile,
@@ -15,6 +16,7 @@ import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { DeviceTokenDto } from './dto/device-token.dto';
 
 @Controller('users')
 export class UsersController {
@@ -61,5 +63,12 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   async deleteUser(@Request() req) {
     return this.usersService.deleteUser(req.user.id);
+  }
+
+  @Post('/devicetoken')
+  @HttpCode(201)
+  @UseGuards(JwtAuthGuard)
+  async addDeviceToken(@Request() req, @Body() deviceToken: DeviceTokenDto) {
+    return this.usersService.addDeviceToken(req.user.id, deviceToken);
   }
 }

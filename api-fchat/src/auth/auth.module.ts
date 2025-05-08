@@ -8,7 +8,7 @@ import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt-strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Users } from '../users/users.entity';
+import { Users } from '../users/entities/users.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
