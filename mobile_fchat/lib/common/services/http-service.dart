@@ -114,6 +114,7 @@ class HttpService {
     var token = await Utils.getValue(key: 'access_token');
     if(token != null){
       headers['Authorization'] = 'Bearer $token';
+      headers['Content-Type'] = 'multipart/form-data';
     }
     return dio.put(
         url,

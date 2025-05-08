@@ -10,6 +10,7 @@ import 'package:mobile_fchat/state/blocs/user/user.bloc.dart';
 import 'package:mobile_fchat/state/repositories/auth.repository.dart';
 import 'package:mobile_fchat/state/repositories/message.repository.dart';
 import 'package:mobile_fchat/state/repositories/user.repository.dart';
+import 'package:mobile_fchat/views/authentication/authentication.dart';
 import 'package:mobile_fchat/views/home.dart';
 
 void main() async {
@@ -44,6 +45,8 @@ void main() async {
   );
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -52,6 +55,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
+      routes: {
+        '/authentification': (context) => AuthenticationPage(),
+      },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Color.fromRGBO(50, 133, 210, 1),

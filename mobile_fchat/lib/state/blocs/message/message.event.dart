@@ -18,7 +18,8 @@ class SendMessageRequested extends MessageEvent {
 
 class ReadMessageRequested extends MessageEvent {
   String? conversation_id;
-  ReadMessageRequested(this.conversation_id);
+  String? receiver_id;
+  ReadMessageRequested(this.conversation_id, this.receiver_id);
 }
 
 class SetCurrentConversationRequested extends MessageEvent {
@@ -30,6 +31,12 @@ class NotifyNewMessageRequested extends MessageEvent {
   NotificationMessage notificationMessage;
   User user;
   NotifyNewMessageRequested(this.notificationMessage, this.user);
+}
+
+class NotifyReadMessageRequested extends MessageEvent {
+  String? conversation_id;
+  String? user_id;
+  NotifyReadMessageRequested(this.conversation_id, this.user_id);
 }
 
 class FilterMessageRequested extends MessageEvent {

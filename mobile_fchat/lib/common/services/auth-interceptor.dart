@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_fchat/common/helpers/utils.dart';
+import 'package:mobile_fchat/main.dart';
 import 'package:mobile_fchat/state/blocs/auth/auth.bloc.dart';
 
 import '../../state/blocs/auth/auth.event.dart';
@@ -13,22 +15,22 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode == 401) {
+    bool hasAccessToken = (await Utils.getValue(key: 'access_token')) != null;
+    if (err.response?.statusCode == 401 && hasAccessToken) {
       if (isRefreshing) {
-        // Si un refresh est déjà en cours, ne pas relancer
         return handler.reject(err);
       }
 
-      isRefreshing = true; // Bloque d'autres tentatives
+      isRefreshing = true;
 
-      /* final userBloc = navigatorKey.currentContext?.read<AuthBloc>();
+      final userBloc = navigatorKey.currentContext?.read<AuthBloc>();
       if (userBloc != null) {
         userBloc.add(RefreshTokenRequested());
-      } */
+      }
 
-      await Future.delayed(const Duration(seconds: 2)); // Attendre que le token soit rafraîchi
+      await Future.delayed(const Duration(seconds: 2));
 
-      isRefreshing = false; // Réactive le refresh après le délai
+      isRefreshing = false;
     }
 
     return super.onError(err, handler);

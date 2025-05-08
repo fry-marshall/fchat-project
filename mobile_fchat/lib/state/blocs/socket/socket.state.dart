@@ -10,3 +10,8 @@ class SocketMessageReceived extends SocketState {
   final dynamic message;
   SocketMessageReceived(this.message);
 }
+
+class SocketReadMessage extends SocketState {
+  final String? conversation_id;
+  SocketReadMessage(this.conversation_id);
+}

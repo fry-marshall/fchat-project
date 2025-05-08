@@ -33,4 +33,8 @@ class AuthRepository {
   Future<dynamic> logOut({required String refreshToken}) async {
     return await httpService.post('auth/logout', {'refresh_token': refreshToken});
   }
+
+  Future<dynamic> refreshToken({required String refreshToken}) async {
+    return await httpService.post('auth/refresh', {'refresh_token': refreshToken});
+  }
 }

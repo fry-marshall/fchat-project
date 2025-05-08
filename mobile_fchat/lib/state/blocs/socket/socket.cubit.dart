@@ -30,6 +30,11 @@ class SocketCubit extends Cubit<SocketState> {
       print('📩 Message received: $data');
       emit(SocketMessageReceived(data));
     });
+    
+    _socket.on('read_message', (data) {
+      print('📩 Message read: $data');
+      emit(SocketReadMessage(data["conversation_id"]));
+    });
 
     _socket.onDisconnect((_) {
       print('❌ Disconnected');

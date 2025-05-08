@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,10 +25,51 @@ class SettingsPage extends StatefulWidget {
 class SettingsPageState extends State<SettingsPage> {
   TextEditingController searchController = TextEditingController();
   File? _imageFile;
+  final int _maxFileSize = 10 * 1024 * 1024; // 10 Mo
 
   @override
   void initState() {
     super.initState();
+  }
+
+  void _showImagePreviewDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Preview Image"),
+          content:
+              _imageFile == null
+                  ? Text("No image selected.")
+                  : Image.file(_imageFile!),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () async {
+                context.read<UserBloc>().add(
+                  UpdateUserRequested(
+                    body: {
+                      'profile_img': await MultipartFile.fromFile(
+                        _imageFile!.path,
+                        filename: _imageFile!.path.split('/').last,
+                        contentType: DioMediaType('image', 'png'),
+                      ),
+                    },
+                  ),
+                );
+                Navigator.pop(context);
+              },
+              child: Text("Save"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -98,46 +139,82 @@ class SettingsPageState extends State<SettingsPage> {
                             showCupertinoModalPopup(
                               context: context,
                               builder:
-                                  (BuildContext context) =>
-                                      CupertinoActionSheet(
-                                        title: Icon(Icons.photo),
-                                        actions: [
-                                          CupertinoActionSheetAction(
-                                            onPressed: () async {
-                                              final pickedFile =
-                                                  await ImagePicker().pickImage(
-                                                    source: ImageSource.camera,
-                                                  );
+                                  (
+                                    BuildContext context,
+                                  ) => CupertinoActionSheet(
+                                    title: Icon(Icons.photo),
+                                    actions: [
+                                      CupertinoActionSheetAction(
+                                        onPressed: () async {
+                                          final pickedFile = await ImagePicker()
+                                              .pickImage(
+                                                source: ImageSource.camera,
+                                              );
 
-                                              if (pickedFile != null) {
-                                                setState(() {
-                                                  _imageFile = File(
-                                                    pickedFile.path,
-                                                  );
-                                                });
-                                              }
-                                            },
-                                            child: Text("Take a photo"),
-                                          ),
-                                          CupertinoActionSheetAction(
-                                            onPressed: () async {
-                                              final pickedFile =
-                                                  await ImagePicker().pickImage(
-                                                    source: ImageSource.gallery,
-                                                  );
-
-                                              if (pickedFile != null) {
-                                                setState(() {
-                                                  _imageFile = File(
-                                                    pickedFile.path,
-                                                  );
-                                                });
-                                              }
-                                            },
-                                            child: Text("Choose in library"),
-                                          ),
-                                        ],
+                                          if (pickedFile != null) {
+                                            int fileSize =
+                                                await pickedFile.length();
+                                            if (fileSize > _maxFileSize) {
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                const SnackBar(
+                                                  backgroundColor:
+                                                      Colors.redAccent,
+                                                  content: Text(
+                                                    "File size is greater than 10 mo, choose one smaller",
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              setState(() {
+                                                _imageFile = File(
+                                                  pickedFile.path,
+                                                );
+                                              });
+                                              _showImagePreviewDialog(context);
+                                            }
+                                          }
+                                        },
+                                        child: Text("Take a photo"),
                                       ),
+                                      CupertinoActionSheetAction(
+                                        onPressed: () async {
+                                          final pickedFile = await ImagePicker()
+                                              .pickImage(
+                                                source: ImageSource.gallery,
+                                              );
+
+                                          if (pickedFile != null) {
+                                            int fileSize =
+                                                await pickedFile.length();
+                                            print(fileSize);
+                                            if (fileSize > _maxFileSize) {
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                const SnackBar(
+                                                  backgroundColor:
+                                                      Colors.redAccent,
+                                                  content: Text(
+                                                    "File size is greater than 10 mo, choose one smaller",
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              setState(() {
+                                                _imageFile = File(
+                                                  pickedFile.path,
+                                                );
+                                              });
+                                              _showImagePreviewDialog(context);
+                                            }
+                                          }
+                                        },
+                                        child: Text("Choose in library"),
+                                      ),
+                                    ],
+                                  ),
                             );
                           }
                         },

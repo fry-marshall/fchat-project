@@ -19,6 +19,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     on<SetCurrentConversationRequested>(_onSetCurrentConversationRequested);
     on<NotifyNewMessageRequested>(_onNotifyNewMessageRequested);
     on<FilterMessageRequested>(_onFilterMessageRequested);
+    on<NotifyReadMessageRequested>(_onNotifyReadMessageRequested);
   }
 
   Future<void> _onGetAllUserMessagesRequested(
@@ -36,7 +37,11 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
           }).toList();
       conversations.sort(sortedConversations);
       emit(
-        state.copyWith(status: Status.success, allConversations: conversations, allConversationsFiltered: conversations),
+        state.copyWith(
+          status: Status.success,
+          allConversations: conversations,
+          allConversationsFiltered: conversations,
+        ),
       );
     } catch (e) {
       print(e);
@@ -145,18 +150,19 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
           state.allConversations?.map((conv) {
             if (conv.id == event.conversation_id) {
               List<Message>? messages =
-                  conv.messages
-                      ?.map<Message>(
-                        (message) => Message(
-                          id: message.id,
-                          content: message.content,
-                          is_read: true,
-                          date: message.date,
-                          sender_id: message.sender_id,
-                          receiver_id: message.receiver_id,
-                        ),
-                      )
-                      .toList();
+                  conv.messages?.map<Message>((message) {
+                    if (message.receiver_id == event.receiver_id) {
+                      return Message(
+                        id: message.id,
+                        content: message.content,
+                        is_read: true,
+                        date: message.date,
+                        sender_id: message.sender_id,
+                        receiver_id: message.receiver_id,
+                      );
+                    }
+                    return message;
+                  }).toList();
               currentConversation = Conversation(
                 id: conv.id,
                 user1_id: conv.user1_id,
@@ -173,6 +179,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
           status: Status.success,
           currentConversation: currentConversation,
           allConversations: allConversations,
+          allConversationsFiltered: allConversations,
         ),
       );
     } catch (e) {
@@ -270,6 +277,50 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     }
   }
 
+  Future<void> _onNotifyReadMessageRequested(
+    NotifyReadMessageRequested event,
+    Emitter<MessageState> emit,
+  ) async {
+    Conversation? conversationExisted = state.allConversations?.firstWhere(
+      (conv) => conv.id == event.conversation_id,
+      orElse: () => Conversation(),
+    );
+
+    if (conversationExisted != null) {
+      List<Message>? messages = conversationExisted.messages?.map<Message>((message){
+        if(message.sender_id == event.user_id){
+          return  Message(
+            id: message.id,
+            content: message.content,
+            date: message.date,
+            receiver_id: message.id,
+            sender_id: message.sender_id,
+            is_read: true,
+          );
+        }
+        return message;
+      }).toList();
+      conversationExisted.messages = messages;
+      List<Conversation>? allConversations =
+          state.allConversations?.map((conv) {
+            if (conv.id == conversationExisted.id) {
+              return conversationExisted;
+            }
+            return conv;
+          }).toList();
+      allConversations?.sort(sortedConversations);
+
+      emit(
+        state.copyWith(
+          status: Status.success,
+          currentConversation: conversationExisted,
+          allConversations: allConversations,
+          allConversationsFiltered: allConversations,
+        ),
+      );
+    }
+  }
+
   Future<void> _onFilterMessageRequested(
     FilterMessageRequested event,
     Emitter<MessageState> emit,
@@ -281,7 +332,10 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
           User otherUser = event.allUsers.firstWhere(
             (user) => otherUserId == user.id,
           );
-          return otherUser.fullname?.toLowerCase().contains(event.value.toLowerCase()) ?? false;
+          return otherUser.fullname?.toLowerCase().contains(
+                event.value.toLowerCase(),
+              ) ??
+              false;
         }).toList();
 
     emit(

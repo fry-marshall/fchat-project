@@ -15,7 +15,7 @@ Widget conversationCard(
 
   int messagesToRead =
       conversation.messages
-          ?.where((msg) => msg.is_read == false)
+          ?.where((msg) => msg.is_read == false && msg.receiver_id == currentUser.id)
           .toList()
           .length ??
       0;

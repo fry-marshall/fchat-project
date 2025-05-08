@@ -1,8 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_fchat/common/helpers/utils.dart';
+import 'package:mobile_fchat/main.dart';
 import 'package:mobile_fchat/state/blocs/auth/auth.event.dart';
 import 'package:mobile_fchat/state/blocs/auth/auth.state.dart';
+import 'package:mobile_fchat/state/blocs/message/message.bloc.dart';
+import 'package:mobile_fchat/state/blocs/message/message.event.dart';
+import 'package:mobile_fchat/state/blocs/user/user.bloc.dart';
+import 'package:mobile_fchat/state/blocs/user/user.event.dart';
+import 'package:mobile_fchat/state/blocs/user/user.state.dart';
 import 'package:mobile_fchat/state/repositories/auth.repository.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
@@ -13,6 +19,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SignInRequested>(_onSignInRequested);
     on<ForgotPasswordRequested>(_onForgotPasswordRequested);
     on<LogoutRequested>(_onLogoutRequested);
+    on<RefreshTokenRequested>(_onRefreshTokenRequested);
   }
 
   Future<void> _onSignUpRequested(
@@ -118,6 +125,60 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           status: AuthStatus.failure,
           errors: "An error is occured, try again later.",
         ),
+      );
+    }
+  }
+
+  Future<void> _onRefreshTokenRequested(
+    RefreshTokenRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: AuthStatus.loading));
+      String refreshToken = await Utils.getValue(key: 'refresh_token');
+      final response = await authRepository.refreshToken(
+        refreshToken: refreshToken,
+      );
+      await Utils.storeValue(
+        key: "access_token",
+        value: response.data["data"]["access_token"],
+      );
+      await Utils.storeValue(
+        key: "refresh_token",
+        value: response.data["data"]["refresh_token"],
+      );
+      emit(state.copyWith(status: AuthStatus.loading, toReset: true));
+    } catch (e) {
+      print(e);
+      DioException exception = e as DioException;
+      print(exception.message);
+      emit(
+        state.copyWith(
+          status: AuthStatus.failure,
+          errors: "Session expired.\nPlease resign in.",
+        ),
+      );
+      navigatorKey.currentState?.pushNamedAndRemoveUntil(
+        '/authentification',
+        (route) => false,
+      );
+    }
+  }
+
+  @override
+  Future<void> onChange(Change<AuthState> change) async {
+    super.onChange(change);
+    print(change);
+    if (change.nextState.toReset == true) {
+      await Future.delayed(const Duration(seconds: 2));
+      navigatorKey.currentContext?.read<UserBloc>().add(
+        GetUserInfosRequested(),
+      );
+      navigatorKey.currentContext?.read<UserBloc>().add(
+        GetAllUsersInfosRequested(),
+      );
+      navigatorKey.currentContext?.read<MessageBloc>().add(
+        GetAllUserMessagesRequested(),
       );
     }
   }

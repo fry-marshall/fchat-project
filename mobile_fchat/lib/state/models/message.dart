@@ -22,7 +22,7 @@ class Message{
   Message.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     content = json['content'];
-    is_read = json['is_read'] == 'true';
+    is_read = json['is_read'];
     date = json['date'];
     sender_id = json['sender']['id'];
     receiver_id = json['receiver']['id'];

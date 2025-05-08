@@ -13,6 +13,6 @@ class MessageRepository {
   }
 
   Future<dynamic> readMessage(Map<String, String> body) async {
-    return await httpService.delete('messages/read', body);
+    return await httpService.put('messages/read', body);
   }
 }
