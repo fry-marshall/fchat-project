@@ -4,6 +4,7 @@ import 'package:mobile_fchat/common/button.dart';
 import 'package:mobile_fchat/common/helpers/utils.dart';
 import 'package:mobile_fchat/common/inputs/custom-text-field.dart';
 import 'package:mobile_fchat/common/inputs/password-field.dart';
+import 'package:mobile_fchat/common/services/notification.service.dart';
 import 'package:mobile_fchat/common/widgets/common-widgets.dart';
 import 'package:mobile_fchat/state/blocs/auth/auth.bloc.dart';
 import 'package:mobile_fchat/state/blocs/auth/auth.event.dart';
@@ -22,13 +23,17 @@ class SignInPage extends StatefulWidget {
 
 class SignInPageState extends State<SignInPage> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController controllerEmail = TextEditingController(text: "jili989900@gmail.com");
-  TextEditingController controllerPassword = TextEditingController(text: "Marshal1998");
+  TextEditingController controllerEmail = TextEditingController(
+    text: "jili989900@gmail.com",
+  );
+  TextEditingController controllerPassword = TextEditingController(
+    text: "Marshal1998",
+  );
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (!ModalRoute.of(context)!.isCurrent) return;
         if (state.status == AuthStatus.failure) {
           showDialog(
@@ -46,6 +51,11 @@ class SignInPageState extends State<SignInPage> {
           context.read<UserBloc>().add(GetUserInfosRequested());
           context.read<UserBloc>().add(GetAllUsersInfosRequested());
           context.read<MessageBloc>().add(GetAllUserMessagesRequested());
+
+          String? token = await FirebaseNotificationService().getToken();
+          if (token != null) {
+            context.read<UserBloc>().add(DeviceTokenRequested(token));
+          }
           Utils.pusherRemove(context, ConversationsPage());
         }
       },
