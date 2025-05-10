@@ -27,6 +27,7 @@ services:
         condition: service_healthy
     volumes:
       - .env.prod:/app/.env
+      - firebase-sdk.json:/app/firebase-sdk.json
     ports:
       - $LOCAL_PORT:$DOCKER_PORT
     environment:
