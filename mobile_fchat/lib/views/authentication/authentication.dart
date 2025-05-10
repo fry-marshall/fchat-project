@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_fchat/common/button.dart';
 import 'package:mobile_fchat/common/helpers/utils.dart';
+import 'package:mobile_fchat/common/services/firebase.service.dart';
 import 'package:mobile_fchat/views/authentication/signin.dart';
 import 'package:mobile_fchat/views/authentication/signup.dart';
 
@@ -10,6 +11,13 @@ class AuthenticationPage extends StatefulWidget {
 }
 
 class AuthenticationPageState extends State<AuthenticationPage> {
+
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
