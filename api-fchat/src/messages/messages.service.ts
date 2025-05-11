@@ -113,6 +113,8 @@ export class MessagesService {
         title: 'New message',
         body: message.content ?? '',
       };
+      console.log("messageNotification", messageNotification)
+      console.log("userToken", userToken)
       await this.firebaseService.sendNotification(
         userToken?.token!,
         messageNotification,
