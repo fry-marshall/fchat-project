@@ -17,10 +17,9 @@ export class FirebaseService implements OnModuleInit {
   }
 
   async sendNotification(token: string, body: { title: string; body: string }) {
-    const value = await admin.messaging().send({
+    await admin.messaging().send({
       token,
       notification: body,
     });
-    console.log("value", value)
   }
 }

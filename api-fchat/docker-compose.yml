@@ -37,11 +37,11 @@ services:
       - NODE_ENV=${NODE_ENV}
     networks:
       - api-fchat_network
-      - mail_network
+      #- mail_network
     command: ["npm", "run", "start:dev"]
 
 networks:
-  mail_network:
-    external: true
+  #mail_network:
+  #  external: true
   api-fchat_network:
     driver: bridge
