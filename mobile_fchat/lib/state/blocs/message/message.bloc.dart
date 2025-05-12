@@ -17,6 +17,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     on<SendMessageRequested>(_onSendMessageRequested);
     on<ReadMessageRequested>(_onReadMessageRequested);
     on<SetCurrentConversationRequested>(_onSetCurrentConversationRequested);
+    on<SetCurrentConversationIdRequested>(_onSetCurrentConversationIdRequested);
     on<NotifyNewMessageRequested>(_onNotifyNewMessageRequested);
     on<FilterMessageRequested>(_onFilterMessageRequested);
     on<NotifyReadMessageRequested>(_onNotifyReadMessageRequested);
@@ -202,6 +203,16 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     emit(state.copyWith(currentConversation: event.conversation));
   }
 
+  Future<void> _onSetCurrentConversationIdRequested(
+    SetCurrentConversationIdRequested event,
+    Emitter<MessageState> emit,
+  ) async {
+    Conversation? conversation = state.allConversations?.firstWhere(
+      (conv) => conv.id == event.conversationId,
+    );
+    emit(state.copyWith(currentConversation: conversation));
+  }
+
   Future<void> _onNotifyNewMessageRequested(
     NotifyNewMessageRequested event,
     Emitter<MessageState> emit,
@@ -287,19 +298,20 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     );
 
     if (conversationExisted != null) {
-      List<Message>? messages = conversationExisted.messages?.map<Message>((message){
-        if(message.sender_id == event.user_id){
-          return  Message(
-            id: message.id,
-            content: message.content,
-            date: message.date,
-            receiver_id: message.id,
-            sender_id: message.sender_id,
-            is_read: true,
-          );
-        }
-        return message;
-      }).toList();
+      List<Message>? messages =
+          conversationExisted.messages?.map<Message>((message) {
+            if (message.sender_id == event.user_id) {
+              return Message(
+                id: message.id,
+                content: message.content,
+                date: message.date,
+                receiver_id: message.id,
+                sender_id: message.sender_id,
+                is_read: true,
+              );
+            }
+            return message;
+          }).toList();
       conversationExisted.messages = messages;
       List<Conversation>? allConversations =
           state.allConversations?.map((conv) {

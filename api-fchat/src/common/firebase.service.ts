@@ -16,10 +16,11 @@ export class FirebaseService implements OnModuleInit {
     }
   }
 
-  async sendNotification(token: string, body: { title: string; body: string }) {
+  async sendNotification(token: string, body: { title: string; body: string }, data: {conversation_id: string}) {
     await admin.messaging().send({
       token,
       notification: body,
+      data
     });
   }
 }

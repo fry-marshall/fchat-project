@@ -22,11 +22,11 @@ export class Messages {
   @Column({ type: 'timestamptz' })
   date: Date;
 
-  @ManyToOne(() => Users, { eager: false })
+  @ManyToOne(() => Users, { eager: false, onDelete: "SET NULL", nullable: true })
   @JoinColumn({ name: 'sender_id' })
   sender: Users;
 
-  @ManyToOne(() => Users, { eager: false })
+  @ManyToOne(() => Users, { eager: false, onDelete: "SET NULL", nullable: true })
   @JoinColumn({ name: 'receiver_id' })
   receiver: Users;
 

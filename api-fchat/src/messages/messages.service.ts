@@ -23,7 +23,7 @@ export class MessagesService {
     private readonly deviceTokensRepository: Repository<Devicetokens>,
     private readonly chatGateway: ChatGateway,
     private readonly firebaseService: FirebaseService,
-  ) {}
+  ) { }
 
   async getUserMessages(userId: string) {
     const conversations = await this.conversationsRepository
@@ -113,11 +113,12 @@ export class MessagesService {
         title: 'New message',
         body: message.content ?? '',
       };
-      console.log("messageNotification", messageNotification)
-      console.log("userToken", userToken)
       await this.firebaseService.sendNotification(
         userToken?.token!,
         messageNotification,
+        {
+          conversation_id: conversation.id
+        }
       );
     }
 

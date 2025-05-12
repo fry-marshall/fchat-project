@@ -234,7 +234,7 @@ class SettingsPageState extends State<SettingsPage> {
                     maxLines: 1,
                     style: TextStyle(overflow: TextOverflow.ellipsis),
                   ),
-                  trailing: Icon(Icons.arrow_forward_ios, size: 18),
+                  trailing: Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
                     Utils.pusher(
                       context,
@@ -253,7 +253,7 @@ class SettingsPageState extends State<SettingsPage> {
                     maxLines: 1,
                     style: TextStyle(overflow: TextOverflow.ellipsis),
                   ),
-                  trailing: Icon(Icons.arrow_forward_ios, size: 18),
+                  trailing: Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
                     Utils.pusher(
                       context,
@@ -270,7 +270,7 @@ class SettingsPageState extends State<SettingsPage> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text('***********'),
-                  trailing: Icon(Icons.arrow_forward_ios, size: 18),
+                  trailing: Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
                     Utils.pusher(context, UpdatePasswordPage());
                   },
@@ -285,34 +285,29 @@ class SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                   onTap: () {
-                    IconButton(
-                      onPressed: () {
-                        showDialog(
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return CommonWidgets.dialogWithButtons(
+                          title: "Delete account",
+                          content: "Do you want to delete your account ?",
                           context: context,
-                          builder: (BuildContext context) {
-                            return CommonWidgets.dialogWithButtons(
-                              title: "Log out",
-                              content: "Do you want to log out your account ?",
-                              context: context,
-                              textButton1: 'No',
-                              textButton2: 'Yes',
-                              action1: () {
-                                Navigator.pop(context);
-                              },
-                              action2: () {
-                                context.read<UserBloc>().add(
-                                  DeleteUserRequested(),
-                                );
-                                Utils.pusherRemove(
-                                  context,
-                                  AuthenticationPage(),
-                                );
-                              },
+                          textButton1: 'No',
+                          textButton2: 'Yes',
+                          action1: () {
+                            Navigator.pop(context);
+                          },
+                          action2: () {
+                            context.read<UserBloc>().add(DeleteUserRequested());
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Account deleted successfully"),
+                              ),
                             );
+                            Utils.pusherRemove(context, AuthenticationPage());
                           },
                         );
                       },
-                      icon: Icon(Icons.logout),
                     );
                   },
                 ),

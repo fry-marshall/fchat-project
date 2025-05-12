@@ -15,11 +15,11 @@ export class Conversations {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Users)
+  @ManyToOne(() => Users, { onDelete: "SET NULL", nullable: true })
   @JoinColumn({ name: 'user_id_1' })
   user1: Users;
 
-  @ManyToOne(() => Users)
+  @ManyToOne(() => Users, { onDelete: "SET NULL", nullable: true })
   @JoinColumn({ name: 'user_id_2' })
   user2: Users;
 

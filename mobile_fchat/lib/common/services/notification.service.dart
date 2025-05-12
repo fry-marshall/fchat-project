@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class LocalNotificationService {
@@ -8,7 +9,7 @@ class LocalNotificationService {
 
   Future<void> init() async {
     AndroidInitializationSettings androidInitializationSettings =
-        AndroidInitializationSettings('ic_launcher.png');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
     DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
@@ -89,6 +90,8 @@ class FirebaseNotificationService {
         message.notification?.title ?? '',
         message.notification?.body ?? '',
       );
+      String? conversationId = message.data['conversation_id'];
+      if (conversationId != null) {}
     });
 
     FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {

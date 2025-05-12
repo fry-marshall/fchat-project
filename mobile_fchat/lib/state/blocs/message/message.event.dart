@@ -1,4 +1,3 @@
-
 import 'package:mobile_fchat/state/models/conversation.dart';
 import 'package:mobile_fchat/state/models/notification-message.dart';
 import 'package:mobile_fchat/state/models/user.dart';
@@ -25,6 +24,11 @@ class ReadMessageRequested extends MessageEvent {
 class SetCurrentConversationRequested extends MessageEvent {
   Conversation conversation;
   SetCurrentConversationRequested(this.conversation);
+}
+
+class SetCurrentConversationIdRequested extends MessageEvent {
+  String conversationId;
+  SetCurrentConversationIdRequested(this.conversationId);
 }
 
 class NotifyNewMessageRequested extends MessageEvent {
