@@ -27,10 +27,8 @@ class ConversationsPageState extends State<ConversationsPage> {
   TextEditingController searchController = TextEditingController();
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
-    final fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
-    context.read<UserBloc>().add(DeviceTokenRequested(fcmToken));
   }
 
   @override

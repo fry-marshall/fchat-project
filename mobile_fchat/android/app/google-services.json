@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "743625608116",
-    "project_id": "fchat-notifications",
-    "storage_bucket": "fchat-notifications.firebasestorage.app"
+    "project_number": "633819607940",
+    "project_id": "fchat-project",
+    "storage_bucket": "fchat-project.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:743625608116:android:58315ec7823fc62ecbc0e1",
+        "mobilesdk_app_id": "1:633819607940:android:33e7ca5c16c96fc9ae63d1",
         "android_client_info": {
           "package_name": "com.example.mobile_fchat"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCzfxaBKG3WFRM0ExyEK8tqANikFiIdr0M"
+          "current_key": "AIzaSyDYUwZhkOAMZngbAOaXnLlyYDdUgWjmM2s"
         }
       ],
       "services": {

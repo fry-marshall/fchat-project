@@ -51,19 +51,19 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCzfxaBKG3WFRM0ExyEK8tqANikFiIdr0M',
-    appId: '1:743625608116:android:58315ec7823fc62ecbc0e1',
-    messagingSenderId: '743625608116',
-    projectId: 'fchat-notifications',
-    storageBucket: 'fchat-notifications.firebasestorage.app',
+    apiKey: 'AIzaSyDYUwZhkOAMZngbAOaXnLlyYDdUgWjmM2s',
+    appId: '1:633819607940:android:33e7ca5c16c96fc9ae63d1',
+    messagingSenderId: '633819607940',
+    projectId: 'fchat-project',
+    storageBucket: 'fchat-project.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDKTfIEvr-GnmgdUULMBZ5kDDKPDB6azfI',
-    appId: '1:743625608116:ios:e7bb6464cbda1a54cbc0e1',
-    messagingSenderId: '743625608116',
-    projectId: 'fchat-notifications',
-    storageBucket: 'fchat-notifications.firebasestorage.app',
+    apiKey: 'AIzaSyApylXCTkO3EmBpfPvVTHa6y_w0RZuGHi0',
+    appId: '1:633819607940:ios:a0fadeb794e62410ae63d1',
+    messagingSenderId: '633819607940',
+    projectId: 'fchat-project',
+    storageBucket: 'fchat-project.firebasestorage.app',
     iosBundleId: 'com.example.mobileFchat',
   );
 
