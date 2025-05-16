@@ -16,9 +16,9 @@ class SignUpPage extends StatefulWidget {
 
 class SignUpPageState extends State<SignUpPage> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController controllerFullname = TextEditingController(text: "Marshall FRY");
-  TextEditingController controllerEmail = TextEditingController(text: "example@gmail.com");
-  TextEditingController controllerPassword = TextEditingController(text: "Marshall1998");
+  TextEditingController controllerFullname = TextEditingController();
+  TextEditingController controllerEmail = TextEditingController();
+  TextEditingController controllerPassword = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

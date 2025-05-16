@@ -114,10 +114,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await Utils.deleteValue(key: 'refresh_token');
       emit(state.copyWith(status: AuthStatus.failure));
 
-      /* navigatorKey.currentState?.pushNamedAndRemoveUntil(
+      navigatorKey.currentState?.pushNamedAndRemoveUntil(
         '/authentification',
         (route) => false,
-      ); */
+      );
     } catch (e) {
       print(e);
       emit(
@@ -152,11 +152,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       print(e);
       DioException exception = e as DioException;
       print(exception.message);
+      await Utils.deleteValue(key: 'access_token');
+      await Utils.deleteValue(key: 'refresh_token');
+
       emit(
         state.copyWith(
           status: AuthStatus.failure,
           errors: "Session expired.\nPlease resign in.",
         ),
+      );
+      print(
+        "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
       );
       navigatorKey.currentState?.pushNamedAndRemoveUntil(
         '/authentification',

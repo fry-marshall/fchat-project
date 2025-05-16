@@ -49,7 +49,7 @@ class ConversationDetailPageState extends State<ConversationDetailPage> {
                     'https://${dotenv.env['ASSETS_URL']!}/${widget.otherUser.profile_img}',
                   ),
                 ),
-                const SizedBox(width: 15,),
+                const SizedBox(width: 15),
                 Text(
                   widget.otherUser.fullname!,
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
@@ -96,7 +96,7 @@ class ConversationDetailPageState extends State<ConversationDetailPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                        width: Utils.width(context) / 1.25,
+                        width: Utils.width(context) - 80,
                         child: TextFormField(
                           controller: controllerMessage,
                           decoration: InputDecoration(

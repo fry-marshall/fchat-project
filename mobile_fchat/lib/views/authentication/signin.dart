@@ -23,12 +23,8 @@ class SignInPage extends StatefulWidget {
 
 class SignInPageState extends State<SignInPage> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController controllerEmail = TextEditingController(
-    text: "jili989900@gmail.com",
-  );
-  TextEditingController controllerPassword = TextEditingController(
-    text: "Marshal1998",
-  );
+  TextEditingController controllerEmail = TextEditingController();
+  TextEditingController controllerPassword = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

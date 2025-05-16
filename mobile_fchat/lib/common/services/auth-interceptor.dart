@@ -17,23 +17,28 @@ class AuthInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     bool hasAccessToken = (await Utils.getValue(key: 'access_token')) != null;
     if (err.response?.statusCode == 401 && hasAccessToken) {
+      print(isRefreshing);
+
       if (isRefreshing) {
         return handler.reject(err);
       }
 
+      print("yoooo");
+
       isRefreshing = true;
 
       final userBloc = navigatorKey.currentContext?.read<AuthBloc>();
+      print(userBloc);
       if (userBloc != null) {
+        print(userBloc);
         userBloc.add(RefreshTokenRequested());
       }
 
-      await Future.delayed(const Duration(seconds: 2));
+      print("userBloc");
 
       isRefreshing = false;
     }
 
     return super.onError(err, handler);
   }
-
 }

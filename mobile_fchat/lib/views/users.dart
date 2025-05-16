@@ -47,9 +47,15 @@ class UsersPageState extends State<UsersPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 20),
-                    searchField(context: context, controller: searchController, onChange: (value){
-                      context.read<UserBloc>().add(FilterUserRequested(value ?? ''));
-                    }),
+                    searchField(
+                      context: context,
+                      controller: searchController,
+                      onChange: (value) {
+                        context.read<UserBloc>().add(
+                          FilterUserRequested(value ?? ''),
+                        );
+                      },
+                    ),
                     const SizedBox(height: 40),
                     Expanded(
                       child: ListView.builder(
@@ -65,9 +71,9 @@ class UsersPageState extends State<UsersPage> {
                                     (conv) =>
                                         conv.user1_id == user.id ||
                                         conv.user2_id == user.id,
-                                        orElse: () => Conversation(),
+                                    orElse: () => Conversation(),
                                   );
-                              if(conversationExisted?.id == null){
+                              if (conversationExisted?.id == null) {
                                 conversationExisted = Conversation(
                                   id: '',
                                   user1_id: userState.currentUser?.id,
@@ -75,7 +81,7 @@ class UsersPageState extends State<UsersPage> {
                                   messages: [],
                                 );
                               }
-                              
+
                               context.read<MessageBloc>().add(
                                 SetCurrentConversationRequested(
                                   conversationExisted!,
@@ -89,7 +95,7 @@ class UsersPageState extends State<UsersPage> {
                                 ),
                               );
                             },
-                            child: userCard(user!),
+                            child: userCard(user!, context),
                           );
                         },
                       ),

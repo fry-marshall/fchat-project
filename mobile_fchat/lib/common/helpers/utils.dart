@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -21,7 +22,7 @@ class Utils {
 
   static pusherRemove(BuildContext context, Widget destination) {
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => destination),
+      CupertinoPageRoute(builder: (context) => destination),
       (route) => false,
     );
   }
@@ -29,7 +30,7 @@ class Utils {
   static pusher(BuildContext context, Widget destination) {
     Navigator.of(
       context,
-    ).push(MaterialPageRoute(builder: (context) => destination));
+    ).push(CupertinoPageRoute(builder: (context) => destination));
   }
 
   static String? DefaultValidator(String? value) {
@@ -130,7 +131,7 @@ class Utils {
   }
 
   static String formatDate(String date_) {
-    if(date_ == ''){
+    if (date_ == '') {
       return '';
     }
     DateTime date = DateTime.parse(date_).toLocal();
@@ -139,13 +140,9 @@ class Utils {
 
     if (isSameDay(now, date)) {
       return DateFormat('HH:mm').format(date);
-    }
-
-    else if (isSameDay(yesterday, date)) {
+    } else if (isSameDay(yesterday, date)) {
       return "Yesterday";
-    }
-
-    else {
+    } else {
       return DateFormat('dd/MM/yyyy').format(date);
     }
   }

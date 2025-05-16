@@ -28,6 +28,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       User user = User.fromJson(response.data["data"]);
 
+      print(user);
+
       emit(state.copyWith(status: Status.success, currentUser: user));
     } catch (e) {
       print(e);
@@ -53,7 +55,13 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               .map<User>((user) => User.fromJson(user))
               .where((user) => user.id != state.currentUser?.id)
               .toList();
-      emit(state.copyWith(status: Status.success, allUsers: users, allUsersFiltered: users));
+      emit(
+        state.copyWith(
+          status: Status.success,
+          allUsers: users,
+          allUsersFiltered: users,
+        ),
+      );
     } catch (e) {
       print(e);
       emit(
@@ -74,14 +82,18 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final response = await userRepository.updateUser(event.body);
 
       User user = User(
-        fullname: response.data["data"]["user"]["fullname"] ?? state.currentUser?.fullname,
-        description: response.data["data"]["user"]["description"] ?? state.currentUser?.description,
-        profile_img: response.data["data"]["user"]["profile_img"] ?? state.currentUser?.profile_img,
+        fullname:
+            response.data["data"]["user"]["fullname"] ??
+            state.currentUser?.fullname,
+        description:
+            response.data["data"]["user"]["description"] ??
+            state.currentUser?.description,
+        profile_img:
+            response.data["data"]["user"]["profile_img"] ??
+            state.currentUser?.profile_img,
       );
 
-      emit(
-        state.copyWith(status: Status.success, currentUser: user),
-      );
+      emit(state.copyWith(status: Status.success, currentUser: user));
     } catch (e) {
       //print(e);
       DioException exception = e as DioException;
@@ -125,14 +137,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   ) async {
     try {
       emit(state.copyWith(status: Status.loading));
-      var body = {
-        "device_token": event.token
-      };
+      var body = {"device_token": event.token};
       await userRepository.addDeviceToken(body);
 
-      emit(
-        state.copyWith(status: Status.success),
-      );
+      emit(state.copyWith(status: Status.success));
     } catch (e) {
       print(e);
       emit(
@@ -149,7 +157,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     Emitter<UserState> emit,
   ) async {
     List<User>? allUsersFiltered =
-        state.allUsers?.where((user) => user.fullname?.toLowerCase().contains(event.value.toLowerCase()) ?? false).toList();
+        state.allUsers
+            ?.where(
+              (user) =>
+                  user.fullname?.toLowerCase().contains(
+                    event.value.toLowerCase(),
+                  ) ??
+                  false,
+            )
+            .toList();
 
     emit(
       state.copyWith(

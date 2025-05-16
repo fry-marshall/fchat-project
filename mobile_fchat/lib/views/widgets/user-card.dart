@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mobile_fchat/common/helpers/utils.dart';
 import 'package:mobile_fchat/state/models/user.dart';
 
-Widget userCard(User user) {
+Widget userCard(User user, BuildContext context) {
   return Container(
     margin: EdgeInsets.only(bottom: 10),
     child: Row(
@@ -18,13 +19,20 @@ Widget userCard(User user) {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              width: 300,
-              child: Text(user.fullname!, style: TextStyle(fontWeight: FontWeight.bold)),
+              width: Utils.width(context) - 100,
+              child: Text(
+                user.fullname!,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
             SizedBox(
-              width: 300,
-              child: Text(user.description ?? 'Non défini', maxLines: 1, style: TextStyle(fontSize: 12, overflow: TextOverflow.ellipsis)),
-            )
+              width: Utils.width(context) - 100,
+              child: Text(
+                user.description ?? 'Non défini',
+                maxLines: 1,
+                style: TextStyle(fontSize: 12, overflow: TextOverflow.ellipsis),
+              ),
+            ),
           ],
         ),
       ],
