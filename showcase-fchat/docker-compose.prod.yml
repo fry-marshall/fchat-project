@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   fchat:
-    image: frymarshall/fchat_auth
+    image: frymarshall/fchat_showcase
     container_name: fchat
     volumes:
       - ./src:/app
