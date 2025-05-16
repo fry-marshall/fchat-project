@@ -1,0 +1,30 @@
+:host {
+    .logo {
+        width: 100px;
+    }
+
+    .body {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .description {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .description-text {
+        font-size: 80px;
+    }
+
+    .store{
+        width: 200px;
+        cursor: pointer;
+    }
+
+    .landing{
+        width: 500px;
+    }
+}

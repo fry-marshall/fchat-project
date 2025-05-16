@@ -15,7 +15,7 @@ export class Devicetokens {
   @Column({ type: 'varchar', nullable: true })
   token?: string;
 
-  @OneToOne(() => Users)
+  @OneToOne(() => Users, { onDelete: 'SET NULL', nullable: true })
   @JoinColumn({ name: 'user_id' })
   user: Users;
 }

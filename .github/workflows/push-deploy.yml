@@ -23,6 +23,11 @@ on:
         required: true
         type: boolean
         default: false
+      push_showcase:
+        description: 'Push Showcase'
+        required: true
+        type: boolean
+        default: false
 
 jobs:
   extract-component:
@@ -74,6 +79,16 @@ jobs:
       folder: auth-fchat
     secrets: inherit
 
+  push-showcase:
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_showcase == 'true') ||
+      (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
+    uses: ./.github/workflows/push-template.yml
+    with:
+      component: showcase
+      folder: showcase-fchat
+    secrets: inherit
+
 
   deploy-api:
     needs: push-api
@@ -94,4 +109,11 @@ jobs:
     uses: ./.github/workflows/app-template.yml
     with:
       folder: auth-fchat
+    secrets: inherit
+
+  deploy-showcase:
+    needs: push-showcase
+    uses: ./.github/workflows/app-template.yml
+    with:
+      folder: showcase-fchat
     secrets: inherit

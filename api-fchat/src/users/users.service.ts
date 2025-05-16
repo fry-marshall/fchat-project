@@ -16,7 +16,7 @@ export class UsersService {
     @InjectRepository(Devicetokens)
     private readonly devicetokensRepository: Repository<Devicetokens>,
     private s3Service: S3Service,
-  ) {}
+  ) { }
 
   async getProfile(id: string) {
     return await this.usersRepository.findOne({
@@ -81,11 +81,21 @@ export class UsersService {
   async addDeviceToken(userId: string, deviceTokenDto: DeviceTokenDto) {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
 
-    const deviceToken = this.devicetokensRepository.create({
-      token: deviceTokenDto.device_token,
-      user: user!,
-    });
-    await this.devicetokensRepository.save(deviceToken);
+    const deviceTokenExisted = await this.devicetokensRepository.findOne({ where: { user: user! } });
+
+    if (deviceTokenExisted) {
+      await this.devicetokensRepository.update(deviceTokenExisted.id, {
+        token: deviceTokenDto.device_token
+      });
+    }
+    else {
+      const deviceToken = this.devicetokensRepository.create({
+        token: deviceTokenDto.device_token,
+        user: user!,
+      });
+      await this.devicetokensRepository.save(deviceToken);
+    }
+
     return { message: 'Device token setted' };
   }
 }
