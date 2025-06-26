@@ -40,7 +40,7 @@ services:
     build:
       context: .
       dockerfile: ./backup-scripts/backup.Dockerfile
-    container_name: cron_task
+    container_name: cron_task_fchat
     restart: unless-stopped
     env_file: ./.env.prod
     volumes:
