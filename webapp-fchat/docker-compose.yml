@@ -1,0 +1,8 @@
+
+services:
+
+  fchatwebapp:
+    image: frymarshall/fchat_webapp
+    container_name: fchatwebapp
+    ports: 
+      - 4201:80
