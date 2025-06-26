@@ -45,6 +45,7 @@ jobs:
       - name: Copy backup folder if needed
         if: ${{ inputs.hasdbcron == true }}
         run: |
+          cd "${{ inputs.folder }}"
           scp -r -P ${{ secrets.VPS_PORT }} backup-scripts .s3cfg ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }}:/home/${{ inputs.folder }}/
 
       - name: Log in to VPS
