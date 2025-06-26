@@ -13,6 +13,11 @@ on:
         required: true
         type: boolean
         default: false
+      push_auth:
+        description: 'Push Auth Docker Image'
+        required: true
+        type: boolean
+        default: false
 
 jobs:
   push-showcase-image:
@@ -32,6 +37,31 @@ jobs:
     uses: ./.github/workflows/front-production.template.yml
     with:
       folder: showcase-fchat
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
+      VPS_IP: ${{ secrets.VPS_IP }}
+      VPS_PORT: ${{ secrets.VPS_PORT }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+  push-auth-image:
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_auth == 'true') ||
+      (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
+    uses: ./.github/workflows/push-image.template.yml
+    with:
+      folder: showcase-fchat
+    secrets: 
+      GH_TOKEN: ${{ secrets.PAT }}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+  deploy-auth-image:
+    needs: push-auth-image
+    uses: ./.github/workflows/front-production.template.yml
+    with:
+      folder: auth-fchat
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
