@@ -1,25 +1,25 @@
-name: Push Template
+name: Push Image Template
 
 on:
   workflow_call:
     inputs:
-      component:
-        required: true
-        type: string
       folder:
-        required: true
+        required: false
         type: string
     secrets:
       DOCKER_USERNAME:
         required: true
       DOCKER_PASSWORD:
         required: true
+      GH_TOKEN:
+        required: true
 
 jobs:
-  deploy:
+  push-image:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           submodules: recursive
           token: ${{ secrets.GH_TOKEN }}
@@ -30,8 +30,10 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Deploy ${{ inputs.component }}
+      - name: Push image
         run: |
-          echo "🔧 Deploying component: ${{ inputs.component }}"
-          cd ${{ inputs.folder }}
-          make deploy
+          echo "Pushing image"
+          if [ -n "${{ inputs.folder }}" ]; then
+            cd "${{ inputs.folder }}"
+          fi
+          make push-image
