@@ -18,6 +18,11 @@ on:
         required: true
         type: boolean
         default: false
+      push_webapp:
+        description: 'Push Webapp Docker Image'
+        required: true
+        type: boolean
+        default: false
 
 jobs:
   push-showcase-image:
@@ -62,6 +67,31 @@ jobs:
     uses: ./.github/workflows/front-production.template.yml
     with:
       folder: auth-fchat
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
+      VPS_IP: ${{ secrets.VPS_IP }}
+      VPS_PORT: ${{ secrets.VPS_PORT }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+  push-webapp-image:
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_webapp == 'true') ||
+      (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
+    uses: ./.github/workflows/push-image.template.yml
+    with:
+      folder: showcase-fchat
+    secrets: 
+      GH_TOKEN: ${{ secrets.PAT }}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+  deploy-webapp-image:
+    needs: push-webapp-image
+    uses: ./.github/workflows/front-production.template.yml
+    with:
+      folder: webapp-fchat
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
