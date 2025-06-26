@@ -121,7 +121,7 @@ jobs:
     needs: push-api-image
     uses: ./.github/workflows/api-production.template.yml
     with:
-      folder: rapidkar-api
+      folder: api-fchat
       hasfirebase: true
     secrets:
       inherit

@@ -24,6 +24,7 @@ jobs:
 
       - name: Decrypt .env.gpg
         run: |
+          cd "${{ inputs.folder }}"
           echo "${{ secrets.ENV_SECRET_PASSPHRASE }}" | gpg --batch --yes --passphrase-fd 0 -o .env.prod -d .env.prod.gpg
 
       - name: Decrypt firebase-sdk.json.gpg
