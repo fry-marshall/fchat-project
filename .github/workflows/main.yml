@@ -17,7 +17,7 @@ on:
 jobs:
   push-showcase-image:
     if: |
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_webapp == 'true') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_showcase == 'true') ||
       (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
     uses: ./.github/workflows/push-image.template.yml
     secrets: 
