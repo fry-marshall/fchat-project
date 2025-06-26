@@ -1,0 +1,8 @@
+
+services:
+
+  fchat:
+    image: frymarshall/fchat_showcase
+    container_name: fchat_showcase
+    ports: 
+      - "4203:80"
