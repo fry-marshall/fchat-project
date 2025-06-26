@@ -1,119 +1,116 @@
-name: Push and Deploy on Release
+#name: Push and Deploy on Release
 
-on:
-  release:
-    types:
-      - published
-    tags:
-      - 'v*'
-  workflow_dispatch:
-    inputs:
-      push_api:
-        description: 'Push API'
-        required: true
-        type: boolean
-        default: false
-      push_webapp:
-        description: 'Push Webapp'
-        required: true
-        type: boolean
-        default: false
-      push_auth:
-        description: 'Push Auth'
-        required: true
-        type: boolean
-        default: false
-      push_showcase:
-        description: 'Push Showcase'
-        required: true
-        type: boolean
-        default: false
+#on:
+#  release:
+#    types:
+#      - published
+#    tags:
+#      - 'v*'
+#  workflow_dispatch:
+#    inputs:
+#      push_api:
+#        description: 'Push API'
+#        required: true
+#        type: boolean
+#        default: false
+#      push_webapp:
+#        description: 'Push Webapp'
+#        required: true
+#        type: boolean
+#        default: false
+#      push_auth:
+#        description: 'Push Auth'
+#        required: true
+#        type: boolean
+#        default: false
+#      push_showcase:
+#        description: 'Push Showcase'
+#        required: true
+#        type: boolean
+#        default: false
 
-jobs:
-  extract-component:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'release'
-    outputs:
-      component: ${{ steps.check_tag.outputs.component }}
-    steps:
-      - name: Extract component from tag
-        id: check_tag
-        run: |
-          TAG="${{ github.event.release.tag_name }}"
-          echo "Tag: $TAG"
-          if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "✅ Valid tag format: $TAG"
-          else
-            echo "❌ Invalid tag format: $TAG"
-            exit 1
-          fi
+#jobs:
+#  extract-component:
+#    runs-on: ubuntu-latest
+#    if: github.event_name == 'release'
+#    outputs:
+#      component: ${{ steps.check_tag.outputs.component }}
+#    steps:
+#      - name: Extract component from tag
+#        id: check_tag
+#        run: |
+#          TAG="${{ github.event.release.tag_name }}"
+#          echo "Tag: $TAG"
+#          if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+#            echo "✅ Valid tag format: $TAG"
+#          else
+#            echo "❌ Invalid tag format: $TAG"
+#            exit 1
 
+#  push-api:
+#    if: |
+#      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_api == 'true') ||
+#      (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
+#    uses: ./.github/workflows/push-template.yml
+#    with:
+#      component: api
+#      folder: api-fchat
+#    secrets: inherit
 
-  push-api:
-    if: |
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_api == 'true') ||
-      (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
-    uses: ./.github/workflows/push-template.yml
-    with:
-      component: api
-      folder: api-fchat
-    secrets: inherit
+#  push-webapp:
+#    if: |
+#      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_webapp == 'true') ||
+#      (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
+#    uses: ./.github/workflows/push-template.yml
+#    with:
+#      component: webapp
+#      folder: webapp-fchat
+#    secrets: inherit
 
-  push-webapp:
-    if: |
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_webapp == 'true') ||
-      (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
-    uses: ./.github/workflows/push-template.yml
-    with:
-      component: webapp
-      folder: webapp-fchat
-    secrets: inherit
+#  push-auth:
+#    if: |
+#      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_auth == 'true') ||
+#      (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
+#    uses: ./.github/workflows/push-template.yml
+#    with:
+#      component: auth
+#      folder: auth-fchat
+#    secrets: inherit
 
-  push-auth:
-    if: |
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_auth == 'true') ||
-      (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
-    uses: ./.github/workflows/push-template.yml
-    with:
-      component: auth
-      folder: auth-fchat
-    secrets: inherit
+#  push-showcase:
+#    if: |
+#      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_showcase == 'true') ||
+#      (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
+#    uses: ./.github/workflows/push-template.yml
+#    with:
+#      component: showcase
+#      folder: showcase-fchat
+#    secrets: inherit
 
-  push-showcase:
-    if: |
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_showcase == 'true') ||
-      (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
-    uses: ./.github/workflows/push-template.yml
-    with:
-      component: showcase
-      folder: showcase-fchat
-    secrets: inherit
+#  deploy-api:
+#    needs: push-api
+#    uses: ./.github/workflows/api-template.yml
+#    with:
+#      folder: api-fchat
+#    secrets: inherit
 
+#  deploy-webapp:
+#    needs: push-webapp
+#    uses: ./.github/workflows/app-template.yml
+#    with:
+#      folder: webapp-fchat
+#    secrets: inherit
 
-  deploy-api:
-    needs: push-api
-    uses: ./.github/workflows/api-template.yml
-    with:
-      folder: api-fchat
-    secrets: inherit
+#  deploy-auth:
+#    needs: push-auth
+#    uses: ./.github/workflows/app-template.yml
+#    with:
+#      folder: auth-fchat
+#    secrets: inherit
 
-  deploy-webapp:
-    needs: push-webapp
-    uses: ./.github/workflows/app-template.yml
-    with:
-      folder: webapp-fchat
-    secrets: inherit
-
-  deploy-auth:
-    needs: push-auth
-    uses: ./.github/workflows/app-template.yml
-    with:
-      folder: auth-fchat
-    secrets: inherit
-
-  deploy-showcase:
-    needs: push-showcase
-    uses: ./.github/workflows/app-template.yml
-    with:
-      folder: showcase-fchat
-    secrets: inherit
+#  deploy-showcase:
+#    needs: push-showcase
+#    uses: ./.github/workflows/app-template.yml
+#    with:
+#      folder: showcase-fchat
+#    secrets: inherit
