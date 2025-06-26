@@ -4,15 +4,15 @@ services:
     restart: always
     container_name: postgres_db_fchat
     ports:
-      - $DB_LOCAL_PORT:$DB_DOCKER_PORT
+      - $DB_HOST_PORT:$DB_CONTAINER_PORT
     environment:
       - POSTGRES_USER=$DB_USERNAME
       - POSTGRES_PASSWORD=$DB_PASSWORD
       - POSTGRES_DB=$DB_NAME
     volumes:
-      - ./db:/var/lib/postgresql/data
+      - fchatpgdata:/var/lib/postgresql/data
     networks:
-      - api-fchat_network
+      - fchat-api-network
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "$DB_USERNAME"]
       interval: 5s
@@ -21,7 +21,7 @@ services:
 
   api:
     image: frymarshall/fchat_api
-    container_name: fchat_api
+    container_name: fchat-api
     depends_on:
       db:
         condition: service_healthy
@@ -29,16 +29,30 @@ services:
       - .env.prod:/app/.env
       - ./firebase-sdk.json:/app/firebase-sdk.json
     ports:
-      - $LOCAL_PORT:$DOCKER_PORT
+      - $PORT:$PORT
     environment:
       - NODE_ENV=prod
     networks:
-      - api-fchat_network
-      - nginx_network
+      - fchat-api-network
     command: ["npm", "run", "start:prod"]
 
+  cron:
+    build:
+      context: .
+      dockerfile: ./backup-scripts/backup.Dockerfile
+    container_name: cron_task
+    restart: unless-stopped
+    env_file: ./.env.prod
+    volumes:
+      - fchatpgcron:/backups
+      - ./backup-scripts:/backup-scripts
+    networks:
+      - fchat-api-network
+
 networks:
-  nginx_network:
-    external: true
-  api-fchat_network:
+  fchat-api-network:
     driver: bridge
+
+volumes:
+  fchatpgdata:
+  fchatpgcron:

@@ -35,9 +35,9 @@ on:
         required: true
       DB_PASSWORD:
         required: true
-      DB_LOCAL_PORT:
+      DB_HOST_PORT:
         required: true
-      DB_DOCKER_PORT:
+      DB_CONTAINER_PORT:
         required: true
       MAIL_HOST:
         required: true
@@ -85,8 +85,8 @@ jobs:
             DB_NAME=${{ secrets.DB_NAME }}
             DB_USERNAME=${{ secrets.DB_USERNAME }}
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-            DB_LOCAL_PORT=${{ secrets.DB_LOCAL_PORT }}
-            DB_DOCKER_PORT=${{ secrets.DB_DOCKER_PORT }}
+            DB_HOST_PORT=${{ secrets.DB_HOST_PORT }}
+            DB_CONTAINER_PORT=${{ secrets.DB_CONTAINER_PORT }}
             MAIL_HOST=${{ secrets.MAIL_HOST }}
             MAIL_PORT=${{ secrets.MAIL_PORT }}
             MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}

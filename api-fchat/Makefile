@@ -10,5 +10,5 @@ migrate:
 	@echo "Migrate database..."
 	npm run typeorm:migration:run
 
-deploy:
+push-image:
 	docker build --target=prod -t fchat_api -f Dockerfile . && docker tag fchat_api frymarshall/fchat_api:latest && docker push frymarshall/fchat_api:latest

@@ -23,6 +23,11 @@ on:
         required: true
         type: boolean
         default: false
+      push_api:
+        description: 'Push Api Docker Image'
+        required: true
+        type: boolean
+        default: false
 
 jobs:
   push-showcase-image:
@@ -100,3 +105,23 @@ jobs:
       VPS_PORT: ${{ secrets.VPS_PORT }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
+  push-api-image:
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.push_api == 'true') ||
+      (github.event_name == 'release' && needs.check_tag.outputs.tag != '')
+    uses: ./.github/workflows/push-image.template.yml
+    with:
+      folder: api-fchat
+    secrets: 
+      GH_TOKEN: ${{ secrets.PAT }}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+  deploy-api-image:
+    needs: push-api-image
+    uses: ./.github/workflows/api-production.template.yml
+    with:
+      folder: rapidkar-api
+      hasfirebase: true
+    secrets:
+      inherit
