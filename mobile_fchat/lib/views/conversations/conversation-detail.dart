@@ -8,6 +8,7 @@ import 'package:mobile_fchat/state/blocs/message/message.state.dart';
 import 'package:mobile_fchat/state/models/message.dart';
 import 'package:mobile_fchat/state/models/user.dart';
 import 'package:mobile_fchat/views/widgets/message-bubble.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ConversationDetailPage extends StatefulWidget {
   User currentUser;
@@ -56,6 +57,14 @@ class ConversationDetailPageState extends State<ConversationDetailPage> {
                 ),
               ],
             ),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  reportContent(widget.otherUser.id!);
+                },
+                icon: Icon(Icons.report),
+              ),
+            ],
           ),
           body: Container(
             padding: EdgeInsets.all(15),
@@ -155,5 +164,24 @@ class ConversationDetailPageState extends State<ConversationDetailPage> {
         );
       },
     );
+  }
+
+  void reportContent(String userId) async {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: 'marshalfry1998@gmail.com',
+      queryParameters: {
+        'subject': 'Report content',
+        'body':
+            'I would like to report unapropriate messages from this user: $userId',
+      },
+    );
+    print("toto");
+
+    if (await canLaunchUrl(emailLaunchUri)) {
+      await launchUrl(emailLaunchUri);
+    } else {
+      print("Could not launch email client.");
+    }
   }
 }

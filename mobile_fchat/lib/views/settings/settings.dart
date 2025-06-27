@@ -17,6 +17,7 @@ import 'package:mobile_fchat/views/authentication/authentication.dart';
 import 'package:mobile_fchat/views/settings/update-description.dart';
 import 'package:mobile_fchat/views/settings/update-name.dart';
 import 'package:mobile_fchat/views/settings/update-password.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => SettingsPageState();
@@ -26,6 +27,7 @@ class SettingsPageState extends State<SettingsPage> {
   TextEditingController searchController = TextEditingController();
   File? _imageFile;
   final int _maxFileSize = 10 * 1024 * 1024; // 10 Mo
+  final Uri _url = Uri.parse('https://fchat.mfry.io/support');
 
   @override
   void initState() {
@@ -70,6 +72,12 @@ class SettingsPageState extends State<SettingsPage> {
         );
       },
     );
+  }
+
+  Future<void> _launchUrl() async {
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
   }
 
   @override
@@ -274,6 +282,14 @@ class SettingsPageState extends State<SettingsPage> {
                   onTap: () {
                     Utils.pusher(context, UpdatePasswordPage());
                   },
+                ),
+                const Divider(),
+                ListTile(
+                  title: Text(
+                    "Help",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  onTap: _launchUrl,
                 ),
                 const Divider(),
                 ListTile(

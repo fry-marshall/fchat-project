@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_fchat/common/helpers/utils.dart';
@@ -9,7 +8,6 @@ import 'package:mobile_fchat/state/blocs/message/message.state.dart';
 import 'package:mobile_fchat/state/blocs/socket/socket.cubit.dart';
 import 'package:mobile_fchat/state/blocs/socket/socket.state.dart';
 import 'package:mobile_fchat/state/blocs/user/user.bloc.dart';
-import 'package:mobile_fchat/state/blocs/user/user.event.dart';
 import 'package:mobile_fchat/state/blocs/user/user.state.dart';
 import 'package:mobile_fchat/state/models/conversation.dart';
 import 'package:mobile_fchat/state/models/notification-message.dart';
